@@ -53,7 +53,7 @@ def identify_inheritance_type(class_And_BaseClass, classTypes):
  class_And_InheritanceType = {}
  for x in class_And_BaseClassType:
     if checkinginheritance(class_And_BaseClassType[x]) == True:
-        class_And_InheritanceType[x] = ""
+        class_And_InheritanceType[x] = "Interface Inheritance"
     elif checkinginheritance(class_And_BaseClassType[x]) == False: class_And_InheritanceType[x] = "Implementation Inheritance"
  return class_And_InheritanceType
 
@@ -76,6 +76,8 @@ def traverse_AST(cursor,ClassNodes): # Transerving The Abstract Tree
     for child in cursor.get_children():
         traverse_AST(child, ClassNodes)
     if (cursor.kind == clang.cindex.CursorKind.CLASS_DECL or cursor.kind == clang.cindex.CursorKind.STRUCT_DECL or cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE):
+       # Check if we have a class, struct or template declaration.
+       # Store all nodes pointing to the declarations in the ClassNode list
        ClassNodes.append(cursor) 
     print ('Found %s [line=%s, col=%s]' % (cursor.displayname, cursor.location.line, cursor.location.column), cursor.kind)
 
@@ -91,13 +93,14 @@ def parseTranslationUnit(file_path):
     for class_And_InheritanceType in class_And_InheritanceTypes:
         if class_And_InheritanceTypes[class_And_InheritanceType] == "Implementation Inheritance":
             sourceFileInheritanceObject.ImplementationInheritance += 1
+        elif class_And_InheritanceTypes[class_And_InheritanceType] == "Interface Inheritance":
+            sourceFileInheritanceObject.InterfaceInheritance += 1
 
     print("Number of implementation inheritance: ", sourceFileInheritanceObject.ImplementationInheritance)
-
+    print("Number of interface inheritance: ", sourceFileInheritanceObject.InterfaceInheritance)
     return sourceFileInheritanceObject
 
 class SourceFileInheritanceResults:
     def __init__(self):
         self.ImplementationInheritance = 0
-        
-  
+        self.InterfaceInheritance = 0

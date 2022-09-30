@@ -84,6 +84,10 @@ class PageOne(tk.Frame):
         Label1.place(relx=0.3, rely=0.1)
 
         Label1.configure(text='''Implementation Inheritance(s): ''' + str(obj.ImplementationInheritance))
+
+        Label2 = tk.Label(self)
+        Label2.place(relx=0.3, rely=0.3)
+        Label2.configure(text='''Interface Inheritance(s): ''' + str(obj.InterfaceInheritance))
         
 if __name__ == "__main__":
   app = SourceFileAnalyzer()

@@ -79,8 +79,7 @@ def traverse_AST(cursor,ClassNodes): # Transerving The Abstract Tree
     if (cursor.kind == clang.cindex.CursorKind.CLASS_DECL or cursor.kind == clang.cindex.CursorKind.STRUCT_DECL or cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE):
        # Check if we have a class, struct or template declaration.
        # Store all nodes pointing to the declarations in the ClassNode list
-       ClassNodes.append(cursor) 
-    print ('Found %s [line=%s, col=%s]' % (cursor.displayname, cursor.location.line, cursor.location.column), cursor.kind)
+       ClassNodes.append(cursor)
 
 def parseTranslationUnit(file_path):
     tu = idx.parse(path = file_path, args=None,  
@@ -109,12 +108,17 @@ def FindRepoFiles(cppExtensions):
             for filename in fnmatch.filter(files, extension):
                  cppFiles.append(os.path.join(root, filename))
    return cppFiles
+
 def AnalyseRepository():
-     cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
+    cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
+    RepositoryFiles = FindRepoFiles(cppExtensions)
+    for file_path in RepositoryFiles:
+        print(file_path)
+        parseTranslationUnit(file_path)
      
 class SourceFileInheritanceResults:
     def __init__(self):
         self.ImplementationInheritance = 0
         self.InterfaceInheritance = 0
-cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
-print(FindRepoFiles(cppExtensions))
+
+AnalyseRepository()

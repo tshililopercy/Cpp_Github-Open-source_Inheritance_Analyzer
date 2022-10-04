@@ -101,7 +101,20 @@ def parseTranslationUnit(file_path):
     print("Number of interface inheritance: ", sourceFileInheritanceObject.InterfaceInheritance)
     return sourceFileInheritanceObject
 
+# Searches The repository and return cpp files path
+def FindRepoFiles(cppExtensions):
+   cppFiles = []
+   for root, dirs, files in os.walk('Repository'):
+        for extension in cppExtensions:
+            for filename in fnmatch.filter(files, extension):
+                 cppFiles.append(os.path.join(root, filename))
+   return cppFiles
+def AnalyseRepository():
+     cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
+     
 class SourceFileInheritanceResults:
     def __init__(self):
         self.ImplementationInheritance = 0
         self.InterfaceInheritance = 0
+cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
+print(FindRepoFiles(cppExtensions))

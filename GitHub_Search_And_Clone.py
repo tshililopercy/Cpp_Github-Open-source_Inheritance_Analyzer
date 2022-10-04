@@ -7,4 +7,4 @@ def Clone(Repository_URL):
    Repo.clone_from(Repository_URL, "Repository", depth = 1)
    
 if __name__ == '__main__':
-    Clone()
+    Clone("https://github.com/grim-firefly/C-CPP-Project.git")

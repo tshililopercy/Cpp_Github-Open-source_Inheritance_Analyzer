@@ -5,10 +5,17 @@ from tkinter import ttk
 from tkinter import *
 
 import os
+
 import Data_Extraction_Process_Refractored
+import GitHub_Search_And_Clone
+
+def cloneRepo (Entry1):
+    clone_url = Entry1.get()
+    print(clone_url)
+    GitHub_Search_And_Clone.Clone(clone_url)
 
 #analyse source File 
-def SourceFile(controller, Entry1):
+def Repository(controller, Entry1):
     global obj
     res = Data_Extraction_Process_Refractored.parseTranslationUnit(Entry1.get())
     controller.show_frame(PageOne)
@@ -54,13 +61,17 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self,parent)
 
         button2 = ttk.Button(self, text="Analyse File",
-                             command=lambda:(threading.Thread(target=SourceFile,args=(controller, Entry1)).start()))
+                             command=lambda:(threading.Thread(target=Repository,args=(controller, Entry1)).start()))
         button2.place(relx=0.74, rely=0.8, height=32, width=98)
+        
+        button1 = ttk.Button(self, text="Clone Repo",
+                             command=lambda:cloneRepo(Entry1))
+        button1.place(relx=0.01, rely=0.8, height=32, width=98)
         
         Label1 = tk.Label(self)
         Label1.place(relx=0.05, rely=0.044)
     
-        Label1.configure(text='''SourceFile Path:''')
+        Label1.configure(text='''Repo Clone URL:''')
         Entry1 = tk.Entry(self)
         Entry1.place(relx=0.3, rely=0.044,height=26, relwidth=0.65)
         

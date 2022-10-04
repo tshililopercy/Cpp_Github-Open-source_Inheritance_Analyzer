@@ -3,8 +3,8 @@ from git import Repo
 import os
 
 
-def Clone():
-   Repo.clone_from("https://github.com/grim-firefly/C-CPP-Project.git", "Repository", depth = 1)
+def Clone(Repository_URL):
+   Repo.clone_from(Repository_URL, "Repository", depth = 1)
    
 if __name__ == '__main__':
     Clone()

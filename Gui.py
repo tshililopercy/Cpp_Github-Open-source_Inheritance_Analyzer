@@ -15,9 +15,9 @@ def cloneRepo (Entry1):
     GitHub_Search_And_Clone.Clone(clone_url)
 
 #analyse source File 
-def Repository(controller, Entry1):
+def Repository(controller):
     global obj
-    res = Data_Extraction_Process_Refractored.parseTranslationUnit(Entry1.get())
+    res = Data_Extraction_Process_Refractored.AnalyseRepository()
     controller.show_frame(PageOne)
     obj = res
     return obj
@@ -30,9 +30,9 @@ class SourceFileAnalyzer(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         tk.Tk.iconbitmap(self, default=None)
-        tk.Tk.wm_title(self, "Source File Inheritance Analyzer")
+        tk.Tk.wm_title(self, "GitHub Open source Inheritance Analyzer")
         #set screen dimensions
-        self.geometry('400x200')
+        self.geometry('700x500')
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand = True)
@@ -60,8 +60,8 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
 
-        button2 = ttk.Button(self, text="Analyse File",
-                             command=lambda:(threading.Thread(target=Repository,args=(controller, Entry1)).start()))
+        button2 = ttk.Button(self, text="Analyse Repo",
+                             command=lambda:Repository(controller))
         button2.place(relx=0.74, rely=0.8, height=32, width=98)
         
         button1 = ttk.Button(self, text="Clone Repo",
@@ -90,16 +90,21 @@ class PageOne(tk.Frame):
         button3.place(relx=0, rely=0.25)
         
     def plot(self):
-        
+        text = ""
         Label1 = tk.Label(self)
-        Label1.place(relx=0.3, rely=0.1)
-
-        Label1.configure(text='''Implementation Inheritance(s): ''' + str(obj.ImplementationInheritance))
-
-        Label2 = tk.Label(self)
-        Label2.place(relx=0.3, rely=0.3)
-        Label2.configure(text='''Interface Inheritance(s): ''' + str(obj.InterfaceInheritance))
-        
+        Label1.place(relx=0.2, rely=0)
+        for INDEX, inheritance in enumerate(obj):
+            text +='''\n'''+ '''\n'''+ "INHERITANCE NUMBER: " + str(INDEX + 1) + '''\n'''+ "Type of inheritance: " + str(inheritance.typeofinheritance)+ '''\n''' + "DERIVED CLASS DATA" + '''\n'''+ "         Additional Child Methods: " + str(inheritance.derivedAdditionalfunctions) + "         Overriden Functions: " + str(inheritance.overridenfunctions)
+            for index, base in enumerate(inheritance.BaseClassesData):
+                if len(inheritance.BaseClassesData) == 1:
+                    text +='''\n'''"PARENT DATA" + '''\n'''
+                else:
+                   text+=" Parent Number" + str(index + 1) + "Data"+'''\n'''
+                text +="     Pure Virtual Functions: " + str(base["purevirtualfunctions"])+'''\n'''
+                text +="     Virtual Functions: " + str(base["virtualfunctions"])+'''\n'''
+                text +="     Normal Functions: " + str(base["normalfunctions"])
+        #print(text)
+        Label1.configure(text=str(text))
 if __name__ == "__main__":
   app = SourceFileAnalyzer()
   app.mainloop()

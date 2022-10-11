@@ -55,7 +55,7 @@ class ProjectData:
                 else:
                     inheritancedata.typeofinheritance = "Implementation Inheritance"
                 self.ProjectInheritanceData.append(inheritancedata)
-        self.PrintResults()
+        # self.PrintResults()
         return self.ProjectInheritanceData
     
     def PrintResults (self):

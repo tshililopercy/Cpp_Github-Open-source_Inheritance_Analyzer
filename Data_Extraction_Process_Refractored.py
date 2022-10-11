@@ -3,11 +3,9 @@ import os
 import fnmatch
 from AnalysingProject import *
 
-project = ProjectData()
-
 idx = clang.cindex.Index.create()
 
-def extractClassData(cursor, classinfo):
+def extractClassData(cursor, classinfo, project):
     if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
         for baseClass in cursor.get_children():
             if baseClass.kind == clang.cindex.CursorKind.TYPE_REF:
@@ -30,7 +28,7 @@ def extractClassData(cursor, classinfo):
                      classinfo.normalfunctions += 1
     project.cppClasses[classinfo.className] = classinfo
 
-def extractClass(cursor):
+def extractClass(cursor, project):
     
     # The full name of class is stored
     classinfo = cppClass()
@@ -38,14 +36,14 @@ def extractClass(cursor):
     
     for children in cursor.get_children():
         #Extracting Class Members (Data and methods declaration)
-        extractClassData(children, classinfo)
+        extractClassData(children, classinfo, project)
 
-def traverse_AST(cursor): # Transerving The Abstract Tree
+def traverse_AST(cursor, project): # Transerving The Abstract Tree
     #get cursors that represents classes 
     if cursor.kind == clang.cindex.CursorKind.CLASS_DECL:
-        extractClass(cursor)
+        extractClass(cursor, project)
     for child in cursor.get_children():
-        traverse_AST(child)
+        traverse_AST(child, project)
         
 # Searches The repository and return cpp files path
 def FindRepoFiles(cppExtensions):
@@ -57,18 +55,17 @@ def FindRepoFiles(cppExtensions):
                  cppFiles.append(os.path.join(root, filename))
    return cppFiles
 
-def parseTranslationUnit(file_path):
-    
+def parseTranslationUnit(file_path, project):  
     tu = idx.parse(path = file_path, args=None,  
                 unsaved_files=None,  options=0)
-    traverse_AST(tu.cursor)
+    traverse_AST(tu.cursor, project)
 
 def AnalyseRepository():
-    
+    project = ProjectData()
     cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
     RepositoryFiles = FindRepoFiles(cppExtensions)
     for file_path in RepositoryFiles:
-        parseTranslationUnit(file_path)
+        parseTranslationUnit("main.cpp", project)
     #shutil.rmtree("../Repository")
     #File Must be deleted After Extraction to save Memory
     #Return Inheritance data 

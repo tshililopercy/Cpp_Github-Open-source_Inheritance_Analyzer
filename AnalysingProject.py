@@ -1,6 +1,6 @@
 class cppClass:
     def __init__(self):
-        self.classname = None
+        self.className = None
         self.Baseclasses = [] #Stores Parents cppClass Objects for derived class
         self.purevirtualfunctions = 0
         self.virtualfunctions = 0
@@ -14,7 +14,7 @@ class cppClass:
     def is_derivedclass(self):
         return len(self.Baseclasses) != 0
     def classMethods(self):
-        return self.normalMethods, self.virtualMethods, self.purevirtualMethods
+        return self.normalfunctions, self.virtualfunctions, self.purevirtualfunctions
 
 # modelling Each inheritance 
 class InheritanceData:
@@ -26,7 +26,8 @@ class InheritanceData:
 
 class ProjectData:
     def __init__(self):
-        self.cppClasses = {} #stores classes in the project 
+        self.cppClasses = {} #stores classes information in the project
+        self.cppClassesNew = {} #stores project classes inheritance information 
         self.ProjectInheritanceData = [] #Store each inheritance information Data
     def insertclass(self, _class):
         self.cppClasses[_class.className] = _class
@@ -55,8 +56,20 @@ class ProjectData:
                 else:
                     inheritancedata.typeofinheritance = "Implementation Inheritance"
                 self.ProjectInheritanceData.append(inheritancedata)
-        # self.PrintResults()
+        self.organizeHierachy()
         return self.ProjectInheritanceData
+    
+    #Re-arranging inheritance in form of Superclass and its subclasses to get Hierachy DEPTHS
+    def organizeHierachy(self):
+        for _class in self.cppClasses:
+            for baseclass in self.cppClasses[_class].Baseclasses:
+                if baseclass.className in self.cppClassesNew:
+                   self.cppClassesNew[baseclass.className].Baseclasses.append(self.cppClasses[_class])
+                else:
+                   self.cppClassesNew[baseclass.className] = self.cppClasses[baseclass.className]
+                   self.cppClassesNew[baseclass.className].Baseclasses = []
+                   self.cppClassesNew[baseclass.className].Baseclasses.append(self.cppClasses[_class])
+        
     
     def PrintResults (self):
         for INDEX, inheritance in enumerate(self.ProjectInheritanceData):

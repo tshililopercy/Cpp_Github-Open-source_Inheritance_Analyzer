@@ -56,7 +56,7 @@ class ProjectData:
                 else:
                     inheritancedata.typeofinheritance = "Implementation Inheritance"
                 self.ProjectInheritanceData.append(inheritancedata)
-        self.organizeHierachy()
+        print(self.organizeHierachy())
         return self.ProjectInheritanceData
     
     #Re-arranging inheritance in form of Superclass and its subclasses to get Hierachy DEPTHS
@@ -69,7 +69,36 @@ class ProjectData:
                    self.cppClassesNew[baseclass.className] = self.cppClasses[baseclass.className]
                    self.cppClassesNew[baseclass.className].Baseclasses = []
                    self.cppClassesNew[baseclass.className].Baseclasses.append(self.cppClasses[_class])
-        
+        return self.traverse_all_Hierachy()
+    
+    # Traverse The Hierachies and get all present classes Depths
+    def traverse_all_Hierachy(self):
+        traversedNodes = []
+        hierachiesLevels = []
+        for _class in self.cppClassesNew:
+            level = {}
+            if not _class in traversedNodes:
+              traversedNodes += self.breadth_first_trasversal(_class, level)
+              hierachiesLevels.append(level)
+              #print(traversedNodes)
+        return hierachiesLevels
+    #Do Breadth first traversal on each inheritance hierachy 
+    def breadth_first_trasversal(self, current_node, level):
+        visit_complete = []
+        visit_complete.append(current_node)
+        queue = []
+        queue.append(current_node)
+        level[current_node] = 0
+        while queue:
+            s = queue.pop(0)
+            #print(s)
+            if s in self.cppClassesNew:
+                for neighbour in self.cppClassesNew[s].Baseclasses:
+                    if neighbour.className not in visit_complete:
+                        level[neighbour.className] = level[s] + 1
+                        visit_complete.append(neighbour.className)
+                        queue.append(neighbour.className)
+        return visit_complete
     
     def PrintResults (self):
         for INDEX, inheritance in enumerate(self.ProjectInheritanceData):

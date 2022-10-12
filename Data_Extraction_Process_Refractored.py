@@ -2,6 +2,7 @@ import clang.cindex
 import os
 import fnmatch
 from AnalysingProject import *
+from git import rmtree
 
 idx = clang.cindex.Index.create()
 
@@ -112,6 +113,8 @@ def AnalyseRepository():
     RepositoryFiles = FindRepoFiles(cppExtensions)
     for file_path in RepositoryFiles:
         parseTranslationUnit(file_path, project)
+    #Deleting Repo Folder after extracting inheritance Data
+    rmtree('../Repository')
     #shutil.rmtree("../Repository")
     #File Must be deleted After Extraction to save Memory
     #Return Inheritance data 

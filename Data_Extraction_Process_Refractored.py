@@ -3,6 +3,7 @@ import os
 import fnmatch
 from AnalysingProject import *
 from git import rmtree
+from StoreData import *
 
 idx = clang.cindex.Index.create()
 
@@ -118,6 +119,8 @@ def AnalyseRepository():
     #shutil.rmtree("../Repository")
     #File Must be deleted After Extraction to save Memory
     #Return Inheritance data 
-    return project.computeInheritanceData()
+    return project.computeInheritanceData(), project.organizeHierachy()
 
-AnalyseRepository()
+projectdatastorage = ProjectDataStorage (AnalyseRepository())
+
+projectdatastorage.ComputeHieracyData()

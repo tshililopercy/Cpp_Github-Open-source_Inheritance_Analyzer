@@ -26,29 +26,29 @@ def obtainInheritanceData(file_path):
 class baseclass_test(unittest.TestCase):  
     def test_number_of_base_classes_is_1(self):
         inheritanceData = obtainInheritanceData('main.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData
+        baseClassData = inheritanceData[0].ParentClassNames
         # print(inheritanceData)
         self.assertEqual(len(baseClassData), 1)
 
     def test_base_class_has_no_pure_virtual_functions(self):
         inheritanceData = obtainInheritanceData('main.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData[0]
+        baseClassData_pvf = inheritanceData[0].inherited_pure_virtual
         # print(baseClassData["purevirtualfunctions"])
-        self.assertEqual(baseClassData["purevirtualfunctions"],0)
+        self.assertEqual(baseClassData_pvf,0)
 
     def test_base_class_has_one_virtual_functions(self):
         inheritanceData = obtainInheritanceData('main.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData[0]
+        baseClassData_vf = inheritanceData[0].inherited_virtual
         # print(baseClassData["purevirtualfunctions"])
-        self.assertNotEqual(baseClassData["virtualfunctions"],0)
-        self.assertEqual(baseClassData["virtualfunctions"],1)
+        self.assertNotEqual( baseClassData_vf,0)
+        self.assertEqual( baseClassData_vf,1)
 
     def test_base_class_has_normal_functions(self):
         inheritanceData = obtainInheritanceData('main.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData[0]
+        baseClassData_nf = inheritanceData[0].inherited_normal
         # print(baseClassData["purevirtualfunctions"])
-        self.assertNotEqual(baseClassData["normalfunctions"],0)
-        self.assertEqual(baseClassData["normalfunctions"],2)
+        self.assertNotEqual(baseClassData_nf,0)
+        self.assertEqual(baseClassData_nf,2)
     
 
 #--------------------------------------------------- CHILD CLASS TESTS ----------------------------
@@ -88,29 +88,29 @@ class methods_type_test(unittest.TestCase):
 class interf_baseclass_test(unittest.TestCase):  
     def test_number_of_interf_base_classes_is_1(self):
         inheritanceData = obtainInheritanceData('interf_inheritance.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData
+        baseClassData = inheritanceData[0].ParentClassNames
         # print(baseClassData)
         self.assertEqual(len(baseClassData), 1)
 
     def test_inter_base_class_has_no_pure_virtual_functions(self):
         inheritanceData = obtainInheritanceData('interf_inheritance.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData[0]
+        baseClassData_pvf = inheritanceData[0].inherited_pure_virtual
         # print(baseClassData["purevirtualfunctions"])
-        self.assertEqual(baseClassData["purevirtualfunctions"],2)
+        self.assertEqual(baseClassData_pvf,2)
 
     def test_base_class_has_one_virtual_functions(self):
         inheritanceData = obtainInheritanceData('interf_inheritance.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData[0]
-        print(baseClassData["virtualfunctions"])
+        baseClassData_vf = inheritanceData[0].inherited_virtual
+        # print(baseClassData["virtualfunctions"])
         # self.assertNotEqual(baseClassData["virtualfunctions"],0)
-        self.assertEqual(baseClassData["virtualfunctions"],0)
+        self.assertEqual(baseClassData_vf,0)
 
     def test_base_class_has_normal_functions(self):
         inheritanceData = obtainInheritanceData('interf_inheritance.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData[0]
+        baseClassData_nf = inheritanceData[0].inherited_normal
         # print(baseClassData["purevirtualfunctions"])
         # self.assertNotEqual(baseClassData["normalfunctions"],0)
-        self.assertEqual(baseClassData["normalfunctions"],0)
+        self.assertEqual(baseClassData_nf,0)
 
 #---------------------------------------------CHILD CLASS TESTS -------------------------------------------
 # Testing individual files
@@ -149,35 +149,35 @@ class methods_type_test(unittest.TestCase):
 class hybrid_baseclass_test(unittest.TestCase):  
     def test_number_of_base_classes_is_1_for_inh1(self):
         inheritanceData = obtainInheritanceData('hybrid_inheritance.cpp')
-        baseClassData = inheritanceData[0].BaseClassesData
+        baseClassData = inheritanceData[0].ParentClassNames
         self.assertEqual(len(baseClassData), 1)
 
     def test_number_of_base_classes_is_1_for_inh2(self):
         inheritanceData = obtainInheritanceData('hybrid_inheritance.cpp')
-        baseClassData = inheritanceData[1].BaseClassesData
+        baseClassData = inheritanceData[1].ParentClassNames
         self.assertEqual(len(baseClassData), 1)
 
     def test_number_of_base_classes_is_1_for_inh3(self):
         inheritanceData = obtainInheritanceData('hybrid_inheritance.cpp')
-        baseClassData = inheritanceData[2].BaseClassesData
+        baseClassData = inheritanceData[2].ParentClassNames
         self.assertEqual(len(baseClassData), 1)
 
     def test_number_of_base_classes_is_1_for_inh4(self):
         inheritanceData = obtainInheritanceData('hybrid_inheritance.cpp')
-        baseClassData = inheritanceData[3].BaseClassesData
+        baseClassData = inheritanceData[3].ParentClassNames
         # print(baseClassData)
         self.assertEqual(len(baseClassData), 1)
 
     def test_inh2_and_inh3_have_same_base_class(self):
         inheritanceData = obtainInheritanceData('hybrid_inheritance.cpp')
-        baseClassData1 = inheritanceData[1].BaseClassesData
-        baseClassData2 = inheritanceData[2].BaseClassesData
+        baseClassData1 = inheritanceData[1].ParentClassNames
+        baseClassData2 = inheritanceData[2].ParentClassNames
         self.assertEqual(baseClassData1, baseClassData2)
 
     def test_inh1_and_inh2_dont_have_same_base_class(self):
         inheritanceData = obtainInheritanceData('hybrid_inheritance.cpp')
-        baseClassData1 = inheritanceData[0].BaseClassesData
-        baseClassData2 = inheritanceData[1].BaseClassesData
+        baseClassData1 = inheritanceData[0].ParentClassNames
+        baseClassData2 = inheritanceData[1].ParentClassNames
         self.assertNotEqual(baseClassData1, baseClassData2)
 
 #---------------------------------------------CHILD CLASS TESTS -------------------------------------------
@@ -214,12 +214,12 @@ class multiple_baseclass_test(unittest.TestCase):
     # Total of 7 instances of inheritance
     def test_if_inheritance_of_2_base_classes_is_detected(self):
         inheritanceData = obtainInheritanceData('multiple_inheritance.cpp')
-        baseClassData = inheritanceData[1].BaseClassesData
+        baseClassData = inheritanceData[1].ParentClassNames
         self.assertEqual(len(baseClassData), 2)
 
     def test_if_inheritance_of_more_than_2_base_classes_is_detected(self):
         inheritanceData = obtainInheritanceData('multiple_inheritance.cpp')
-        baseClassData = inheritanceData[2].BaseClassesData
+        baseClassData = inheritanceData[2].ParentClassNames
         self.assertEqual(len(baseClassData), 3)
 
 #---------------------------------------------CHILD CLASS TESTS -------------------------------------------

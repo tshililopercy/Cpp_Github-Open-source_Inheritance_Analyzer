@@ -28,6 +28,7 @@ class ProjectDataStorage:
                             InheritanceInfo = {}
                             DepthData["Depth Number"] = depth
                             InheritanceInfo["ClassName"] = inheritance.derivedclassName
+                            InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
                             InheritanceInfo["SubClasses"] = inheritance.ParentClassNames
                             InheritanceInfo["typeofinheritance"] = inheritance.typeofinheritance
                             InheritanceInfo["inherited_pure_virtual"] = inheritance.inherited_pure_virtual
@@ -48,5 +49,6 @@ class ProjectDataStorage:
             
     def PrintingHierachyData(self):
         for hierachydata in self.HierachiesData:
+            print()
             print(hierachydata.DepthsInformation)
             print()

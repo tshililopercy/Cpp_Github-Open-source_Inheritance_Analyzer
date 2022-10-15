@@ -110,7 +110,7 @@ def AnalyseRepository():
     cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
     RepositoryFiles = FindRepoFiles(cppExtensions)
     for file_path in RepositoryFiles:
-        parseTranslationUnit("mytestingMain.cpp", project)
+        parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")
@@ -118,4 +118,6 @@ def AnalyseRepository():
     #Return Inheritance data 
     return project.computeInheritanceData(), project.organizeHierachy()
 
-AnalyseRepository()
+projectdatastorage = ProjectDataStorage (AnalyseRepository())
+
+projectdatastorage.ComputeHieracyData()

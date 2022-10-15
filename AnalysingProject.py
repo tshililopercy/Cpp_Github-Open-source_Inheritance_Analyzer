@@ -14,7 +14,6 @@ class cppClass:
         for baseclass in self.Baseclasses:
             for pure in baseclass.purevirtualfunctions:
                 if pure in self.virtualfunctions:
-                    print(pure)
                     self.overridenfunctions.append(pure)
     def totalMethods (self):
         TotalMethods = []
@@ -47,11 +46,32 @@ class InheritanceData:
         self.inherited_normal = []
         self.inherited_overriden = []
         self.TypeOfClass = None
+    def identifyoverridenfunctions(self):
+        for inherited_virtual in self.inherited_pure_virtual:
+            if inherited_virtual in self.Addedvirtualfunctions:
+                self.overridenfunctions.append(inherited_virtual)
+    #Determine inheritance type
     def determineinheritanceType(self):
         if len(self.inherited_virtual) == 0 and len(self.inherited_normal) == 0 and len(self.inherited_overriden) == 0 and len(self.inherited_pure_virtual):
             self.typeofinheritance = "Interface inheritance"
         else: self.typeofinheritance = "Implementation inheritance"
-        
+    #Determine The Type of Class. (Abstract, interface or concrete class)
+    #Abstract class: atleast one pure virtual function 
+    #interface class: Strictly pure virtual functions
+    #Conctrete class: Any instantiable class (no unoverriden pure virtual function)
+    def PureVirtualPresent(self):
+        for pure_virtual in self.inherited_pure_virtual:
+            if not pure_virtual in (self.inherited_overriden or self.overridenfunctions):
+                return True
+        return False
+    def identifyClassType(self):
+        if len(self.inherited_virtual) == 0 and len(self.inherited_normal) == 0 and len(self.inherited_overriden) == 0 and (len(self.inherited_pure_virtual) != 0 or len(self.Addedpurevirtualfunctions) != 0)and len(self.Addedvirtualfunctions) == 0 and len(self.Addednormalfunctions) == 0 and len(self.overridenfunctions) == 0:
+            self.TypeOfClass = "Interface Class"
+        elif len(self.Addedpurevirtualfunctions) == 0 and self.PureVirtualPresent() == False:
+            self.TypeOfClass = "Concrete Class"
+        else:
+            self.TypeOfClass = "Abstract Class"
+                
 class ProjectData:
     def __init__(self):
         self.cppClasses = {} #stores classes information in the project
@@ -74,7 +94,8 @@ class ProjectData:
             if self.cppClasses[_class].is_derivedclass():
                 inheritancedata = InheritanceData()
                 inheritancedata.Addedpurevirtualfunctions = self.cppClasses[_class].purevirtualfunctions
-                inheritancedata.Addedvirtualfunctions = self.cppClasses[_class].purevirtualfunctions
+                inheritancedata.Addedvirtualfunctions = self.cppClasses[_class].virtualfunctions
+                print(inheritancedata.Addedvirtualfunctions)
                 inheritancedata.Addednormalfunctions = self.cppClasses[_class].normalfunctions
                 self.cppClasses[_class].getoverridenfunctions()
                 inheritancedata.overridenfunctions += self.cppClasses[_class].overridenfunctions
@@ -86,7 +107,6 @@ class ProjectData:
                 baseresults = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
                     if self.getinheritancedata(Baseclass.className) != None:
-                        print(Baseclass.className)
                         inherited_pure_virtual += self.getinheritancedata(Baseclass.className).inherited_pure_virtual
                         inherited_virtual += self.getinheritancedata(Baseclass.className).inherited_virtual
                         inherited_normal += self.getinheritancedata(Baseclass.className).inherited_normal
@@ -105,6 +125,8 @@ class ProjectData:
                 inheritancedata.inherited_normal = inherited_normal
                 inheritancedata.inherited_overriden = inherited_overriden
                 inheritancedata.determineinheritanceType()
+                inheritancedata.identifyoverridenfunctions()
+                inheritancedata.identifyClassType()
                 self.ProjectInheritanceData.append(inheritancedata)
         self.PrintResults()
         return self.ProjectInheritanceData
@@ -155,10 +177,13 @@ class ProjectData:
             print("")
             print("inheritance number: ", INDEX + 1)
             print("Type of inheritance: ", inheritance.typeofinheritance)
+            print("Type of class: ",inheritance.TypeOfClass)
             print("     Derived Class Data")
-            print("         Additional Child Methods: ", inheritance.derivedAdditionalfunctions)
             print("         Overriden Functions: ", inheritance.overridenfunctions)
             print("         Inherited Virtual Functions: ", inheritance.inherited_virtual)
             print("         Inherited Pure Virtual Functions: ", inheritance.inherited_pure_virtual)
             print("         Inherited Normal Functions: ", inheritance.inherited_normal)
             print("         Inherited Overriden Functions: ", inheritance.inherited_overriden)
+            print("         Added Pure Virtual Functions: ", inheritance.Addedpurevirtualfunctions)
+            print("         Added Virtual Functions: ", inheritance.Addedvirtualfunctions)
+            print("         Added Normal Functions: ", inheritance.Addednormalfunctions)

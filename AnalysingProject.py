@@ -1,13 +1,26 @@
+from email.mime import base
+from unittest.mock import Base
+
+
 class cppClass:
     def __init__(self):
         self.className = None
         self.Baseclasses = [] #Stores Parents cppClass Objects for derived class
-        self.purevirtualfunctions = 0
-        self.virtualfunctions = 0
-        self.normalfunctions = 0 
-        self.overridenfunctions = 0
+        self.purevirtualfunctions = []
+        self.virtualfunctions = []
+        self.normalfunctions = []
+        self.overridenfunctions = []
+    def getoverridenfunctions(self):
+        for baseclass in self.Baseclasses:
+            for pure in baseclass.purevirtualfunctions:
+                if pure in self.virtualfunctions:
+                    print(pure)
+                    self.overridenfunctions.append(pure)
     def totalMethods (self):
-        TotalMethods = self.purevirtualfunctions + self.virtualfunctions + self.normalfunctions
+        TotalMethods = []
+        TotalMethods += self.purevirtualfunctions
+        TotalMethods += self.virtualfunctions
+        TotalMethods += self.normalfunctions
         return TotalMethods
     def is_interface (self):
         return self.normalfunctions == 0 and self.virtualfunctions == 0 and self.purevirtualfunctions != 0
@@ -23,18 +36,31 @@ class InheritanceData:
     def __init__(self):
         self.derivedclassName = None
         self.ParentClassNames = []
-        self.derivedAdditionalfunctions = 0
-        self.overridenfunctions = 0 
+        self.derivedAdditionalfunctions = []
+        self.Addedpurevirtualfunctions = []
+        self.Addedvirtualfunctions = []
+        self.Addednormalfunctions = []
+        self.overridenfunctions = []
         self.typeofinheritance = None
-        self.inherited_pure_virtual = 0
-        self.inherited_virtual = 0
-        self.inherited_normal = 0
-
+        self.inherited_pure_virtual = []
+        self.inherited_virtual = []
+        self.inherited_normal = []
+        self.inherited_overriden = []
+        self.TypeOfClass = None
+    def determineinheritanceType(self):
+        if len(self.inherited_virtual) == 0 and len(self.inherited_normal) == 0 and len(self.inherited_overriden) == 0 and len(self.inherited_pure_virtual):
+            self.typeofinheritance = "Interface inheritance"
+        else: self.typeofinheritance = "Implementation inheritance"
+        
 class ProjectData:
     def __init__(self):
         self.cppClasses = {} #stores classes information in the project
         self.cppClassesNew = {} #stores project classes inheritance information 
         self.ProjectInheritanceData = [] #Store each inheritance information Data
+    def getinheritancedata(self, className):
+        for inheritancedata in self.ProjectInheritanceData:
+            if inheritancedata.derivedclassName == className:
+                return inheritancedata
     def insertclass(self, _class):
         self.cppClasses[_class.className] = _class
     def getcppClass(self, classname):
@@ -47,26 +73,38 @@ class ProjectData:
         for _class in self.cppClasses:
             if self.cppClasses[_class].is_derivedclass():
                 inheritancedata = InheritanceData()
-                inheritancedata.derivedAdditionalfunctions = self.cppClasses[_class].totalMethods()
-                inheritancedata.overridenfunctions = self.cppClasses[_class].overridenfunctions
+                inheritancedata.Addedpurevirtualfunctions = self.cppClasses[_class].purevirtualfunctions
+                inheritancedata.Addedvirtualfunctions = self.cppClasses[_class].purevirtualfunctions
+                inheritancedata.Addednormalfunctions = self.cppClasses[_class].normalfunctions
+                self.cppClasses[_class].getoverridenfunctions()
+                inheritancedata.overridenfunctions += self.cppClasses[_class].overridenfunctions
                 inheritancedata.derivedclassName = _class
-                inherited_pure_virtual = 0
-                inherited_virtual = 0
-                inherited_normal = 0
+                inherited_pure_virtual = []
+                inherited_virtual = []
+                inherited_normal = []
+                inherited_overriden = []
                 baseresults = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
-                    baseresults.append(Baseclass.is_interface())
-                    inherited_pure_virtual += Baseclass.purevirtualfunctions
-                    inherited_virtual += Baseclass.virtualfunctions
-                    inherited_normal += Baseclass.normalfunctions
-                    inheritancedata.ParentClassNames.append(Baseclass.className)
-                if self.is_interfaceinheritance(baseresults):
-                    inheritancedata.typeofinheritance = "Interface Inheritance"
-                else:
-                    inheritancedata.typeofinheritance = "Implementation Inheritance"
+                    if self.getinheritancedata(Baseclass.className) != None:
+                        print(Baseclass.className)
+                        inherited_pure_virtual += self.getinheritancedata(Baseclass.className).inherited_pure_virtual
+                        inherited_virtual += self.getinheritancedata(Baseclass.className).inherited_virtual
+                        inherited_normal += self.getinheritancedata(Baseclass.className).inherited_normal
+                        inherited_overriden += self.getinheritancedata(Baseclass.className).inherited_overriden
+                        inherited_pure_virtual += Baseclass.purevirtualfunctions
+                        inherited_virtual += Baseclass.virtualfunctions
+                        inherited_normal += Baseclass.normalfunctions
+                        inherited_overriden += Baseclass.overridenfunctions
+                    else:
+                        inherited_pure_virtual += Baseclass.purevirtualfunctions
+                        inherited_virtual += Baseclass.virtualfunctions
+                        inherited_normal += Baseclass.normalfunctions
+                        inherited_overriden += Baseclass.overridenfunctions
                 inheritancedata.inherited_pure_virtual = inherited_pure_virtual
                 inheritancedata.inherited_virtual = inherited_virtual
                 inheritancedata.inherited_normal = inherited_normal
+                inheritancedata.inherited_overriden = inherited_overriden
+                inheritancedata.determineinheritanceType()
                 self.ProjectInheritanceData.append(inheritancedata)
         self.PrintResults()
         return self.ProjectInheritanceData
@@ -110,7 +148,7 @@ class ProjectData:
                         level[neighbour.className] = level[s] + 1
                         visit_complete.append(neighbour.className)
                         queue.append(neighbour.className)
-        return visit_complete
+        return visit_complete  
     
     def PrintResults (self):
         for INDEX, inheritance in enumerate(self.ProjectInheritanceData):
@@ -123,3 +161,4 @@ class ProjectData:
             print("         Inherited Virtual Functions: ", inheritance.inherited_virtual)
             print("         Inherited Pure Virtual Functions: ", inheritance.inherited_pure_virtual)
             print("         Inherited Normal Functions: ", inheritance.inherited_normal)
+            print("         Inherited Overriden Functions: ", inheritance.inherited_overriden)

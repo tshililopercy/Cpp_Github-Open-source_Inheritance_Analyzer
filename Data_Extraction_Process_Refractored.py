@@ -16,18 +16,15 @@ def extractClassData(cursor, classinfo, project):
                Parent[baseClass.type.spelling] = inheritanceType
                classinfo.Baseclasses.append(project.getcppClass(baseClass.type.spelling))
     elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
-            overridePresent = False
-            for child in cursor.get_children():
-                if child.kind == clang.cindex.CursorKind.CXX_OVERRIDE_ATTR:
-                      classinfo.overridenfunctions += 1
-                      overridePresent = True
-            if overridePresent == False:
-             if cursor.is_pure_virtual_method():
-                     classinfo.purevirtualfunctions += 1
-             elif cursor.is_virtual_method():
-                     classinfo.virtualfunctions += 1
-             else:
-                     classinfo.normalfunctions += 1
+        
+        returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
+                
+        if cursor.is_pure_virtual_method():
+            classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+        elif cursor.is_virtual_method():
+            classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+        else:
+            classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
     project.cppClasses[classinfo.className] = classinfo
 
 def extractClass(cursor, project):
@@ -113,7 +110,7 @@ def AnalyseRepository():
     cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
     RepositoryFiles = FindRepoFiles(cppExtensions)
     for file_path in RepositoryFiles:
-        parseTranslationUnit(file_path, project)
+        parseTranslationUnit("mytestingMain.cpp", project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")
@@ -121,6 +118,4 @@ def AnalyseRepository():
     #Return Inheritance data 
     return project.computeInheritanceData(), project.organizeHierachy()
 
-projectdatastorage = ProjectDataStorage (AnalyseRepository())
-
-projectdatastorage.ComputeHieracyData()
+AnalyseRepository()

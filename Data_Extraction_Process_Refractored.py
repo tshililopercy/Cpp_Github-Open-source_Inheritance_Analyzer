@@ -16,15 +16,17 @@ def extractClassData(cursor, classinfo, project):
                Parent[baseClass.type.spelling] = inheritanceType
                classinfo.Baseclasses.append(project.getcppClass(baseClass.type.spelling))
     elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
-        
+        print("Tshililo")
         returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
-                
-        if cursor.is_pure_virtual_method():
-            classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
-        elif cursor.is_virtual_method():
-            classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
-        else:
-            classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
+        if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
+            if cursor.is_pure_virtual_method():
+            #print(cursor.spelling)
+                classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+            elif cursor.is_virtual_method():
+                print(cursor.spelling)
+                classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+            else:
+                classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
     project.cppClasses[classinfo.className] = classinfo
 
 def extractClass(cursor, project):
@@ -103,14 +105,14 @@ def parseTranslationUnit(file_path, project):
     tu = idx.parse(path = file_path, args=None,  
                 unsaved_files=None,  options=0)
     traverse_AST(tu.cursor, project)
-    # show_AST(tu.cursor, no_system_includes)
+    #show_AST(tu.cursor, no_system_includes)
 
 def AnalyseRepository():
     project = ProjectData()
     cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
     RepositoryFiles = FindRepoFiles(cppExtensions)
-    for file_path in RepositoryFiles:
-        parseTranslationUnit(file_path, project)
+    #for file_path in RepositoryFiles:
+    parseTranslationUnit("mytestingMain.cpp", project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")

@@ -6,6 +6,7 @@ class cppClass:
     def __init__(self):
         self.className = None
         self.Baseclasses = [] #Stores Parents cppClass Objects for derived class
+        self.publicmethods = {}
         self.purevirtualfunctions = []
         self.virtualfunctions = []
         self.normalfunctions = []
@@ -48,8 +49,14 @@ class InheritanceData:
         self.TypeOfClass = None
     def identifyoverridenfunctions(self):
         for inherited_virtual in self.inherited_pure_virtual:
-            if inherited_virtual in self.Addedvirtualfunctions:
+            if inherited_virtual in (self.Addedvirtualfunctions or self.Addednormalfunctions):
                 self.overridenfunctions.append(inherited_virtual)
+                self.Addedvirtualfunctions.remove(inherited_virtual)
+        for inherited_virtual in self.inherited_virtual:
+            if inherited_virtual in (self.Addedvirtualfunctions or self.Addednormalfunctions):
+                self.overridenfunctions.append(inherited_virtual)
+                self.Addedvirtualfunctions.remove(inherited_virtual)
+        
     #Determine inheritance type
     def determineinheritanceType(self):
         if len(self.inherited_virtual) == 0 and len(self.inherited_normal) == 0 and len(self.inherited_overriden) == 0 and len(self.inherited_pure_virtual):
@@ -61,7 +68,8 @@ class InheritanceData:
     #Conctrete class: Any instantiable class (no unoverriden pure virtual function)
     def PureVirtualPresent(self):
         for pure_virtual in self.inherited_pure_virtual:
-            if not pure_virtual in (self.inherited_overriden or self.overridenfunctions):
+            if not pure_virtual in self.overridenfunctions and not pure_virtual in self.inherited_overriden:
+                print(pure_virtual)
                 return True
         return False
     def identifyClassType(self):
@@ -95,10 +103,7 @@ class ProjectData:
                 inheritancedata = InheritanceData()
                 inheritancedata.Addedpurevirtualfunctions = self.cppClasses[_class].purevirtualfunctions
                 inheritancedata.Addedvirtualfunctions = self.cppClasses[_class].virtualfunctions
-                print(inheritancedata.Addedvirtualfunctions)
                 inheritancedata.Addednormalfunctions = self.cppClasses[_class].normalfunctions
-                self.cppClasses[_class].getoverridenfunctions()
-                inheritancedata.overridenfunctions += self.cppClasses[_class].overridenfunctions
                 inheritancedata.derivedclassName = _class
                 inherited_pure_virtual = []
                 inherited_virtual = []
@@ -111,15 +116,14 @@ class ProjectData:
                         inherited_virtual += self.getinheritancedata(Baseclass.className).inherited_virtual
                         inherited_normal += self.getinheritancedata(Baseclass.className).inherited_normal
                         inherited_overriden += self.getinheritancedata(Baseclass.className).inherited_overriden
+                        inherited_overriden += self.getinheritancedata(Baseclass.className).overridenfunctions
                         inherited_pure_virtual += Baseclass.purevirtualfunctions
                         inherited_virtual += Baseclass.virtualfunctions
                         inherited_normal += Baseclass.normalfunctions
-                        inherited_overriden += Baseclass.overridenfunctions
                     else:
                         inherited_pure_virtual += Baseclass.purevirtualfunctions
                         inherited_virtual += Baseclass.virtualfunctions
                         inherited_normal += Baseclass.normalfunctions
-                        inherited_overriden += Baseclass.overridenfunctions
                 inheritancedata.inherited_pure_virtual = inherited_pure_virtual
                 inheritancedata.inherited_virtual = inherited_virtual
                 inheritancedata.inherited_normal = inherited_normal

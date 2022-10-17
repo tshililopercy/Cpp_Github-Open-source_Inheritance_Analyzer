@@ -6,7 +6,8 @@ import Data_Extraction_Process_Refractored
 
 def getPath(file_path):
     cwd = os.getcwd() # get current working directory
-    path = os.path.join(cwd, file_path) # path of the file being tested    
+    path = os.path.join(cwd, file_path) # path of the file being tested
+    
     return path 
 
 def obtainInheritanceData(file_path):

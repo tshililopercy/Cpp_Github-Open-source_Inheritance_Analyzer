@@ -68,7 +68,7 @@ class ProjectData:
                 inheritancedata.inherited_virtual = inherited_virtual
                 inheritancedata.inherited_normal = inherited_normal
                 self.ProjectInheritanceData.append(inheritancedata)
-        self.PrintResults()
+        # self.PrintResults()
         return self.ProjectInheritanceData
     
     #Re-arranging inheritance in form of Superclass and its subclasses to get Hierachy DEPTHS

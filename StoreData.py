@@ -31,12 +31,12 @@ class ProjectDataStorage:
                             InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
                             InheritanceInfo["SubClasses"] = inheritance.ParentClassNames
                             InheritanceInfo["typeofinheritance"] = inheritance.typeofinheritance
-                            InheritanceInfo["inherited_pure_virtual"] = inheritance.inherited_pure_virtual
-                            InheritanceInfo["inherited_virtual"] = inheritance.inherited_virtual
-                            InheritanceInfo["inherited_normal"] = inheritance.inherited_normal
-                            InheritanceInfo["inherited_overriden"] = inheritance.inherited_overriden
-                            InheritanceInfo["Additionalfunctions"] = inheritance.derivedAdditionalfunctions
-                            InheritanceInfo["overridenfunctions"] = inheritance.overridenfunctions
+                            # InheritanceInfo["inherited_pure_virtual"] = inheritance.inherited_pure_virtual
+                            # InheritanceInfo["inherited_virtual"] = inheritance.inherited_virtual
+                            # InheritanceInfo["inherited_normal"] = inheritance.inherited_normal
+                            # InheritanceInfo["inherited_overriden"] = inheritance.inherited_overriden
+                            # InheritanceInfo["Additionalfunctions"] = inheritance.derivedAdditionalfunctions
+                            # InheritanceInfo["overridenfunctions"] = inheritance.overridenfunctions
                             
                             InheritancesData.append(InheritanceInfo)
                     

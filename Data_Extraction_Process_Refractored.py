@@ -32,10 +32,10 @@ def extractClassData(cursor, classinfo, project):
             if cursor.is_pure_virtual_method():
             #print(cursor.spelling)
                 classinfo.privateMethods["purevirtualfunctions"].append((returnType,cursor.spelling, argumentTypes))
-                classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+                #classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
             elif cursor.is_virtual_method():
                 classinfo.privateMethods["virtualfunctions"].append((returnType,cursor.spelling, argumentTypes))
-                classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+                #classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
             else:
                 classinfo.privateMethods["normalfunctions"].append((returnType,cursor.spelling, argumentTypes))
                 classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))

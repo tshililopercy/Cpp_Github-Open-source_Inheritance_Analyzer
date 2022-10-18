@@ -9,6 +9,9 @@ class cppClass:
         self.publicMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []}
         self.protectedMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []}
         self.privateMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []} # pure virtual functions[], virtual functions[], normal functions[]
+        self.purevirtualfunctions = []
+        self.virtualfunctions = []
+        self.normalfunctions = []
         self.overridenfunctions = []
     def getoverridenfunctions(self):
         for baseclass in self.Baseclasses:

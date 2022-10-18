@@ -117,9 +117,9 @@ class ProjectData:
                 baseresults = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
                     if self.getinheritancedata(Baseclass.className) != None:
-                        inherited_pure_virtual += self.getinheritancedata(Baseclass.className).inherited_pure_virtual
-                        inherited_virtual += self.getinheritancedata(Baseclass.className).inherited_virtual
-                        inherited_normal += self.getinheritancedata(Baseclass.className).inherited_normal
+                        inherited_pure_virtual += self.getinheritancedata(Baseclass.className).PublicMethods["inherited_pure_virtual"]
+                        inherited_virtual += self.getinheritancedata(Baseclass.className).PublicMethods["inherited_virtual"]
+                        inherited_normal += self.getinheritancedata(Baseclass.className).PublicMethods["inherited_normal"]
                         inherited_overriden += self.getinheritancedata(Baseclass.className).inherited_overriden
                         inherited_overriden += self.getinheritancedata(Baseclass.className).overridenfunctions
                         inherited_pure_virtual += Baseclass.publicMethods["purevirtualfunctions"]
@@ -189,10 +189,10 @@ class ProjectData:
             print("Type of class: ",inheritance.TypeOfClass)
             print("     Derived Class Data")
             print("         Overriden Functions: ", inheritance.overridenfunctions)
-            print("         Inherited Virtual Functions: ", inheritance.inherited_virtual)
-            print("         Inherited Pure Virtual Functions: ", inheritance.inherited_pure_virtual)
-            print("         Inherited Normal Functions: ", inheritance.inherited_normal)
+            print("         Inherited Virtual Functions: ", inheritance.PublicMethods["inherited_virtual"])
+            print("         Inherited Pure Virtual Functions: ", inheritance.PublicMethods["inherited_pure_virtual"])
+            print("         Inherited Normal Functions: ", inheritance.PublicMethods["inherited_normal"])
             print("         Inherited Overriden Functions: ", inheritance.inherited_overriden)
-            print("         Added Pure Virtual Functions: ", inheritance.Addedpurevirtualfunctions)
-            print("         Added Virtual Functions: ", inheritance.Addedvirtualfunctions)
-            print("         Added Normal Functions: ", inheritance.Addednormalfunctions)
+            print("         Added Pure Virtual Functions: ", inheritance.PublicMethods["Addedpurevirtualfunctions"])
+            print("         Added Virtual Functions: ", inheritance.PublicMethods["Addedvirtualfunctions"])
+            print("         Added Normal Functions: ", inheritance.PublicMethods["Addednormalfunctions"])

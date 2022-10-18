@@ -6,15 +6,14 @@ class cppClass:
     def __init__(self):
         self.className = None
         self.Baseclasses = [] #Stores Parents cppClass Objects for derived class
-        self.publicmethods = {}
-        self.purevirtualfunctions = []
-        self.virtualfunctions = []
-        self.normalfunctions = []
+        self.publicMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []}
+        self.protectedMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []}
+        self.privateMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []} # pure virtual functions[], virtual functions[], normal functions[]
         self.overridenfunctions = []
     def getoverridenfunctions(self):
         for baseclass in self.Baseclasses:
-            for pure in baseclass.purevirtualfunctions:
-                if pure in self.virtualfunctions:
+            for pure in baseclass.publicMethods["purevirtualfunctions"]:
+                if pure in self.publicMethods["virtualfunctions"]:
                     self.overridenfunctions.append(pure)
     def totalMethods (self):
         TotalMethods = []
@@ -101,9 +100,9 @@ class ProjectData:
         for _class in self.cppClasses:
             if self.cppClasses[_class].is_derivedclass():
                 inheritancedata = InheritanceData()
-                inheritancedata.Addedpurevirtualfunctions = self.cppClasses[_class].purevirtualfunctions
-                inheritancedata.Addedvirtualfunctions = self.cppClasses[_class].virtualfunctions
-                inheritancedata.Addednormalfunctions = self.cppClasses[_class].normalfunctions
+                inheritancedata.Addedpurevirtualfunctions = self.cppClasses[_class].publicMethods["purevirtualfunctions"]
+                inheritancedata.Addedvirtualfunctions = self.cppClasses[_class].publicMethods["virtualfunctions"]
+                inheritancedata.Addednormalfunctions = self.cppClasses[_class].publicMethods["normalfunctions"]
                 inheritancedata.derivedclassName = _class
                 inherited_pure_virtual = []
                 inherited_virtual = []
@@ -117,13 +116,13 @@ class ProjectData:
                         inherited_normal += self.getinheritancedata(Baseclass.className).inherited_normal
                         inherited_overriden += self.getinheritancedata(Baseclass.className).inherited_overriden
                         inherited_overriden += self.getinheritancedata(Baseclass.className).overridenfunctions
-                        inherited_pure_virtual += Baseclass.purevirtualfunctions
-                        inherited_virtual += Baseclass.virtualfunctions
-                        inherited_normal += Baseclass.normalfunctions
+                        inherited_pure_virtual += Baseclass.publicMethods["purevirtualfunctions"]
+                        inherited_virtual += Baseclass.publicMethods["virtualfunctions"]
+                        inherited_normal += Baseclass.publicMethods["normalfunctions"]
                     else:
-                        inherited_pure_virtual += Baseclass.purevirtualfunctions
-                        inherited_virtual += Baseclass.virtualfunctions
-                        inherited_normal += Baseclass.normalfunctions
+                        inherited_pure_virtual += Baseclass.publicMethods["purevirtualfunctions"]
+                        inherited_virtual += Baseclass.publicMethods["virtualfunctions"]
+                        inherited_normal += Baseclass.publicMethods["normalfunctions"]
                 inheritancedata.inherited_pure_virtual = inherited_pure_virtual
                 inheritancedata.inherited_virtual = inherited_virtual
                 inheritancedata.inherited_normal = inherited_normal

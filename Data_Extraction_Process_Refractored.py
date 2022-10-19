@@ -121,6 +121,5 @@ def AnalyseRepository():
     #Return Inheritance data 
     return project.computeInheritanceData(), project.organizeHierachy()
 
-# projectdatastorage = ProjectDataStorage (AnalyseRepository())
-
-# projectdatastorage.ComputeHieracyData()
+projectdatastorage = ProjectDataStorage (AnalyseRepository())
+projectdatastorage.ComputeHieracyData()

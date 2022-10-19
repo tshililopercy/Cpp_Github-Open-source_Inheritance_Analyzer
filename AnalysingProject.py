@@ -168,6 +168,32 @@ class ProjectData:
                         inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass.privateMethods["purevirtualfunctions"]
                         inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass.privateMethods["virtualfunctions"]
                         inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.privateMethods["normalfunctions"]
+                    #-------------------------For Private inheritance----------------------------#
+                    # if self.getinheritancedata(Baseclass.className) != None:
+                    #     inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass.className).PublicMethods["inherited_pure_virtual"]
+                    #     inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass.className).PublicMethods["inherited_virtual"]
+                    #     inheritancedata.PrivateMethods["inherited_normal"] += self.getinheritancedata(Baseclass.className).PublicMethods["inherited_normal"]
+                    #     # computing For Private Method
+                    #     inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass.className).PrivateMethods["inherited_pure_virtual"]
+                    #     inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass.className).PrivateMethods["inherited_virtual"]
+                    #     inheritancedata.PrivateMethods["inherited_normal"] += self.getinheritancedata(Baseclass.className).PrivateMethods["inherited_normal"]
+                    #     inherited_overriden += self.getinheritancedata(Baseclass.className).inherited_overriden
+                    #     inherited_overriden += self.getinheritancedata(Baseclass.className).overridenfunctions
+                    #     inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass.publicMethods["purevirtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass.publicMethods["virtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.publicMethods["normalfunctions"]
+                    #     # computing For Private section
+                    #     inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass.privateMethods["purevirtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass.privateMethods["virtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.privateMethods["normalfunctions"]
+                    # else:
+                    #     inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass.publicMethods["purevirtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass.publicMethods["virtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.publicMethods["normalfunctions"]
+                    #     #Compute for Private
+                    #     inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass.privateMethods["purevirtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass.privateMethods["virtualfunctions"]
+                    #     inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.privateMethods["normalfunctions"]
                 inheritancedata.inherited_overriden = inherited_overriden
                 inheritancedata.determineinheritanceType()
                 inheritancedata.identifyoverridenfunctions()

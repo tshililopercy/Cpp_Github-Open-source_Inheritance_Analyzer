@@ -1,8 +1,3 @@
-from email.mime import base
-from tkinter import SEL_FIRST
-from unittest.mock import Base
-
-
 class cppClass:
     def __init__(self):
         self.className = None
@@ -43,7 +38,17 @@ class InheritanceData:
         self.typeofinheritance = None
         self.inherited_overriden = []
         self.TypeOfClass = None
-        self.Novelmethods = []
+        #Data For Inheritance Analysis
+        self.PublicInterface = [] # Public methods of a class
+        self.Novelmethods = [] #added public normal, added virtual functions
+    def compute_public_interface(self):
+        self.PublicInterface += self.PublicMethods['Addedvirtualfunctions']
+        self.PublicInterface += self.PublicMethods["Addednormalfunctions"]
+        self.PublicInterface += self.PublicMethods["inherited_virtual"]
+        self.PublicInterface += self.PublicMethods["inherited_normal"]
+    def compute_Added_Methods(self):
+        self.Novelmethods += self.PublicMethods["Addednormalfunctions"]
+        self.Novelmethods += self.PublicMethods['Addedvirtualfunctions']
     def identifyoverridenfunctions(self):
         #-------------Overriden pure virtual functions-------------#
         #In Public Section
@@ -202,6 +207,8 @@ class ProjectData:
                 inheritancedata.determineinheritanceType()
                 inheritancedata.identifyoverridenfunctions()
                 inheritancedata.identifyClassType()
+                inheritancedata.compute_public_interface()
+                inheritancedata.compute_Added_Methods()
                 self.ProjectInheritanceData.append(inheritancedata)
         self.PrintResults()
         return self.ProjectInheritanceData

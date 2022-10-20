@@ -134,8 +134,8 @@ def AnalyseRepository():
     project = ProjectData()
     cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
     RepositoryFiles = FindRepoFiles(cppExtensions)
-    #for file_path in RepositoryFiles:
-    parseTranslationUnit("mytestingMain.cpp", project)
+    for file_path in RepositoryFiles:
+        parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")

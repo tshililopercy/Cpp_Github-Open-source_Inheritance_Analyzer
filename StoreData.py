@@ -13,10 +13,12 @@ class ProjectDataStorage:
     def ComputeHieracyData(self):
         for HierachyID, hierachylevels in enumerate(self.HierachiesLevels):
             hieracydata = HierachyData()
-            max_Depth = max(hierachylevels.values())
-            max_size = len(hierachylevels)
+            #Getting Hierarchy maximum Depth 
+            Hierarchy_Max_Depth = max(hierachylevels.values())
+            #Number of Hierarchy members (Hierarchy Size)
+            Hierachy_Size = len(hierachylevels)
             
-            for depth in range(0,max_Depth + 1, 1):
+            for depth in range(0,Hierarchy_Max_Depth + 1, 1):
                 InheritancesData = []
                 max_keys = [key for key, value in hierachylevels.items() if value == depth]
                 if depth >=1:
@@ -26,24 +28,24 @@ class ProjectDataStorage:
                             InheritanceInfo = {}
                             DepthData["Depth Number"] = depth
                             InheritanceInfo["ClassName"] = inheritance.derivedclassName
+                            InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
                             InheritanceInfo["SubClasses"] = inheritance.ParentClassNames
                             InheritanceInfo["typeofinheritance"] = inheritance.typeofinheritance
-                            InheritanceInfo["inherited_pure_virtual"] = inheritance.inherited_pure_virtual
-                            InheritanceInfo["inherited_virtual"] = inheritance.inherited_virtual
-                            InheritanceInfo["inherited_normal"] = inheritance.inherited_normal
-                            InheritanceInfo["Additionalfunctions"] = inheritance.derivedAdditionalfunctions
+                            InheritanceInfo["Public Interface"] = inheritance.PublicInterface
+                            InheritanceInfo["Added Methods"] = inheritance.Novelmethods
                             InheritanceInfo["overridenfunctions"] = inheritance.overridenfunctions
                             
                             InheritancesData.append(InheritanceInfo)
                     
-                    
                     DepthData["Inheritances"] = InheritancesData
                     hieracydata.DepthsInformation.append(DepthData)     
-                hieracydata.depth = max_Depth
-                hieracydata.size = max_size
+                hieracydata.depth = Hierarchy_Max_Depth
+                hieracydata.size = Hierachy_Size
             self.HierachiesData.append(hieracydata)
         self.PrintingHierachyData()
             
     def PrintingHierachyData(self):
         for hierachydata in self.HierachiesData:
+            print()
             print(hierachydata.DepthsInformation)
+            print()

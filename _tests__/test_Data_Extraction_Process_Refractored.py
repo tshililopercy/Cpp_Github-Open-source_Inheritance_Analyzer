@@ -251,6 +251,9 @@ class multiple_inheritance_test(unittest.TestCase):
         inheritanceData = obtainInheritanceData('_tests__\multiple_inheritance.cpp')
         inheritanceType = inheritanceData[6].typeofinheritance
         self.assertEqual(inheritanceType, 'Interface Inheritance')
+        
+#----------------Final Detection Algorithm Test-----------------------#
+
 
 if __name__ == '__main__':
     unittest.main()

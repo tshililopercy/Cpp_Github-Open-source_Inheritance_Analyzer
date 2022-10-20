@@ -12,41 +12,44 @@ def extractClassData(cursor, classinfo, project):
         for baseClass in cursor.get_children():
             if baseClass.kind == clang.cindex.CursorKind.TYPE_REF:
                Parent = {}
-               inheritanceType = cursor.access_specifier
-               Parent[baseClass.type.spelling] = inheritanceType
-               classinfo.Baseclasses.append(project.getcppClass(baseClass.type.spelling))
+               Parent['BaseClassInfo'] = project.getcppClass(baseClass.type.spelling)
+               if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
+                   Parent['inheritancetype'] = 'PUBLIC'
+               elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
+                   Parent['inheritancetype'] = 'PRIVATE'
+               classinfo.Baseclasses.append(Parent)
     elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
         returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
         if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
             if cursor.is_pure_virtual_method():
             #print(cursor.spelling)
-                classinfo.publicMethods["purevirtualfunctions"].append((returnType,cursor.spelling, argumentTypes))
+                classinfo.publicMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
                 #classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
             elif cursor.is_virtual_method():
-                classinfo.publicMethods["virtualfunctions"].append((returnType,cursor.spelling, argumentTypes))
+                classinfo.publicMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
                 #classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
             else:
-                classinfo.publicMethods["normalfunctions"].append((returnType,cursor.spelling, argumentTypes))
+                classinfo.publicMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
                 #classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
         elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
             if cursor.is_pure_virtual_method():
             #print(cursor.spelling)
-                classinfo.privateMethods["purevirtualfunctions"].append((returnType,cursor.spelling, argumentTypes))
+                classinfo.privateMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
                 #classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
             elif cursor.is_virtual_method():
-                classinfo.privateMethods["virtualfunctions"].append((returnType,cursor.spelling, argumentTypes))
+                classinfo.privateMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
                 #classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
             else:
-                classinfo.privateMethods["normalfunctions"].append((returnType,cursor.spelling, argumentTypes))
-                classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
+                classinfo.privateMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+                #classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
         elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
             if cursor.is_pure_virtual_method():
             #print(cursor.spelling)
-                classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+                classinfo.purevirtualfunctions.append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
             elif cursor.is_virtual_method():
-                classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
+                classinfo.virtualfunctions.append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
             else:
-                classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
+                classinfo.normalfunctions.append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
     project.cppClasses[classinfo.className] = classinfo
 
 def extractClass(cursor, project):

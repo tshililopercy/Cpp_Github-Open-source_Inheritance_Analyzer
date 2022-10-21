@@ -20,6 +20,8 @@ class ProjectDataStorage:
             #count all number of methods in each hierachy Level
             self.depth_metrics = []
             self.width_metrics = []
+            self.public_interface = []
+            self.public_interface_metrics = []
             
             for depth in range(0,Hierarchy_Max_Depth + 1, 1):
                 InheritancesData = []
@@ -39,7 +41,9 @@ class ProjectDataStorage:
                             InheritanceInfo["overridenfunctions"] = inheritance.overridenfunctions
                             
                             InheritancesData.append(InheritanceInfo)
-                            # print(InheritanceInfo['ClassName'])
+                            # print(InheritanceInfo["Public Interface"], len(InheritanceInfo["Public Interface"]))
+                            self.public_interface.append(len(InheritanceInfo["Public Interface"]))
+                            # print(self.public_interface)
 
                     DepthData["Inheritances"] = InheritancesData
                     hieracydata.DepthsInformation.append(DepthData)
@@ -67,7 +71,7 @@ class ProjectDataStorage:
     def widths_metrics(self, DIT_Max, hierachydata):
         widths = []
         width = 0
-        for index in range(0, max(DIT_Max), 1):
+        for index in range(0, max(DIT_Max), 1): # seach each depth
             # print(hierachydata.DepthsInformation[index]['Inheritances'], '\n', 'HHHHHH')
             width = len(hierachydata.DepthsInformation[index]['Inheritances'])
             widths.append(width)
@@ -85,6 +89,21 @@ class ProjectDataStorage:
             total_hierachies.append(count)    
         return width_sequence, total_hierachies
 
+    def hierachy_count_per_public_interface(self):
+        max_public_interface = max(self.public_interface)
+        min_public_interface = min(self.public_interface) 
+        total_hierachies = [] 
+        public_interface_sequence = []
+
+        for p_i_val in range(min_public_interface, max_public_interface+1, 1):
+            count=0
+            public_interface_sequence.append(p_i_val)
+            for p_i_ in self.public_interface:
+                if p_i_val == p_i_:
+                    count += 1
+            total_hierachies.append(count)    
+        return public_interface_sequence, total_hierachies
+
     def PrintingHierachyData(self):
         index = 0
         # DIT_Max - Depth of Inheritance Tree Maximum
@@ -93,17 +112,21 @@ class ProjectDataStorage:
         # BIT_Max - Breadth of Inheritance Tree Maximum
         BIT_Max = [] # Stores number of children maximums (NOC)
         width_data = {}
-        
+        # public_interface = []
+        public_interface_data = {}
+
+
         for hierachydata in self.HierachiesData:
             DIT_Max.append(hierachydata.depth)
-            # print(DIT_Max)
-            print(hierachydata.DepthsInformation[index])
+            # # print(DIT_Max)
+            # print(hierachydata.DepthsInformation[index])
             widths = self.widths_metrics(DIT_Max, hierachydata)
             BIT_Max.append(max(widths))
-        print(BIT_Max)
+            # public_interface.append(hierachydata.DepthsInformation[index])
 
         width_, num_of_hierachy_per_width = self.hierachy_count_per_width(BIT_Max)
         depth_ , num_of_hierachy_per_depth = self.hierachy_count_per_depth(DIT_Max)
+        public_interface_, num_of_hierachy_per_public_interface = self.hierachy_count_per_public_interface()
 
         depth_data['Depth '] = depth_
         depth_data['Number of Hierachies per depth'] = num_of_hierachy_per_depth
@@ -112,6 +135,10 @@ class ProjectDataStorage:
         width_data['Width'] = width_
         width_data['Number of Hierachies per width'] = num_of_hierachy_per_width
         self.width_metrics.append(width_data)
+
+        public_interface_data['public_interface'] = public_interface_
+        public_interface_data['Number of Hierachies per public_interface'] = num_of_hierachy_per_public_interface
+        self.public_interface_metrics.append(public_interface_data)
         
         self.StoreDataInFile()
 
@@ -120,7 +147,8 @@ class ProjectDataStorage:
         results_ = {}
         results_['Depth Metrics'] = self.depth_metrics
         results_['Width Metrics'] = self.width_metrics
-        json_object = json.dumps(results_, indent=1)
+        results_['Public Interface Metrics'] = self.public_interface_metrics
+        json_object = json.dumps(results_, indent=2)
         
         # Writing to sample.json
         with open("results.json", "w") as outfile:

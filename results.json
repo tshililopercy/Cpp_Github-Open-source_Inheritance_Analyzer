@@ -1,26 +1,42 @@
 {
- "Depth Metrics": [
-  {
-   "Depth ": [
-    1
-   ],
-   "Number of Hierachies per depth": [
-    1
-   ]
-  }
- ],
- "Width Metrics": [
-  {
-   "Width": [
-    1,
-    2,
-    3
-   ],
-   "Number of Hierachies per width": [
-    0,
-    0,
-    1
-   ]
-  }
- ]
+  "Depth Metrics": [
+    {
+      "Depth ": [
+        1
+      ],
+      "Number of Hierachies per depth": [
+        1
+      ]
+    }
+  ],
+  "Width Metrics": [
+    {
+      "Width": [
+        1,
+        2,
+        3
+      ],
+      "Number of Hierachies per width": [
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "Public Interface Metrics": [
+    {
+      "public_interface": [
+        17,
+        18,
+        19,
+        20
+      ],
+      "Number of Hierachies per public_interface": [
+        1,
+        1,
+        0,
+        1
+      ]
+    }
+  ]
 }

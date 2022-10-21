@@ -1,1 +1,26 @@
-[{"Depth ": [1], "Number of Hierachies per depth": [1]}]
+{
+ "Depth Metrics": [
+  {
+   "Depth ": [
+    1
+   ],
+   "Number of Hierachies per depth": [
+    1
+   ]
+  }
+ ],
+ "Width Metrics": [
+  {
+   "Width": [
+    1,
+    2,
+    3
+   ],
+   "Number of Hierachies per width": [
+    0,
+    0,
+    1
+   ]
+  }
+ ]
+}

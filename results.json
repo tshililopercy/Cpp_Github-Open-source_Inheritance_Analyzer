@@ -4,7 +4,7 @@
       "Depth ": [
         1
       ],
-      "Number of Hierachies per depth": [
+      "Number of hierachies per depth": [
         1
       ]
     }
@@ -16,7 +16,7 @@
         2,
         3
       ],
-      "Number of Hierachies per width": [
+      "Number of hierachies per width": [
         0,
         0,
         1
@@ -25,17 +25,24 @@
   ],
   "Public Interface Metrics": [
     {
-      "public_interface": [
+      "Public interface": [
         17,
         18,
         19,
         20
       ],
-      "Number of Hierachies per public_interface": [
+      "Number of hierachies per public_interface": [
         1,
         1,
         0,
         1
+      ]
+    }
+  ],
+  "Methods Metrics": [
+    {
+      "Novel methods": [
+        10
       ]
     }
   ]

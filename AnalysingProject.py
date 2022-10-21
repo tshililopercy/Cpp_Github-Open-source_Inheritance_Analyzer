@@ -210,7 +210,7 @@ class ProjectData:
                 inheritancedata.compute_public_interface()
                 inheritancedata.compute_Added_Methods()
                 self.ProjectInheritanceData.append(inheritancedata)
-        self.PrintResults()
+        # self.PrintResults()
         return self.ProjectInheritanceData
     
     #Re-arranging inheritance in form of Superclass and its subclasses to get Hierachy DEPTHS

@@ -1,4 +1,4 @@
-class classA{
+class classM1{
     int int_func(){
         int a=0; 
         return a;}
@@ -10,7 +10,7 @@ class classA{
         int a2=0;}
 };
 
-class classB: public classA{
+class classM2: public classM1{
     void int_funcB(){
        int b=0;}
 };

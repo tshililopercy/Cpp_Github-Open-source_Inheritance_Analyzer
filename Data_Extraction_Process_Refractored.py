@@ -125,14 +125,14 @@ def show_AST(cursor, filter_pred=verbose, level=Level()):
             show_AST(c, filter_pred, level+1)
 
 def parseTranslationUnit(file_path, project):  
-    tu = idx.parse(path = file_path, args=None,  
+    tu = idx.parse(path = file_path, args=['-x', 'c++'],  
                 unsaved_files=None,  options=0)
     traverse_AST(tu.cursor, project)
     #show_AST(tu.cursor, no_system_includes)
 
 def AnalyseRepository():
     project = ProjectData()
-    cppExtensions = ['*.cpp', '*.cxx', '*.c', '*.cc']
+    cppExtensions = ['*.hpp', '*.hxx', '*.h']
     RepositoryFiles = FindRepoFiles(cppExtensions)
     for file_path in RepositoryFiles:
         parseTranslationUnit(file_path, project)

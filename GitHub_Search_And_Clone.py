@@ -23,7 +23,8 @@ def CloneRepos(response_dict):
           Repositories,
           depth = 1
           )
-print("Done Cloning...")
+    print("Done Cloning...")
+
 if __name__ == '__main__':
     SearchForOpenSourceProjects()
     

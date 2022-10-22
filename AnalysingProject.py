@@ -63,7 +63,7 @@ class InheritanceData:
                 self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual) 
         #In Private section
         for inherited_virtual in self.PrivateMethods["inherited_pure_virtual"]:
-            if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"] or self.PrivateMethods["Addednormalfunctions"]):
+            if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
                 print(self.overridenfunctions)
                 self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)
@@ -74,7 +74,7 @@ class InheritanceData:
         #-------------Overriden virtual functions-------------#
         #In public Section
         for inherited_virtual in self.PublicMethods["inherited_virtual"]:
-            if inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"] or self.PublicMethods["Addednormalfunctions"]):
+            if inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
                 self.PublicMethods["Addedvirtualfunctions"].remove(inherited_virtual)
             elif inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
@@ -82,7 +82,7 @@ class InheritanceData:
                 self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)    
         #In Private Section
         for inherited_virtual in self.PrivateMethods["inherited_virtual"]:
-            if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"] or self.PrivateMethods["Addednormalfunctions"]):
+            if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
                 self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)
             elif inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
@@ -128,7 +128,10 @@ class ProjectData:
     def insertclass(self, _class):
         self.cppClasses[_class.className] = _class
     def getcppClass(self, classname):
-        return self.cppClasses[classname] 
+        if classname in self.cppClasses:
+            return self.cppClasses[classname]
+        else: 
+            return {}
     def is_interfaceinheritance(self, baseclasstypes):
        if len(baseclasstypes) == 0:
          return
@@ -148,7 +151,6 @@ class ProjectData:
                 inherited_overriden = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
                     inheritancedata.ParentClassNames.append(Baseclass['BaseClassInfo'].className)
-                    print(Baseclass['inheritancetype'])
                     if Baseclass['inheritancetype'] == 'PUBLIC':
                         
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:

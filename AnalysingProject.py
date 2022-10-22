@@ -128,10 +128,7 @@ class ProjectData:
     def insertclass(self, _class):
         self.cppClasses[_class.className] = _class
     def getcppClass(self, classname):
-        if classname in self.cppClasses:
             return self.cppClasses[classname]
-        else: 
-            return {}
     def is_interfaceinheritance(self, baseclasstypes):
        if len(baseclasstypes) == 0:
          return
@@ -151,6 +148,7 @@ class ProjectData:
                 inherited_overriden = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
                     inheritancedata.ParentClassNames.append(Baseclass['BaseClassInfo'].className)
+
                     if Baseclass['inheritancetype'] == 'PUBLIC':
                         
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
@@ -220,11 +218,17 @@ class ProjectData:
         for _class in self.cppClasses:
             for baseclass in self.cppClasses[_class].Baseclasses:
                 if baseclass['BaseClassInfo'].className in self.cppClassesNew:
-                   self.cppClassesNew[baseclass['BaseClassInfo'].className].Baseclasses.append(self.cppClasses[_class])
+                   Parent = {}
+                   Parent['BaseClassInfo'] = self.cppClasses[_class]
+                   Parent['inheritancetype'] = baseclass['inheritancetype']
+                   self.cppClassesNew[baseclass['BaseClassInfo'].className].Baseclasses.append(Parent)
                 else:
                    self.cppClassesNew[baseclass['BaseClassInfo'].className] = self.cppClasses[baseclass['BaseClassInfo'].className]
                    self.cppClassesNew[baseclass['BaseClassInfo'].className].Baseclasses = []
-                   self.cppClassesNew[baseclass['BaseClassInfo'].className].Baseclasses.append(self.cppClasses[_class])
+                   Parent = {}
+                   Parent['BaseClassInfo'] = self.cppClasses[_class]
+                   Parent['inheritancetype'] = baseclass['inheritancetype']
+                   self.cppClassesNew[baseclass['BaseClassInfo'].className].Baseclasses.append(Parent)
         return self.traverse_all_Hierachy()
     
     # Traverse The Hierachies and get all present classes Depths
@@ -250,10 +254,10 @@ class ProjectData:
             #print(s)
             if s in self.cppClassesNew:
                 for neighbour in self.cppClassesNew[s].Baseclasses:
-                    if neighbour.className not in visit_complete:
-                        level[neighbour.className] = level[s] + 1
-                        visit_complete.append(neighbour.className)
-                        queue.append(neighbour.className)
+                    if neighbour['BaseClassInfo'].className not in visit_complete:
+                        level[neighbour['BaseClassInfo'].className] = level[s] + 1
+                        visit_complete.append(neighbour['BaseClassInfo'].className)
+                        queue.append(neighbour['BaseClassInfo'].className)
         return visit_complete  
     
     def PrintResults (self):

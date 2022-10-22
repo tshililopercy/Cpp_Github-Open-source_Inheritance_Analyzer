@@ -12,6 +12,7 @@ def extractClassData(cursor, classinfo, project):
         for baseClass in cursor.get_children():
             if baseClass.kind == clang.cindex.CursorKind.TYPE_REF:
                Parent = {}
+               print("Retrieve this: ",baseClass.type.spelling)
                Parent['BaseClassInfo'] = project.getcppClass(baseClass.type.spelling)
                if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
                    Parent['inheritancetype'] = 'PUBLIC'
@@ -60,6 +61,7 @@ def extractClass(cursor, project):
     # The full name of class is stored
     classinfo = cppClass()
     classinfo.className = cursor.type.spelling
+    print(classinfo.className)
     for children in cursor.get_children():
         #Extracting Class Members (Data and methods declaration)
         extractClassData(children, classinfo, project)
@@ -130,15 +132,16 @@ def show_AST(cursor, filter_pred=verbose, level=Level()):
 
 def parseTranslationUnit(file_path, project): 
     print(file_path) 
-    tu = idx.parse(path = file_path, args=None,  
+    tu = idx.parse(path = file_path, args=['-x', 'c++'],  
                 unsaved_files=None,  options=0)
     traverse_AST(tu.cursor, project)
     #show_AST(tu.cursor, no_system_includes)
 
 def AnalyseRepository(RepoName):
     project = ProjectData()
-    cppExtensions = ['*.cpp', '*.cxx', '*.c']
+    cppExtensions = ['*.hpp', '*.hxx', '*.h']
     RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
+    print(RepositoryFiles)
     for file_path in RepositoryFiles:
         parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
@@ -153,6 +156,5 @@ def analyseAllRepositories():
     for name in os.listdir('../Repository'):
         projectdatastorage = ProjectDataStorage (AnalyseRepository(name))
         projectdatastorage.ComputeHieracyData()
-        break
         
 analyseAllRepositories()

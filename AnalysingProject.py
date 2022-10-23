@@ -125,14 +125,11 @@ class ProjectData:
         for inheritancedata in self.ProjectInheritanceData:
             if inheritancedata.derivedclassName == className:
                 return inheritancedata
-    def insertclass(self, _class):
-        self.cppClasses[_class.className] = _class
     def getcppClass(self, classname):
+        if classname in self.cppClasses:
             return self.cppClasses[classname]
-    def is_interfaceinheritance(self, baseclasstypes):
-       if len(baseclasstypes) == 0:
-         return
-       return (len(set(baseclasstypes)) == 1 and baseclasstypes[0] == 1)
+        else:
+            return {}
     def computeInheritanceData(self):
         for _class in self.cppClasses:
             if self.cppClasses[_class].is_derivedclass():

@@ -12,8 +12,10 @@ def extractClassData(cursor, classinfo, project):
         for baseClass in cursor.get_children():
             if baseClass.kind == clang.cindex.CursorKind.TYPE_REF:
                Parent = {}
-               print("Retrieve this: ",baseClass.type.spelling)
-               Parent['BaseClassInfo'] = project.getcppClass(baseClass.type.spelling)
+               if project.getcppClass(baseClass.type.spelling) == {}:
+                   return
+               else:
+                   Parent['BaseClassInfo'] = project.getcppClass(baseClass.type.spelling)
                if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
                    Parent['inheritancetype'] = 'PUBLIC'
                elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:

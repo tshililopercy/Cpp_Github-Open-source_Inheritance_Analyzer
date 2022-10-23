@@ -62,7 +62,7 @@ class ProjectDataStorage:
                 hieracydata.depth = Hierarchy_Max_Depth
                 hieracydata.size = Hierachy_Size
             self.HierachiesData.append(hieracydata)
-        #self.HierachiesInfoPrint()
+        self.HierachiesInfoPrint()
         self.PrintingHierachyData()
     
     def hierachy_count_per_depth(self, max_depths):

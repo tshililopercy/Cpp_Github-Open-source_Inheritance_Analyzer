@@ -20,6 +20,8 @@ def extractClassData(cursor, classinfo, project):
                    Parent['inheritancetype'] = 'PUBLIC'
                elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
                    Parent['inheritancetype'] = 'PRIVATE'
+               elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
+                   Parent['inheritancetype'] = 'PROTECTED'
                classinfo.Baseclasses.append(Parent)
     elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
         try:
@@ -48,7 +50,6 @@ def extractClassData(cursor, classinfo, project):
                     #classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
             elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
                 if cursor.is_pure_virtual_method():
-                #print(cursor.spelling)
                     classinfo.protectedMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
                 elif cursor.is_virtual_method():
                     classinfo.protectedMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
@@ -63,7 +64,6 @@ def extractClass(cursor, project):
     # The full name of class is stored
     classinfo = cppClass()
     classinfo.className = cursor.type.spelling
-    print(classinfo.className)
     for children in cursor.get_children():
         #Extracting Class Members (Data and methods declaration)
         extractClassData(children, classinfo, project)
@@ -133,7 +133,6 @@ def show_AST(cursor, filter_pred=verbose, level=Level()):
             show_AST(c, filter_pred, level+1)
 
 def parseTranslationUnit(file_path, project): 
-    print(file_path) 
     tu = idx.parse(path = file_path, args=['-x', 'c++'],  
                 unsaved_files=None,  options=0)
     traverse_AST(tu.cursor, project)
@@ -142,10 +141,9 @@ def parseTranslationUnit(file_path, project):
 def AnalyseRepository(RepoName):
     project = ProjectData()
     cppExtensions = ['*.hpp', '*.hxx', '*.h']
-    RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
-    print(RepositoryFiles)
-    for file_path in RepositoryFiles:
-        parseTranslationUnit(file_path, project)
+    #RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
+    #for file_path in RepositoryFiles:
+    parseTranslationUnit("test.cpp", project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")

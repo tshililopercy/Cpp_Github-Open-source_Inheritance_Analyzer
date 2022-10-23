@@ -61,6 +61,10 @@ class InheritanceData:
                 self.overridenfunctions.append(inherited_virtual)
                 #print(self.overridenfunctions)
                 self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual) 
+            elif inherited_virtual in (self.ProtectedMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                #print(self.overridenfunctions)
+                self.ProtectedMethods["Addedvirtualfunctions"].remove(inherited_virtual)
         #In Private section
         for inherited_virtual in self.PrivateMethods["inherited_pure_virtual"]:
             if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
@@ -71,6 +75,24 @@ class InheritanceData:
                 self.overridenfunctions.append(inherited_virtual)
                 #print(self.overridenfunctions)
                 self.PublicMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.ProtectedMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                #print(self.overridenfunctions)
+                self.ProtectedMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+        #In Protected Section
+        for inherited_virtual in self.ProtectedMethods["inherited_pure_virtual"]:
+            if inherited_virtual in (self.ProtectedMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                #print(self.overridenfunctions)
+                self.ProtectedMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                #print(self.overridenfunctions)
+                self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                #print(self.overridenfunctions)
+                self.PublicMethods["Addedvirtualfunctions"].remove(inherited_virtual) 
         #-------------Overriden virtual functions-------------#
         #In public Section
         for inherited_virtual in self.PublicMethods["inherited_virtual"]:
@@ -79,7 +101,10 @@ class InheritanceData:
                 self.PublicMethods["Addedvirtualfunctions"].remove(inherited_virtual)
             elif inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
-                self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)    
+                self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.ProtectedMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.ProtectedMethods["Addedvirtualfunctions"].remove(inherited_virtual)
         #In Private Section
         for inherited_virtual in self.PrivateMethods["inherited_virtual"]:
             if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
@@ -88,10 +113,24 @@ class InheritanceData:
             elif inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
                 self.PublicMethods["Addedvirtualfunctions"].remove(inherited_virtual)
-        
+            elif inherited_virtual in (self.ProtectedMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.ProtectedMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+        #In Protected Section 
+        for inherited_virtual in self.ProtectedMethods["inherited_virtual"]:
+            if inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.PublicMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.PublicMethods["Addedvirtualfunctions"].remove(inherited_virtual)
     #Determine inheritance type
     def determineinheritanceType(self):
-        if len(self.PublicMethods["inherited_virtual"]) == 0 and len(self.PrivateMethods["inherited_virtual"]) == 0 and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and len(self.PublicMethods["inherited_normal"]) == 0 and (self.PublicMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"] != 0):
+        if (len(self.PublicMethods["inherited_virtual"]) == 0 and len(self.PrivateMethods["inherited_virtual"]) == 0 and len(self.ProtectedMethods["inherited_virtual"]) == 0 and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 
+            and len(self.PublicMethods["inherited_normal"]) == 0 and len(self.ProtectedMethods["inherited_normal"]) == 0 and (self.PublicMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"] != 0 or self.PublicMethods["inherited_pure_virtual"])):
             self.typeofinheritance = "Interface Inheritance"
         else: self.typeofinheritance = "Implementation Inheritance"
     #Determine The Type of Class. (Abstract, interface or concrete class)
@@ -108,10 +147,18 @@ class InheritanceData:
             if not pure_virtual in self.overridenfunctions and not pure_virtual in self.inherited_overriden:
                 return True
         return False
+    def PureVirtualPresentInProtected(self):
+        for pure_virtual in self.ProtectedMethods["inherited_pure_virtual"]:
+            if not pure_virtual in self.overridenfunctions and not pure_virtual in self.inherited_overriden:
+                return True
+        return False
     def identifyClassType(self):
-        if len(self.PublicMethods["inherited_virtual"]) == 0 and len(self.PublicMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and (len(self.PublicMethods["inherited_pure_virtual"]) != 0 or len(self.PublicMethods["Addedpurevirtualfunctions"]) != 0)and len(self.PublicMethods["Addedvirtualfunctions"]) == 0 and len(self.PublicMethods["Addednormalfunctions"]) == 0 and len(self.overridenfunctions) == 0 and len(self.PrivateMethods["inherited_virtual"]) == 0 and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and (len(self.PrivateMethods["inherited_pure_virtual"]) != 0 or len(self.PrivateMethods["Addedpurevirtualfunctions"]) != 0)and len(self.PrivateMethods["Addedvirtualfunctions"]) == 0 and len(self.PrivateMethods["Addednormalfunctions"]) == 0:
+        #The OR should Be In The Same Place
+        if (len(self.PublicMethods["inherited_virtual"]) == 0 and len(self.PublicMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and (len(self.PublicMethods["inherited_pure_virtual"]) != 0 or len(self.PublicMethods["Addedpurevirtualfunctions"]) != 0) and len(self.PublicMethods["Addedvirtualfunctions"]) == 0 and len(self.PublicMethods["Addednormalfunctions"]) == 0 and 
+        len(self.overridenfunctions) == 0 and len(self.PrivateMethods["inherited_virtual"]) == 0 and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and (len(self.PrivateMethods["inherited_pure_virtual"]) != 0 or len(self.PrivateMethods["Addedpurevirtualfunctions"]) != 0)and len(self.PrivateMethods["Addedvirtualfunctions"]) == 0 and len(self.PrivateMethods["Addednormalfunctions"]) == 0
+        and len(self.ProtectedMethods["inherited_virtual"]) == 0 and len(self.ProtectedMethods["inherited_normal"]) == 0 and (len(self.ProtectedMethods["inherited_pure_virtual"]) !=0 or len(self.ProtectedMethods["Addedpurevirtualfunctions"])) and len(self.ProtectedMethods["Addedvirtualfunctions"]) == 0 and len(self.ProtectedMethods["Addednormalfunctions"]) == 0):
             self.TypeOfClass = "Interface Class"
-        elif len(self.PublicMethods["Addedpurevirtualfunctions"]) == 0 and self.PureVirtualPresentInPublic() == False and self.PureVirtualPresentInPrivate() == False:
+        elif len(self.PublicMethods["Addedpurevirtualfunctions"]) == 0 and len(self.ProtectedMethods["Addedpurevirtualfunctions"]) == 0 and len(self.PrivateMethods["Addedpurevirtualfunctions"]) == 0 and self.PureVirtualPresentInPublic() == False and self.PureVirtualPresentInPrivate() == False and self.PureVirtualPresentInProtected() == False:
             self.TypeOfClass = "Concrete Class"
         else:
             self.TypeOfClass = "Abstract Class"
@@ -141,6 +188,10 @@ class ProjectData:
                 inheritancedata.PrivateMethods["Addedpurevirtualfunctions"] = self.cppClasses[_class].privateMethods["purevirtualfunctions"]
                 inheritancedata.PrivateMethods["Addedvirtualfunctions"] = self.cppClasses[_class].privateMethods["virtualfunctions"]
                 inheritancedata.PrivateMethods["Addednormalfunctions"] = self.cppClasses[_class].privateMethods["normalfunctions"]
+                
+                inheritancedata.ProtectedMethods["Addedpurevirtualfunctions"] = self.cppClasses[_class].protectedMethods["purevirtualfunctions"]
+                inheritancedata.ProtectedMethods["Addedvirtualfunctions"] = self.cppClasses[_class].protectedMethods["virtualfunctions"]
+                inheritancedata.ProtectedMethods["Addednormalfunctions"] = self.cppClasses[_class].protectedMethods["normalfunctions"]
                 inheritancedata.derivedclassName = _class
                 inherited_overriden = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
@@ -152,6 +203,10 @@ class ProjectData:
                             inheritancedata.PublicMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.PublicMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.PublicMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
+                            #For Protected Methods
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).ProtectedMethods["inherited_pure_virtual"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).ProtectedMethods["inherited_virtual"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).ProtectedMethods["inherited_normal"]
                             # computing For Private Method
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PrivateMethods["inherited_pure_virtual"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PrivateMethods["inherited_virtual"]
@@ -165,6 +220,9 @@ class ProjectData:
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].privateMethods["purevirtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].privateMethods["virtualfunctions"]
                             #inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.privateMethods["normalfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["purevirtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
                         else:
                             inheritancedata.PublicMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
                             inheritancedata.PublicMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
@@ -173,12 +231,19 @@ class ProjectData:
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].privateMethods["purevirtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].privateMethods["virtualfunctions"]
                             #inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.privateMethods["normalfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["purevirtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
                     #-------------------------For Private inheritance----------------------------#
                     elif Baseclass['inheritancetype'] == 'PRIVATE':
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.PrivateMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
+                            #For Protected Methods
+                            inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).protectedMethods["inherited_pure_virtual"]
+                            inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).protectedMethods["inherited_virtual"]
+                            inheritancedata.PrivateMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).protectedMethods["inherited_virtual"]
                             # computing For Private Method
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PrivateMethods["inherited_pure_virtual"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PrivateMethods["inherited_virtual"]
@@ -192,6 +257,10 @@ class ProjectData:
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].privateMethods["purevirtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].privateMethods["virtualfunctions"]
                             #inheritancedata.PrivateMethods["inherited_normal"] += Baseclass['BaseClassInfo'].privateMethods["normalfunctions"]
+                            #For Protected Methods
+                            inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["purevirtualfunctions"]
+                            inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
+                            inheritancedata.PrivateMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
                         else:
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
@@ -200,6 +269,48 @@ class ProjectData:
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].privateMethods["purevirtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].privateMethods["virtualfunctions"]
                             #inheritancedata.PrivateMethods["inherited_normal"] += Baseclass['BaseClassInfo'].privateMethods["normalfunctions"]
+                            #For Protected Methods
+                            inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["purevirtualfunctions"]
+                            inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
+                            inheritancedata.PrivateMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
+                            
+                    elif Baseclass['inheritancetype'] == 'PROTECTED':
+                        if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
+                            # computing For Private Method
+                            inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PrivateMethods["inherited_pure_virtual"]
+                            inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PrivateMethods["inherited_virtual"]
+                            #inheritancedata.PrivateMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PrivateMethods["inherited_normal"]
+                            #Compute For Protected
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).ProtectedMethods["inherited_pure_virtual"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).ProtectedMethods["inherited_virtual"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).ProtectedMethods["inherited_normal"]
+                            inherited_overriden += self.getinheritancedata(Baseclass['BaseClassInfo'].className).inherited_overriden
+                            inherited_overriden += self.getinheritancedata(Baseclass['BaseClassInfo'].className).overridenfunctions
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].publicMethods["normalfunctions"]
+                            # computing For Private
+                            inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].privateMethods["purevirtualfunctions"]
+                            inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].privateMethods["virtualfunctions"]
+                            #inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.privateMethods["normalfunctions"]
+                            
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["purevirtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
+                        else:
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].publicMethods["normalfunctions"]
+                            #Compute for Private
+                            inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].privateMethods["purevirtualfunctions"]
+                            inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].privateMethods["virtualfunctions"]
+                            #inheritancedata.PrivateMethods["inherited_normal"] += Baseclass.privateMethods["normalfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["purevirtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
+                            inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
                 inheritancedata.inherited_overriden = inherited_overriden
                 inheritancedata.determineinheritanceType()
                 inheritancedata.identifyoverridenfunctions()
@@ -207,7 +318,7 @@ class ProjectData:
                 inheritancedata.compute_public_interface()
                 inheritancedata.compute_Added_Methods()
                 self.ProjectInheritanceData.append(inheritancedata)
-        # self.PrintResults()
+        self.PrintResults()
         return self.ProjectInheritanceData
     
     #Re-arranging inheritance in form of Superclass and its subclasses to get Hierachy DEPTHS
@@ -265,10 +376,10 @@ class ProjectData:
             print("Type of class: ",inheritance.TypeOfClass)
             print("     Derived Class Data")
             print("         Overriden Functions: ", inheritance.overridenfunctions)
-            print("         Inherited Virtual Functions: ", inheritance.PublicMethods["inherited_virtual"], "\n                                      ", inheritance.PrivateMethods["inherited_virtual"])
-            print("         Inherited Pure Virtual Functions: ", inheritance.PublicMethods["inherited_pure_virtual"], "\n                                           ", inheritance.PrivateMethods["inherited_pure_virtual"])
-            print("         Inherited Normal Functions: ", inheritance.PublicMethods["inherited_normal"])
+            print("         Inherited Virtual Functions: ", inheritance.PublicMethods["inherited_virtual"], "\n                                      ", inheritance.PrivateMethods["inherited_virtual"], "\n                                      ", inheritance.ProtectedMethods["inherited_virtual"])
+            print("         Inherited Pure Virtual Functions: ", inheritance.PublicMethods["inherited_pure_virtual"], "\n                                           ", inheritance.PrivateMethods["inherited_pure_virtual"],"\n                                           ", inheritance.ProtectedMethods["inherited_pure_virtual"])
+            print("         Inherited Normal Functions: ", inheritance.PublicMethods["inherited_normal"], "\n                                      ", inheritance.PrivateMethods["inherited_normal"], "\n                                      ", inheritance.ProtectedMethods["inherited_normal"])
             print("         Inherited Overriden Functions: ", inheritance.inherited_overriden)
-            print("         Added Pure Virtual Functions: ", inheritance.PublicMethods["Addedpurevirtualfunctions"])
-            print("         Added Virtual Functions: ", inheritance.PublicMethods["Addedvirtualfunctions"], "\n                                           ", inheritance.PrivateMethods["Addedvirtualfunctions"])
-            print("         Added Normal Functions: ", inheritance.PublicMethods["Addednormalfunctions"])
+            print("         Added Pure Virtual Functions: ", inheritance.PublicMethods["Addedpurevirtualfunctions"], "\n                                           ", inheritance.PrivateMethods["Addedpurevirtualfunctions"], "\n                                           ", inheritance.ProtectedMethods["Addedpurevirtualfunctions"])
+            print("         Added Virtual Functions: ", inheritance.PublicMethods["Addedvirtualfunctions"], "\n                                           ", inheritance.PrivateMethods["Addedvirtualfunctions"], "\n                                           ", inheritance.ProtectedMethods["Addedvirtualfunctions"])
+            print("         Added Normal Functions: ", inheritance.PublicMethods["Addednormalfunctions"], "\n                                           ", inheritance.PrivateMethods["Addednormalfunctions"], "\n                                           ", inheritance.ProtectedMethods["Addednormalfunctions"])

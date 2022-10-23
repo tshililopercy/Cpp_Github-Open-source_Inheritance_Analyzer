@@ -141,9 +141,9 @@ def parseTranslationUnit(file_path, project):
 def AnalyseRepository(RepoName):
     project = ProjectData()
     cppExtensions = ['*.hpp', '*.hxx', '*.h']
-    #RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
-    #for file_path in RepositoryFiles:
-    parseTranslationUnit("test.cpp", project)
+    RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
+    for file_path in RepositoryFiles:
+        parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")

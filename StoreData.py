@@ -40,7 +40,7 @@ class ProjectDataStorage:
                             DepthData["Depth Number"] = depth
                             InheritanceInfo["ClassName"] = inheritance.derivedclassName
                             InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
-                            InheritanceInfo["SubClasses"] = inheritance.ParentClassNames
+                            InheritanceInfo["SubClasses"] = inheritance.Parents
                             InheritanceInfo["typeofinheritance"] = inheritance.typeofinheritance
                             InheritanceInfo["Public Interface"] = inheritance.PublicInterface
                             InheritanceInfo["Added Methods"] = inheritance.Novelmethods

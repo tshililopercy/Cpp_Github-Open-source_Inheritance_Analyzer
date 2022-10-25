@@ -107,6 +107,7 @@ def AnalyseRepository(RepoName):
     project = ProjectData()
     cppExtensions = ['*.hpp', '*.hxx', '*.h']
     RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
+    print(RepositoryFiles)
     for file_path in RepositoryFiles:
         parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
@@ -117,9 +118,9 @@ def AnalyseRepository(RepoName):
     return project.computeInheritanceData(), project.organizeHierachy(), project.Declarations
 
 def analyseAllRepositories():
-    
+    open('HierachiesData.json', 'w').close()
     for name in os.listdir('../Repository'):
-        projectdatastorage = ProjectDataStorage (AnalyseRepository(name), )
+        projectdatastorage = ProjectDataStorage (AnalyseRepository(name))
         projectdatastorage.ComputeHieracyData()
         
-#analyseAllRepositories()
+analyseAllRepositories()

@@ -65,7 +65,7 @@ class InheritanceData:
         for inherited_virtual in self.PrivateMethods["inherited_pure_virtual"]:
             if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
-                print(self.overridenfunctions)
+                # print(self.overridenfunctions)
                 self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)
             elif inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)

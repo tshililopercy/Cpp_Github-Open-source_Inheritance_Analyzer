@@ -118,9 +118,10 @@ def AnalyseRepository(RepoName):
     return project.computeInheritanceData(), project.organizeHierachy(), project.Declarations
 
 def analyseAllRepositories():
+    #Deleting Data Available in HierachiesData.json, for new analysis
     open('HierachiesData.json', 'w').close()
     for name in os.listdir('../Repository'):
         projectdatastorage = ProjectDataStorage (AnalyseRepository(name))
         projectdatastorage.ComputeHieracyData()
         
-analyseAllRepositories()
+#analyseAllRepositories()

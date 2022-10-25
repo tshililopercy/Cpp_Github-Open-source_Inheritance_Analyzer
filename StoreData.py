@@ -6,8 +6,8 @@ class HierachyData:
         self.DepthsInformation = [] # Dictionary for each depth {depth Number:,inheritances[]}
 
 class ProjectDataStorage:
-    def __init__(self, ProjectDataAndHierachyLevels):
-        self.ProjectData, self.HierachiesLevels = ProjectDataAndHierachyLevels
+    def __init__(self, ProjectInheritanceData_HierachyLevels_And_Declarations):
+        self.ProjectData, self.HierachiesLevels, Declarations = ProjectInheritanceData_HierachyLevels_And_Declarations
         self.HierachiesData = []
         self.additional_methods = []
         self.depth_per_method_add= []
@@ -62,8 +62,8 @@ class ProjectDataStorage:
                 hieracydata.depth = Hierarchy_Max_Depth
                 hieracydata.size = Hierachy_Size
             self.HierachiesData.append(hieracydata)
-        #self.HierachiesInfoPrint()
-        self.PrintingHierachyData()
+        self.HierachiesInfoPrint()
+        #self.PrintingHierachyData()
     
     def hierachy_count_per_depth(self, max_depths):
         total_hierachies = [] 
@@ -224,4 +224,4 @@ class ProjectDataStorage:
     def HierachiesInfoPrint(self):
         for hierachydata in self.HierachiesData:
             print()
-            print(hierachydata.DepthsInformation)
+            #print(hierachydata.DepthsInformation)

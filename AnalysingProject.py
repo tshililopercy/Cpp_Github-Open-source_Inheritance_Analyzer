@@ -15,17 +15,14 @@ class cppClass:
         return (self.publicMethods["normalfunctions"] == 0 and self.publicMethods["virtualfunctions"]== 0 and 
                 self.privateMethods["normalfunctions"] == 0 and self.privateMethods["virtualfunctions"]== 0 and
                 self.protectedMethods["normalfunctions"] == 0 and self.protectedMethods["virtualfunctions"]== 0 
-                and (self.publicMethods["purevirtualfunctions"] != 0 or self.privateMethods["purevirtualfunctions"] != 0 or self.publicMethods["purevirtualfunctions"] != 0))
+                and self.publicMethods["purevirtualfunctions"] != 0 or self.privateMethods["purevirtualfunctions"] != 0 or self.publicMethods["purevirtualfunctions"] != 0)
     def is_abstract (self):
-        return ((self.publicMethods["normalfunctions"] != 0 or self.publicMethods["virtualfunctions"]!= 0 or 
-                self.privateMethods["normalfunctions"] != 0 or self.privateMethods["virtualfunctions"]== 0 or
-                self.protectedMethods["normalfunctions"] != 0 or self.protectedMethods["virtualfunctions"] != 0)
-                and (self.publicMethods["purevirtualfunctions"] != 0 or self.privateMethods["purevirtualfunctions"] != 0 or self.publicMethods["purevirtualfunctions"] != 0))
+        return not self.is_interface() and not self.is_Concrete()
     def is_Concrete(self):
-        ((self.publicMethods["normalfunctions"] != 0 or self.publicMethods["virtualfunctions"]!= 0 or 
+        return (self.publicMethods["normalfunctions"] != 0 or self.publicMethods["virtualfunctions"]!= 0 or 
                 self.privateMethods["normalfunctions"] != 0 or self.privateMethods["virtualfunctions"]== 0 or
-                self.protectedMethods["normalfunctions"] != 0 or self.protectedMethods["virtualfunctions"] != 0)
-                and (self.publicMethods["purevirtualfunctions"] == 0 and self.privateMethods["purevirtualfunctions"] == 0 and self.publicMethods["purevirtualfunctions"] == 0))
+                self.protectedMethods["normalfunctions"] != 0 or self.protectedMethods["virtualfunctions"] != 0
+                and self.publicMethods["purevirtualfunctions"] == 0 and self.privateMethods["purevirtualfunctions"] == 0 and self.publicMethods["purevirtualfunctions"] == 0)
     def is_derivedclass(self):
         return len(self.Baseclasses) != 0
 
@@ -137,10 +134,7 @@ class InheritanceData:
         and (self.PublicMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"])):
             self.typeofinheritance = "Interface Inheritance"
         else: self.typeofinheritance = "Implementation Inheritance"
-    #Determine The Type of Class. (Abstract, interface or concrete class)
-    #Abstract class: atleast one pure virtual function 
-    #interface class: Strictly pure virtual functions
-    #Conctrete class: Any instantiable class (no unoverriden pure virtual function)
+
     def PureVirtualPresentInPublic(self):
         for pure_virtual in self.PublicMethods["inherited_pure_virtual"]:
             if not pure_virtual in self.overridenfunctions and not pure_virtual in self.inherited_overriden:
@@ -170,6 +164,7 @@ class InheritanceData:
 class ProjectData:
     def __init__(self):
         self.cppClasses = {} #stores classes information in the project
+        self.Declarations = []
         self.cppClassesNew = {} #stores project classes inheritance information 
         self.ProjectInheritanceData = [] #Store each inheritance information Data
     def getinheritancedata(self, className):
@@ -326,7 +321,7 @@ class ProjectData:
                 inheritancedata.compute_public_interface()
                 inheritancedata.compute_Added_Methods()
                 self.ProjectInheritanceData.append(inheritancedata)
-        self.PrintResults()
+        #self.PrintResults()
         return self.ProjectInheritanceData
     
     #Re-arranging inheritance in form of Superclass and its subclasses to get Hierachy DEPTHS

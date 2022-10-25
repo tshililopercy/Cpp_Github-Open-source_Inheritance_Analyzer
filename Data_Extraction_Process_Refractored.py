@@ -7,6 +7,11 @@ from StoreData import *
 
 idx = clang.cindex.Index.create()
 
+#Extract Method (including paramters) and variable declarations
+def ExtractDeclarations(cursor, project):
+    project.Declarations.append(cursor.type.spelling)
+    print(project.Declarations)
+
 def extractClassData(cursor, classinfo, project):
     if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
         for baseClass in cursor.get_children():
@@ -69,7 +74,11 @@ def extractClass(cursor, project):
         extractClassData(children, classinfo, project)
 
 def traverse_AST(cursor, project): # Transerving The Abstract Tree
-    #get cursors that represents classes 
+    #get cursors that represents classes
+    if cursor.kind.is_declaration():
+        if (cursor.kind != clang.cindex.CursorKind.CLASS_DECL and cursor.kind != clang.cindex.CursorKind.CXX_ACCESS_SPEC_DECL 
+            and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
+           ExtractDeclarations(cursor, project)
     if cursor.kind == clang.cindex.CursorKind.CLASS_DECL:
         extractClass(cursor, project)
     for child in cursor.get_children():
@@ -141,20 +150,20 @@ def parseTranslationUnit(file_path, project):
 def AnalyseRepository(RepoName):
     project = ProjectData()
     cppExtensions = ['*.hpp', '*.hxx', '*.h']
-    RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
-    for file_path in RepositoryFiles:
-        parseTranslationUnit(file_path, project)
+    #RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
+    #for file_path in RepositoryFiles:
+    parseTranslationUnit("test.cpp", project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")
     #File Must be deleted After Extraction to save Memory
     #Return Inheritance data 
-    return project.computeInheritanceData(), project.organizeHierachy()
+    return project.computeInheritanceData(), project.organizeHierachy(), project.Declarations
 
 def analyseAllRepositories():
     
     for name in os.listdir('../Repository'):
-        projectdatastorage = ProjectDataStorage (AnalyseRepository(name))
+        projectdatastorage = ProjectDataStorage (AnalyseRepository(name), )
         projectdatastorage.ComputeHieracyData()
         
 analyseAllRepositories()

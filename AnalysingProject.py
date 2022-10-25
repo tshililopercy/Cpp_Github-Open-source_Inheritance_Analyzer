@@ -65,7 +65,7 @@ class InheritanceData:
         for inherited_virtual in self.PrivateMethods["inherited_pure_virtual"]:
             if inherited_virtual in (self.PrivateMethods["Addedvirtualfunctions"] or self.PrivateMethods["Addednormalfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
-                print(self.overridenfunctions)
+                # print(self.overridenfunctions)
                 self.PrivateMethods["Addedvirtualfunctions"].remove(inherited_virtual)
             elif inherited_virtual in (self.PublicMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
@@ -148,7 +148,7 @@ class ProjectData:
                 inherited_overriden = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
                     inheritancedata.ParentClassNames.append(Baseclass['BaseClassInfo'].className)
-                    print(Baseclass['inheritancetype'])
+                    # print(Baseclass['inheritancetype'])
                     if Baseclass['inheritancetype'] == 'PUBLIC':
                         
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:

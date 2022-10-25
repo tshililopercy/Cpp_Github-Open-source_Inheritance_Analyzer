@@ -2,9 +2,11 @@
   "Depth Metrics": [
     {
       "Depth ": [
-        1
+        1,
+        2
       ],
       "Number of hierachies per depth": [
+        0,
         1
       ]
     }
@@ -14,9 +16,15 @@
       "Width": [
         1,
         2,
-        3
+        3,
+        4,
+        5,
+        6
       ],
       "Number of hierachies per width": [
+        0,
+        0,
+        0,
         0,
         0,
         1
@@ -26,15 +34,23 @@
   "Public Interface Metrics": [
     {
       "Public interface": [
-        17,
-        18,
-        19,
-        20
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
       ],
       "Number of hierachies per public_interface": [
         1,
+        2,
         1,
-        0,
+        1,
+        1,
+        1,
+        1,
         1
       ]
     }
@@ -42,6 +58,7 @@
   "Methods Metrics": [
     {
       "Novel methods": [
+        21,
         10
       ]
     }

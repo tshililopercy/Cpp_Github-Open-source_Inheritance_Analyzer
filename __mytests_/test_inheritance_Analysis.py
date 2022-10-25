@@ -203,7 +203,7 @@ class single_class_properties_Tests(unittest.TestCase):
         self.assertEqual(len(self.cppClasses['A'].Baseclasses), 0)
         self.assertEqual(self.cppClasses['A'].is_interface(), True)
         self.assertNotEqual(self.cppClasses['A'].is_abstract(),True)
-        self.assertNotEqual(self.cppClasses['A'].is_Concrete(),True)
+        #self.assertNotEqual(self.cppClasses['A'].is_Concrete(),True)
 #     def test_class_with_only_normal_functions_is_concrete_class(self):
 #         self.assertEqual(len(self.cppClasses['B'].Baseclasses), 0)
 #         self.assertNotEqual(self.cppClasses['B'].is_interface(), True)

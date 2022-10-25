@@ -10,7 +10,7 @@ idx = clang.cindex.Index.create()
 #Extract Method (including paramters) and variable declarations
 def ExtractDeclarations(cursor, project):
     project.Declarations.append(cursor.type.spelling)
-    print(project.Declarations)
+    #print(project.Declarations)
 
 def extractClassData(cursor, classinfo, project):
     if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
@@ -106,9 +106,9 @@ def parseTranslationUnit(file_path, project):
 def AnalyseRepository(RepoName):
     project = ProjectData()
     cppExtensions = ['*.hpp', '*.hxx', '*.h']
-    #RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
-    #for file_path in RepositoryFiles:
-    parseTranslationUnit("test.cpp", project)
+    RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
+    for file_path in RepositoryFiles:
+        parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
     #rmtree('../Repository')
     #shutil.rmtree("../Repository")
@@ -122,4 +122,4 @@ def analyseAllRepositories():
         projectdatastorage = ProjectDataStorage (AnalyseRepository(name), )
         projectdatastorage.ComputeHieracyData()
         
-analyseAllRepositories()
+#analyseAllRepositories()

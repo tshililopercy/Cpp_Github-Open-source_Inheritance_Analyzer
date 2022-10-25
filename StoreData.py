@@ -50,7 +50,7 @@ class ProjectDataStorage:
                 hieracydata.depth = Hierarchy_Max_Depth
                 hieracydata.size = Hierachy_Size
             self.HierachiesData.append(hieracydata)
-
+        self.HierachiesInfoPrint()
         self.PrintingHierachyData()
 
     #--------------- depth metrics----------------
@@ -243,3 +243,7 @@ class ProjectDataStorage:
         # Writing to sample.json
         with open("results.json", "w") as outfile:
             outfile.write(json_object)
+    def HierachiesInfoPrint(self):
+        for hierachydata in self.HierachiesData:
+            print()
+            print(hierachydata.DepthsInformation)

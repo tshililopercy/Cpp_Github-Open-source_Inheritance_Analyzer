@@ -32,7 +32,15 @@
   "Methods Metrics": [
     {
       "Novel methods": [
+<<<<<<< HEAD
         3
+=======
+        21,
+        10
+      ],
+      "Overriden methods": [
+        18
+>>>>>>> main
       ]
     }
   ]

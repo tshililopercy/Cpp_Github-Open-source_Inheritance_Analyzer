@@ -7,6 +7,11 @@ from StoreData import *
 
 idx = clang.cindex.Index.create()
 
+#Extract Method (including paramters) and variable declarations
+def ExtractDeclarations(cursor, project):
+    project.Declarations.append(cursor.type.spelling)
+    #print(project.Declarations)
+
 def extractClassData(cursor, classinfo, project):
     if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
         for baseClass in cursor.get_children():
@@ -20,6 +25,8 @@ def extractClassData(cursor, classinfo, project):
                    Parent['inheritancetype'] = 'PUBLIC'
                elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
                    Parent['inheritancetype'] = 'PRIVATE'
+               elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
+                   Parent['inheritancetype'] = 'PROTECTED'
                classinfo.Baseclasses.append(Parent)
     elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
         try:
@@ -48,7 +55,6 @@ def extractClassData(cursor, classinfo, project):
                     #classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
             elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
                 if cursor.is_pure_virtual_method():
-                #print(cursor.spelling)
                     classinfo.protectedMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
                 elif cursor.is_virtual_method():
                     classinfo.protectedMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
@@ -63,13 +69,16 @@ def extractClass(cursor, project):
     # The full name of class is stored
     classinfo = cppClass()
     classinfo.className = cursor.type.spelling
-    print(classinfo.className)
     for children in cursor.get_children():
         #Extracting Class Members (Data and methods declaration)
         extractClassData(children, classinfo, project)
 
 def traverse_AST(cursor, project): # Transerving The Abstract Tree
-    #get cursors that represents classes 
+    #get cursors that represents classes
+    if cursor.kind.is_declaration():
+        if (cursor.kind != clang.cindex.CursorKind.CLASS_DECL and cursor.kind != clang.cindex.CursorKind.CXX_ACCESS_SPEC_DECL 
+            and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
+           ExtractDeclarations(cursor, project)
     if cursor.kind == clang.cindex.CursorKind.CLASS_DECL:
         extractClass(cursor, project)
     for child in cursor.get_children():
@@ -98,7 +107,6 @@ def AnalyseRepository(RepoName):
     project = ProjectData()
     cppExtensions = ['*.hpp', '*.hxx', '*.h']
     RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
-    print(RepositoryFiles)
     for file_path in RepositoryFiles:
         parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
@@ -106,12 +114,12 @@ def AnalyseRepository(RepoName):
     #shutil.rmtree("../Repository")
     #File Must be deleted After Extraction to save Memory
     #Return Inheritance data 
-    return project.computeInheritanceData(), project.organizeHierachy()
+    return project.computeInheritanceData(), project.organizeHierachy(), project.Declarations
 
 def analyseAllRepositories():
     
     for name in os.listdir('../Repository'):
-        projectdatastorage = ProjectDataStorage (AnalyseRepository(name))
+        projectdatastorage = ProjectDataStorage (AnalyseRepository(name), )
         projectdatastorage.ComputeHieracyData()
         
-analyseAllRepositories()
+#analyseAllRepositories()

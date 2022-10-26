@@ -52,12 +52,14 @@ class ProjectDataStorage:
                 self.write_json(hieracydata.DepthsInformation)
     
     def StoreHierachiesData(self,hierachy):
+        print(len(hierachy))
         Object = {}
         Object['1'] = hierachy
         with open("HierachiesData.json", "w") as outfile:
-            json.dump(Object, outfile)
+            json.dump(Object, outfile, indent=4)
 
     def write_json(self, hierachydata):
+        print(len(hierachydata))
         with open('HierachiesData.json','r+') as file:
           #First we load existing data into a dict.
             file_data = json.load(file)
@@ -68,7 +70,9 @@ class ProjectDataStorage:
             file_data.update(HierachyObject)
         # convert back to json.
         with open('HierachiesData.json', 'w') as json_file:
-            json.dump(file_data, json_file)
+            json.dump(file_data, json_file, indent=4)
+            
+
 #     #--------------- depth metrics----------------
 #     def HierachyCountPerDepth(self, max_depths):
 #         total_hierachies = [] 

@@ -1,10 +1,10 @@
 import json
 import pandas as pd
+import matplotlib.pyplot as plt
 
+import os
 class HierachyData:
     def __init__(self):
-        self.depth = 0 # Maximum Hierachy level
-        self.size = 0 # number of classes 
         self.DepthsInformation = [] # Dictionary for each depth {depth Number:,inheritances[]}
 
 class ProjectDataStorage:
@@ -38,26 +38,63 @@ class ProjectDataStorage:
                     for inheritance in self.ProjectData:
                         if inheritance.derivedclassName in max_keys:
                             InheritanceInfo = {}
-                            DepthData["Depth Number"] = depth
+                            # DepthData["Depth Number"] = depth
                             InheritanceInfo["ClassName"] = inheritance.derivedclassName
                             InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
                             InheritanceInfo["SubClasses"] = inheritance.Parents
                             InheritanceInfo["typeofinheritance"] = inheritance.typeofinheritance
-                            InheritanceInfo["Public Interface"] = inheritance.PublicInterface
-                            InheritanceInfo["Added Methods"] = inheritance.Novelmethods
-                            InheritanceInfo["Overriden Methods"] = inheritance.overridenfunctions
+                            InheritanceInfo["Public Interface"] = len(inheritance.PublicInterface)
+                            InheritanceInfo["Added Methods"] = len(inheritance.Novelmethods)
+                            InheritanceInfo["Overriden Methods"] = len(inheritance.overridenfunctions)
                             InheritancesData.append(InheritanceInfo)
 
                     DepthData["Inheritances"] = InheritancesData
                     hieracydata.DepthsInformation.append(DepthData)
-                    # print(hieracydata.DepthsInformation[index]['Inheritances'])
-                hieracydata.depth = Hierarchy_Max_Depth
-                hieracydata.size = Hierachy_Size
-            self.HierachiesData.append(hieracydata)
-        # self.HierachiesInfoPrint()
+            if os.path.getsize("HierachiesData.json") == 0: 
+                #-------------------------Store First Hierachy--------------------#
+                self.StoreHierachiesData(hieracydata.DepthsInformation)
+            else:
+                #-------------------------Store Second Hierachy-------------------#
+                self.write_json(hieracydata.DepthsInformation)
+        print(Hierarchy_Max_Depth)
         self.PrintingHierachyData()
 
+    def StoreHierachiesData(self,hierachy):
+        Object = {}
+        Object['1'] = hierachy
+        with open("HierachiesData.json", "w") as outfile:
+            json.dump(Object, outfile)
+
+    def write_json(self, hierachydata):
+        with open('HierachiesData.json','r+') as file:
+          #First we load existing data into a dict.
+            file_data = json.load(file)
+        # Join new_data with file_data inside emp_details
+            HierachyID = len(file_data) + 1
+            HierachyObject = {}
+            HierachyObject[HierachyID] = hierachydata
+            file_data.update(HierachyObject)
+        # convert back to json.
+        with open('HierachiesData.json', 'w') as json_file:
+            json.dump(file_data, json_file)
+
+    def read_json(self):
+        print('OPEN')
+        with open('HierachiesData.json', 'r') as openfile:
+            # Reading data from the storage json file 
+            self.HierachiesData = json.load(openfile)
+        print('HIERARCHY   ')
+        # print(self.HierachiesData)
+        print(len(self.HierachiesData))
+
     #--------------- depth metrics----------------
+    def DepthMetrics(self, hierachydata):
+        '''Finds depths per hierachy'''
+        depths = []
+        depth = len(hierachydata)
+        depths.append(depth)
+        return depths
+        
     def HierachyCountPerDepth(self, max_depths):
         total_hierachies = [] 
         depth_sequence = []
@@ -71,10 +108,10 @@ class ProjectDataStorage:
         return depth_sequence, total_hierachies
             
 #---------------------width metrics---------------------------
-    def WidthMetrics(self, DIT_Max, hierachydata):
+    def WidthMetrics(self, hierachydata):
         '''Finds number of children per hierachy'''
         widths = []
-        for hierachyinfo in hierachydata.DepthsInformation:
+        for hierachyinfo in hierachydata:
             width = len(hierachyinfo['Inheritances'])
             widths.append(width)
         return widths
@@ -95,9 +132,9 @@ class ProjectDataStorage:
     def PublicInterfaceMetrics(self, hierachydata):
         '''Returns public interfaces per class'''
         public_interfaces = []
-        for hierachyinfo in hierachydata.DepthsInformation:
+        for hierachyinfo in hierachydata:
             for inheritances in hierachyinfo['Inheritances']:
-                public_interface = len(inheritances['Public Interface'])
+                public_interface = inheritances['Public Interface']
                 public_interfaces.append(public_interface)
         return public_interfaces
 
@@ -115,7 +152,7 @@ class ProjectDataStorage:
                 if p_i_val == p_i_:
                     count += 1
             total_classes.append(count)   
-        print('PUBLIC INTERFACE', public_interface_sequence, total_classes)
+        # print('PUBLIC INTERFACE', public_interface_sequence, total_classes)
         return public_interface_sequence, total_classes
 
     #-------------------------methods metrics----------------------
@@ -128,18 +165,14 @@ class ProjectDataStorage:
         additional_methods_occurrence = []
         # keep track which added method belongs to which depth
         depth_per_method = []
-        # keep track of the subclasses the added methods belong to
-        class_Names = []
-        #parent classes- check if from same hierachydata
-        parent_Names = []
-        for hierachyinfo in hierachydata.DepthsInformation:
+        for hierachyinfo in hierachydata:
             for inheritances in hierachyinfo['Inheritances']:
-                depth_ = hierachyinfo['Depth Number']
+                depth_ = len(hierachyinfo)
                 depth_per_method.append(depth_)
                 additional_method = inheritances['Added Methods']
                 additional_methods_names.append(additional_method)
-                occurrence = len(additional_method)
-                additional_methods_occurrence.append(occurrence)
+                # occurrence = additional_method
+                additional_methods_occurrence.append(additional_method)
         # print('OTHERS = ', class_Names, additional_methods_occurrence, depth_per_method)
         # l = 'ADDITIONAL'
         # novel_methods_class_occurrence = self. MethodsPerClass(additional_methods_occurrence, l)
@@ -155,14 +188,13 @@ class ProjectDataStorage:
         overriden_methods_occurrence = []
         # keep track which pverriden method belongs to which depth
         depth_per_method = [] 
-        for hierachyinfo in hierachydata.DepthsInformation:
+        for hierachyinfo in hierachydata:
             for inheritances in hierachyinfo['Inheritances']:
-                depth_ = hierachyinfo['Depth Number']
+                depth_ = len(hierachyinfo)
                 depth_per_method.append(depth_)
                 overriden_method = inheritances['Overriden Methods']
                 overriden_methods.append(overriden_method)
-                occurrence = len(overriden_method)
-                overriden_methods_occurrence.append(occurrence)
+                overriden_methods_occurrence.append(overriden_method)
         # print(overriden_methods_occurrence, depth_per_method)
         # l = 'OVERRIDEN'
         # overriden_methods_class_occurrence = self. MethodsPerClass(overriden_methods_occurrence, l)
@@ -200,8 +232,8 @@ class ProjectDataStorage:
                 if method_val == method_:
                     count += 1
             total_classes.append(count)   
-        print('METHOD SEQ ', method_sequence)
-        print('CLASSES ', total_classes, '\n')
+        # print('METHOD SEQ ', method_sequence)
+        # print('CLASSES ', total_classes, '\n')
         methods_per_classes_data['Method sequence'] = method_sequence
         methods_per_classes_data['Total Hierarchies'] = total_classes
 
@@ -243,34 +275,68 @@ class ProjectDataStorage:
         # print(overriden_methods)
         return novel_methods, overriden_methods
 
+   #-------------------------Class types metrics----------------------
+    def ClassTypeMetrics(self, hierachydata):
+        '''Returns Class types'''
+        class_types = []
+        for hierachyinfo in hierachydata:
+            for inheritances in hierachyinfo['Inheritances']:
+                class_type = inheritances['TypeOfClass']
+                class_types.append(class_type)
+        return class_types
+
+    def ClassTypesOccurrence(self, class_types):
+        class_type_data = []
+        abstract = class_types.count('Abstract Class')
+        concrete = class_types.count('Concrete Class')
+        interface = class_types.count('Interface Class')
+        class_type_data = [abstract, concrete, interface]
+        return class_type_data
+
+
+    def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
+        x= x_axis
+        y= y_axis
+        plt.bar(x, y)
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+        plt.title(plot_title)
+
     def PrintingHierachyData(self):
+        self.read_json()
+
         # DIT_Max - Depth of Inheritance Tree Maximum
         DIT_Max = [] # Stores depths per tree maximums
-        depth_data = {}
+        # depth_data = {}
         # BIT_Max - Breadth of Inheritance Tree Maximum
         BIT_Max = [] # Stores number of children maximums (NOC)
-        width_data = {}
+        # width_data = {}
 
-        public_interface_data = {}
+        # public_interface_data = {}
         max_public_interfaces_per_class = []
 
-        methods_data = {}
-        methods_vs_depth_data = {}
-        max_additional_methods_occurrence_per_depth = []
-        max_overriden_methods_occurrence_per_depth = []
+        # methods_data = {}
+        # methods_vs_depth_data = {}
+        # max_additional_methods_occurrence_per_depth = []
+        # max_overriden_methods_occurrence_per_depth = []
 
-        methods_vs_hierarchy_data = {}
+        # methods_vs_hierarchy_data = {}
         max_additional_methods_occurrence_per_hierarchy = []
         max_overriden_methods_occurrence_per_hierarchy = []
 
-        methods_vs_class_data = {}
         novel_methods_class_occurrence_per_class = []
         overriden_methods_class_occurrence_per_class = []
 
-        for hierachydata in self.HierachiesData:
-            DIT_Max.append(hierachydata.depth)
+        class_types = []
+        # class_types_data = []
+
+        for hierachydata_index in self.HierachiesData:
+            hierachydata = self.HierachiesData[hierachydata_index]
+            # depth
+            depths = self.DepthMetrics(hierachydata)
+            DIT_Max.append(max(depths))
             # widths
-            widths = self.WidthMetrics(DIT_Max, hierachydata)
+            widths = self.WidthMetrics(hierachydata)
             BIT_Max.append(max(widths))
             # public interface
             total_public_interfaces = self.PublicInterfaceMetrics(hierachydata)
@@ -279,67 +345,56 @@ class ProjectDataStorage:
             added_methods, additional_methods_occurrence,  depth_per_method = self.AdditionalMethodsMetrics(hierachydata)
             novel_methods_class_occurrence_per_class += additional_methods_occurrence
             max_additional_methods_occurrence_per_hierarchy.append(max(additional_methods_occurrence))
-            # overriden methods
+            # # overriden methods
             overriden_methods, overriden_methods_occurrence,  depth_per_method = self.OverridenMethodsMetrics(hierachydata)
             overriden_methods_class_occurrence_per_class += overriden_methods_occurrence
             max_overriden_methods_occurrence_per_hierarchy.append(max(overriden_methods_occurrence))
+            # class types
+            class_type = self.ClassTypeMetrics(hierachydata)
+            class_types += class_type
 
-        # depth metrics
+        # # depth metrics
         depth_ , num_of_hierachy_per_depth = self.HierachyCountPerDepth(DIT_Max)
-        depth_data['Depth '] = depth_
-        depth_data['Number of hierachies per depth'] = num_of_hierachy_per_depth
-        self.depth_metrics.append(depth_data)
+        plt.figure(1)
+        self.plotData(depth_, num_of_hierachy_per_depth, "Depth", "Hierachies",  "Number of hierachies per depth")
 
-        # width metrics
+        # # width metrics
         width_, num_of_hierachy_per_width = self.HierachyCountPerWidth(BIT_Max)
-        width_data['Width'] = width_
-        width_data['Number of hierachies per width'] = num_of_hierachy_per_width
-        self.width_metrics.append(width_data)
+        plt.figure(2)
+        self.plotData(width_, num_of_hierachy_per_width, "Width", "Hierachies",  "Number of hierachies per width")
 
         # public interface metrics
         public_interface_, num_of_classes_per_public_interface = self.ClassesCountPerPublicInterface(max_public_interfaces_per_class)
-        public_interface_data['Public interface'] = public_interface_
-        public_interface_data['Number of classes per public_interface'] = num_of_classes_per_public_interface
-        self.public_interface_metrics.append(public_interface_data)
+        plt.figure(3)
+        self.plotData(public_interface_, num_of_classes_per_public_interface, "Public Interface", "Classes",  "Number of Classes per public_interface")
 
         # methods per depth
         added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, additional_methods_occurrence, overriden_methods_occurrence, depth_per_method) #, overriden_functions
-        methods_vs_depth_data['Novel methods'] = added_functions
-        methods_vs_depth_data['Overriden methods'] = overriden_functions
-        self.methods_vs_depth_metrics.append(methods_vs_depth_data)
+        plt.figure(4)
+        self.plotData( added_functions['depth'],added_functions['methods'], "Depth", "Novel method",  "Number of novel methods per depth")
+        plt.figure(5)
+        self.plotData( overriden_functions['depth'], overriden_functions['methods'], "Depth",  "Overriden method",  "Number of overriden methods per depth")
 
         novel_methods_hierarchy_occurrence = self.MethodsPerHierachy(max_additional_methods_occurrence_per_hierarchy)
         overriden_methods_hierarchy_occurrence = self.MethodsPerHierachy(max_overriden_methods_occurrence_per_hierarchy)
-        methods_vs_hierarchy_data['Novel methods'] = novel_methods_hierarchy_occurrence
-        methods_vs_hierarchy_data['Overriden methods'] = overriden_methods_hierarchy_occurrence
-        self.methods_vs_hierarchy_metrics.append(methods_vs_hierarchy_data)      
+        plt.figure(6)
+        self.plotData( novel_methods_hierarchy_occurrence['Method sequence'], novel_methods_hierarchy_occurrence['Total Hierarchies'], "Methods", "Hierarchies",  "Novel Methods vs Hierarchies")
+        plt.figure(7)
+        self.plotData( overriden_methods_hierarchy_occurrence['Method sequence'], overriden_methods_hierarchy_occurrence['Total Hierarchies'], "Methods",  "Hierarchies",  "Overriden Methods vs Hierarchies") 
         
         novel_methods_class_occurrence= self. MethodsPerClass(novel_methods_class_occurrence_per_class)
         overriden_methods_class_occurrence = self. MethodsPerClass(overriden_methods_class_occurrence_per_class)
-        methods_vs_class_data['Novel methods'] = novel_methods_class_occurrence
-        methods_vs_class_data['Overriden methods'] = overriden_methods_class_occurrence
-        self.methods_vs_class_metrics.append(methods_vs_class_data)
+        plt.figure(8)
+        self.plotData( novel_methods_class_occurrence['Method sequence'], novel_methods_class_occurrence['Total Hierarchies'], "Methods", "Classes",  "Novel Methods vs Classes")
+        plt.figure(9)
+        self.plotData( overriden_methods_class_occurrence['Method sequence'], overriden_methods_class_occurrence['Total Hierarchies'], "Methods",  "Classes",  "Overriden Methods vs Classes")
+        # plt.show()
 
-        print( 'HIERACHYLEN ', len(self.HierachiesData))
-        print('NOVELS  ', len(novel_methods_class_occurrence_per_class))
-        self.StoreDataInFile()
-
-    def StoreDataInFile(self):
-        # Serializing json
-        results_ = {}
-        results_['Depth Metrics'] = self.depth_metrics
-        results_['Width Metrics'] = self.width_metrics
-        results_['Public Interface Metrics'] = self.public_interface_metrics
-        results_['Methods vs Depth Metrics'] = self.methods_vs_depth_metrics
-        results_['Methods vs Class Metrics'] = self.methods_vs_class_metrics
-        results_['Methods vs Hierarchy Metrics'] = self.methods_vs_hierarchy_metrics
-        json_object = json.dumps(results_, indent=2)
-        
-        # Writing to sample.json
-        with open("results.json", "w") as outfile:
-            outfile.write(json_object)
-
-    def HierachiesInfoPrint(self):
-        for hierachydata in self.HierachiesData:
-            # print()
-            print(hierachydata.DepthsInformation, '\n', '\n')
+        class_types_data = self.ClassTypesOccurrence(class_types)
+        labels = ['Abstract Classes', 'Conctrete Classes', 'Interface Classes']
+        fig, plot10 = plt.subplots()
+        plot10.pie(class_types_data, labels=labels, autopct='%1.1f%%')
+        plot10.axis('equal')
+        # plot10.title('Class Type')
+        plt.show()
+        # print(class_types_data)

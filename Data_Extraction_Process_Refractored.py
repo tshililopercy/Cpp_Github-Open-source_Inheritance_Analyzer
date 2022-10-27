@@ -4,6 +4,7 @@ import fnmatch
 from AnalysingProject import *
 from git import rmtree
 from StoreData import *
+from Data_Compute import *
 
 idx = clang.cindex.Index.create()
 
@@ -68,7 +69,7 @@ class Extractor:
                 print("Invalid CXX_METHOD declaration! " + str(cursor.type.spelling))
                 return
         project.cppClasses[classinfo.className] = classinfo
-    
+        
     def extractClass(self, cursor, project):
         
         # The full name of class is stored
@@ -126,8 +127,3 @@ class Extractor:
         return project.computeInheritanceData(), project.organizeHierachy(), project.Declarations
         #rmtree("../Repository")
     #analyseAllRepositories()
-            
-    
-    #Extract Method (including paramters) and variable declarations
-    
-    

@@ -288,7 +288,7 @@ class ProjectData:
                             RootObject["rootname"] = Baseclass['BaseClassInfo'].className
                             baseclassOject = self.getcppClass(Baseclass['BaseClassInfo'].className)
                             RootObject["PublicInterface"] = baseclassOject.publicMethods
-                            RootObject["typeofclass"] = baseclassOject
+                            RootObject["TypeOfClass"] = baseclassOject.getClassType()
                             inheritancedata.Parents.append(RootObject)
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
@@ -334,7 +334,7 @@ class ProjectData:
                             RootObject["rootname"] = Baseclass['BaseClassInfo'].className
                             baseclassOject = self.getcppClass(Baseclass['BaseClassInfo'].className)
                             RootObject["PublicInterface"] = baseclassOject.publicMethods
-                            RootObject["typeofclass"] = baseclassOject
+                            RootObject["TypeOfClass"] = baseclassOject.getClassType()
                             inheritancedata.Parents.append(RootObject)
                             inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
                             inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]

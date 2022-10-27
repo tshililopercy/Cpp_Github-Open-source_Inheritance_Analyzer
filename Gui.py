@@ -1,22 +1,70 @@
 import tkinter as tk
 import threading
-from tkinter.font import ROMAN
+import os
+from StoreData import *
+from tkinter import *
+from tkinter import ttk
 
 import Data_Extraction_Process_Refractored
 import GitHub_Search_And_Clone
 
-def CloneOpenSourceRepositories(lbox):
-    #GitHub_Search_And_Clone.SearchForOpenSourceProjects()
-    lbox.delete(0,tk.END)
-    RepoNames = ['deve1', 'dev2', 'dev3']
-    lbox.insert(tk.END,'Cloning....')
-
-#Analyse Repositories
-def AnalyseRepositories():
-    Data_Extraction_Process_Refractored.analyseAllRepositories()
-
-class UserInterface:
+class Clone_And_Analyse:
     def __init__(self):
+        self.ClonedRepos = []
+    def CloneOpenSourceRepositories(self,my_tree):
+        cloner = GitHub_Search_And_Clone.Cloner()
+        repos_info = cloner.get_repos_info()
+        for item in my_tree.get_children():
+                my_tree.delete(item)
+        for repo in repos_info:
+            # clear text
+            # print clone status
+            for item in my_tree.get_children():
+                my_tree.delete(item)
+            clonedRepo = []
+            before_current = True
+            for repo2 in repos_info:
+                if (repo["name"] == repo2["name"]):
+                    clonedRepo.append({'name': repo2["name"], 'status': 'Cloning...'})
+                    before_current = False
+                elif before_current:
+                    clonedRepo.append({'name': repo2["name"], 'status': 'Clone Complete..'})
+                else:
+                    clonedRepo.append({'name': repo2["name"], 'status': 'Waiting...'})
+                self.ClonedRepos = clonedRepo
+            for i, print_ in enumerate(clonedRepo):
+                print(i)
+                my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]), tags=('oddrow'))
+            if repo["name"] != "tensorflow":
+                cloner.cloneARepo(repo)
+    
+    #Analyse Repositories
+    def AnalyseRepositories(self,my_tree):
+        extractor = Data_Extraction_Process_Refractored.Extractor()
+            #Deleting Data Available in HierachiesData.json, for new analysis
+        open('HierachiesData.json', 'w').close()
+        for name in os.listdir('../Repository'):
+            for item in my_tree.get_children():
+                my_tree.delete(item)
+            for index, clonerepo in enumerate(self.ClonedRepos):
+                if clonerepo["name"] == name:
+                    self.ClonedRepos[index]['status'] = "Analysing" 
+            for i, print_ in enumerate(self.ClonedRepos):
+                my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]))
+            print("analysing", name)
+            projectdatastorage = ProjectDataStorage(extractor.AnalyseRepository(name))
+            projectdatastorage.ComputeHieracyData()
+            for index, clonerepo in enumerate(self.ClonedRepos):
+                if clonerepo["name"] == name:
+                    self.ClonedRepos[index]['status'] = "Done Analysing"
+            for item in my_tree.get_children():
+                my_tree.delete(item)
+            for i, print_ in enumerate(self.ClonedRepos):
+                my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]), tags=('oddrow'))
+                
+class GraphicalUserInterface:
+    def __init__(self):
+        _clone_and_analyze = Clone_And_Analyse()
         self.root = tk.Tk()
         self.root.title("GitHub Open Source Inheritance Analyzer")
         screen_width = str(self.root.winfo_screenwidth()//2)
@@ -24,17 +72,50 @@ class UserInterface:
         resolution =screen_width +'x'+screen_height
         self.root.geometry(resolution)
         
-        self.Label1 = tk.Label(self.root)
-        self.Label1.place(relx=0, rely=0, height=31, width=59)
-
-        self.Label1.configure(text='''Username :''')
-        self.lbox = tk.Listbox(self.root)
-        self.lbox.place(relx=0.5, rely=0.05, relheight=0.858, relwidth=0.44)
-        self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8), command=lambda: CloneOpenSourceRepositories(self.lbox))
-        self.clonebutton.place(relx=0.1, rely=0.25, height=45)
+        style = ttk.Style()
         
-        self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8), command=lambda:(threading.Thread(target=AnalyseRepositories,args=()).start()))
-        self.Analyzebutton.place(relx=0.1, rely=0.5, height=45)
+        style.theme_use("default")
+        #Configure our treeview colors
+        
+        style.configure("Treeview",
+                        Background="silver",
+                        foreground="black",
+                        rowheight=25,
+                        fieldbackground="silver"
+                        )
+        #Change selected color
+        style.map('Treeview', 
+                  background=[('selected', 'darkgrey')])
+        style.configure("Treeview.Heading", font=("Comic Sans MS", 12,'bold'))
+        tree_frame = Frame(self.root)
+        tree_frame.place(relx=0.4)
+        
+        tree_scroll = Scrollbar(tree_frame)
+        tree_scroll.pack(side=RIGHT,fill=Y)
+        
+        my_tree = ttk.Treeview(tree_frame, height = 14, yscrollcommand=tree_scroll.set)
+        
+        my_tree.pack()
+        
+        my_tree.tag_configure('rowsdisplay', background="grey", font=("Comic Sans MS", 11,))
+        
+        tree_scroll.config(command=my_tree.yview)
+        self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,)).start()))
+        self.clonebutton.place(relx=0.1, rely=0.3, height=45, width = 125)
+        self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.AnalyseRepositories,args=(my_tree,)).start()))
+        self.Analyzebutton.place(relx=0.1, rely=0.6, height=45, width = 125)
+        # Define Columns
+        my_tree['columns'] = ("Repository Name", "Status")
+        
+        #Formate Columns
+        my_tree.column("#0", width=0, stretch=NO)
+        my_tree.column("Repository Name", anchor=W, width=240)
+        my_tree.column("Status", anchor=W, width=150)
+        
+        my_tree.heading("#0", text="", anchor=W)
+        my_tree.heading("Repository Name", text="Repository Name", anchor= W)
+        my_tree.heading("Status", text="Status", anchor= W)
+        
         self.root.mainloop()
         
-UserInterface()
+GraphicalUserInterface()

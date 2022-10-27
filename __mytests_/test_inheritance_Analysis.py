@@ -15,20 +15,23 @@ def getPath(file_path):
 def ExtractedClassesData(file_path):
     source_path = getPath(file_path)
     project = ProjectData()
-    Data_Extraction_Process_Refractored.parseTranslationUnit(source_path, project)
+    extractor = Data_Extraction_Process_Refractored.Extractor()
+    extractor.parseTranslationUnit(source_path, project)
     return project.cppClasses
 #------------------------For Computing Inheritance Data for every inheritance in a hierachy---------------------#
 def InheritancesData(file_path):
     source_path = getPath(file_path)
     project = ProjectData()
-    Data_Extraction_Process_Refractored.parseTranslationUnit(source_path, project)
+    extractor = Data_Extraction_Process_Refractored.Extractor()
+    extractor.parseTranslationUnit(source_path, project)
     inheritanceData = project.computeInheritanceData()
     return inheritanceData
 #---------------------For computing The Inheritance Hierachy---------------------------#
 def getinheritanceHierachies(file_path):
     source_path = getPath(file_path)
     project = ProjectData()
-    Data_Extraction_Process_Refractored.parseTranslationUnit(source_path, project)
+    extractor = Data_Extraction_Process_Refractored.Extractor()
+    extractor.parseTranslationUnit(source_path, project)
     inheritancehierachies = project.organizeHierachy()
     return inheritancehierachies
 
@@ -203,17 +206,17 @@ class single_class_properties_Tests(unittest.TestCase):
         self.assertEqual(len(self.cppClasses['A'].Baseclasses), 0)
         self.assertEqual(self.cppClasses['A'].is_interface(), True)
         self.assertNotEqual(self.cppClasses['A'].is_abstract(),True)
-        #self.assertNotEqual(self.cppClasses['A'].is_Concrete(),True)
-#     def test_class_with_only_normal_functions_is_concrete_class(self):
-#         self.assertEqual(len(self.cppClasses['B'].Baseclasses), 0)
-#         self.assertNotEqual(self.cppClasses['B'].is_interface(), True)
-#         self.assertNotEqual(self.cppClasses['B'].is_abstract(),True)
-#         self.assertEqual(self.cppClasses['B'].is_Concrete(),True)
-#     def test_class_with_normal_functions_is_concrete_class(self):
-#         self.assertEqual(len(self.cppClasses['B'].Baseclasses), 0)
-#         self.assertNotEqual(self.cppClasses['B'].is_interface(), True)
-#         self.assertNotEqual(self.cppClasses['B'].is_abstract(),True)
-#         self.assertEqual(self.cppClasses['B'].is_Concrete(),True)
+        self.assertNotEqual(self.cppClasses['A'].is_Concrete(),True)
+    def test_class_with_only_normal_functions_is_concrete_class(self):
+        self.assertEqual(len(self.cppClasses['B'].Baseclasses), 0)
+        self.assertNotEqual(self.cppClasses['B'].is_interface(), True)
+        self.assertNotEqual(self.cppClasses['B'].is_abstract(),True)
+        self.assertEqual(self.cppClasses['B'].is_Concrete(),True)
+    def test_class_with_normal_functions_is_concrete_class(self):
+        self.assertEqual(len(self.cppClasses['B'].Baseclasses), 0)
+        self.assertNotEqual(self.cppClasses['B'].is_interface(), True)
+        self.assertNotEqual(self.cppClasses['B'].is_abstract(),True)
+        self.assertEqual(self.cppClasses['B'].is_Concrete(),True)
         
     #---------------------------------------Single Inheritance Data-----------------------------------------------------------#
 class Single_Methods_Inheritance_Tests(unittest.TestCase):

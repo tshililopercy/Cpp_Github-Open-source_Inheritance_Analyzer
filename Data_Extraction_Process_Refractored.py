@@ -74,6 +74,7 @@ class Extractor:
         # The full name of class is stored
         classinfo = cppClass()
         classinfo.className = cursor.type.spelling
+        print(cursor.type.spelling)
         for children in cursor.get_children():
             #Extracting Class Members (Data and methods declaration)
             self.extractClassData(children, classinfo, project)
@@ -102,6 +103,7 @@ class Extractor:
        return cppFiles
     
     def parseTranslationUnit(self, file_path, project):  
+        print(file_path)
         tu = idx.parse(path = file_path, args=['-x', 'c++'],  
                     unsaved_files=None,  options=0)
         self.traverse_AST(tu.cursor, project)

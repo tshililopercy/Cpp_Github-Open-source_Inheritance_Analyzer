@@ -1,7 +1,5 @@
 import tkinter as tk
 import threading
-from tkinter.font import ROMAN
-from turtle import right, width
 import os
 from StoreData import *
 

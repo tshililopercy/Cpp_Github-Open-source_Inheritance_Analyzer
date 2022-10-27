@@ -192,11 +192,20 @@ class ProjectDataVisualize:
     def ClassTypeMetrics(self, hierachydata):
         '''Returns Class types'''
         class_types = []
+        abstract_class = []
+        count = 0
         for hierachyinfo in hierachydata:
             for inheritances in hierachyinfo['Inheritances']:
                 class_type = inheritances['TypeOfClass']
                 class_types.append(class_type)
-        return class_types
+                # print(class_type)
+                if class_type == 'Abstract Class':
+                    count += 1
+                    abstract_class.append(count)
+                else:
+                    abstract_class.append(count)
+
+        return class_types, abstract_class
 
     def ClassTypesOccurrence(self, class_types):
         class_type_data = []
@@ -206,6 +215,18 @@ class ProjectDataVisualize:
         class_type_data = [abstract, concrete, interface]
         return class_type_data
 
+    #-------------------------Abstract Class metrics----------------------
+    def HierachyCountPerAbstractClass(self, max_abstract_classes_per_hierarchy):
+        total_hierachies = [] 
+        abstract_class_sequence = []
+        for abstract_class_val in range(0, max(max_abstract_classes_per_hierarchy)+1, 1):
+            count=0
+            abstract_class_sequence.append(abstract_class_val)
+            for abstract_class_ in max_abstract_classes_per_hierarchy:
+                if abstract_class_val == abstract_class_:
+                    count += 1
+            total_hierachies.append(count)    
+        return abstract_class_sequence, total_hierachies
 
     def PrintingHierachyData(self):
         # Read hierarchy data for all repos
@@ -226,7 +247,7 @@ class ProjectDataVisualize:
         overriden_methods_class_occurrence_per_class = []
 
         class_types = []
-        # class_types_data = []
+        max_abstract_classes_per_hierarchy = []
 
         for hierachydata_index in self.HierachiesData:
             hierachydata = self.HierachiesData[hierachydata_index]
@@ -248,9 +269,10 @@ class ProjectDataVisualize:
             overriden_methods_class_occurrence_per_class += overriden_methods_occurrence
             max_overriden_methods_occurrence_per_hierarchy.append(max(overriden_methods_occurrence))
             # class types
-            class_type = self.ClassTypeMetrics(hierachydata)
-            class_types += class_type
-
+            class_type, abstract_class = self.ClassTypeMetrics(hierachydata)
+            class_types += class_type # for all hierarchies - types include abstract, concrete, and interface
+            max_abstract_classes_per_hierarchy.append(max(abstract_class)) #for all hierarchies -only abstract classes
+        
         # # depth metrics
         depth_ , num_of_hierachy_per_depth = self.HierachyCountPerDepth(DIT_Max)
         plt.figure(1)
@@ -295,9 +317,13 @@ class ProjectDataVisualize:
         fig, plot10 = plt.subplots()
         plot10.pie(class_types_data, labels=labels, autopct='%1.1f%%')
         plot10.axis('equal')
-        # plot10.title('Class Type')
-        plt.show()
 
+        #abstract classes
+        abstract_classes_, num_of_hierachy_per_abstract_class = self.HierachyCountPerAbstractClass(max_abstract_classes_per_hierarchy)
+        plt.figure(11)
+        self.plotData( abstract_classes_, num_of_hierachy_per_abstract_class, "Abstract Classes",  "Hierarchies",  "Abstract Classes vs Hierachies")
+        plt.show()
+    
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
         '''This function plots y_axis vs x_axis'''
         x= x_axis

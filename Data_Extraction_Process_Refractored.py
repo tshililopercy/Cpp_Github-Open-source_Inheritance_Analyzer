@@ -4,6 +4,7 @@ import fnmatch
 from AnalysingProject import *
 from git import rmtree
 from StoreData import *
+from Data_Compute import *
 
 idx = clang.cindex.Index.create()
 
@@ -101,13 +102,12 @@ def parseTranslationUnit(file_path, project):
     tu = idx.parse(path = file_path, args=['-x', 'c++'],  
                 unsaved_files=None,  options=0)
     traverse_AST(tu.cursor, project)
-    #show_AST(tu.cursor, no_system_includes)
 
 def AnalyseRepository(RepoName):
     project = ProjectData()
     cppExtensions = ['*.hpp', '*.hxx', '*.h']
     RepositoryFiles = FindRepoFiles(RepoName,cppExtensions)
-    print(RepositoryFiles)
+    # print(RepositoryFiles)
     for file_path in RepositoryFiles:
         parseTranslationUnit(file_path, project)
     #Deleting Repo Folder after extracting inheritance Data
@@ -123,5 +123,7 @@ def analyseAllRepositories():
     for name in os.listdir('../Repository'):
         projectdatastorage = ProjectDataStorage (AnalyseRepository(name))
         projectdatastorage.ComputeHieracyData()
-        
-#analyseAllRepositories()
+    projectdatavisualize = ProjectDataVisualize()
+    projectdatavisualize.PrintingHierachyData()
+
+analyseAllRepositories()

@@ -193,27 +193,43 @@ class ProjectDataVisualize:
         '''Returns Class types'''
         class_types = []
         abstract_class = []
+        all_class_types = []
         count = 0
         for hierachyinfo in hierachydata:
             for inheritances in hierachyinfo['Inheritances']:
                 class_type = inheritances['TypeOfClass']
                 class_types.append(class_type)
+                all_class_types.append(class_type)
                 # print(class_type)
                 if class_type == 'Abstract Class':
                     count += 1
                     abstract_class.append(count)
                 else:
                     abstract_class.append(count)
+                
+                # include root hierachy memmbers
+                for rootclassInfo in inheritances['SubClasses']:
+                    # root classes have more infomation, i.e. name of rootclass, type of class and public interfaces
+                    if len(rootclassInfo) > 2:
+                        class_type_rootclass = rootclassInfo['TypeOfClass']
+                        all_class_types.append(class_type_rootclass)
+        return class_types, abstract_class, all_class_types
 
-        return class_types, abstract_class
-
-    def ClassTypesOccurrence(self, class_types):
+    def ClassTypesOccurrence(self, class_types, all_class_types):
+        # for hierarchy members inside the hierarchy (i.e. from depth >1)
         class_type_data = []
         abstract = class_types.count('Abstract Class')
         concrete = class_types.count('Concrete Class')
         interface = class_types.count('Interface Class')
+
+        # for all hierachy members including depth=0
+        all_abstract = all_class_types.count('Abstract Class')
+        all_concrete = all_class_types.count('Concrete Class')
+        all_interface = all_class_types.count('Interface Class')
+
+        all_class_types_data = [all_abstract, all_concrete, all_interface]
         class_type_data = [abstract, concrete, interface]
-        return class_type_data
+        return class_type_data, all_class_types_data
 
     #-------------------------Abstract Class metrics----------------------
     def HierachyCountPerAbstractClass(self, max_abstract_classes_per_hierarchy):
@@ -227,6 +243,41 @@ class ProjectDataVisualize:
                     count += 1
             total_hierachies.append(count)    
         return abstract_class_sequence, total_hierachies
+
+    def BreachOfDIP(self, hierachydata):
+        dip_ = []
+        Info = []
+        # DIP = 0 (no DIP breach/ Abstract classes). DIP = 1 (direct breach of the DIP - abstract class inheriting from concrete class)
+        for hierachyinfo in hierachydata:
+            for inheritances in hierachyinfo['Inheritances']:
+                class_type_childclass = inheritances['TypeOfClass']
+                if class_type_childclass == 'Abstract Class':
+                    childclass = inheritances['ClassName']
+                    for parentclassInfo in inheritances['SubClasses']:
+                        parentclassName = parentclassInfo['rootname']
+
+                        class_type_parentclass = parentclassInfo['TypeOfClass']
+                        Info.append(f'ClassName:{childclass} Type:{class_type_childclass}  ParentName:{parentclassName} Type:{class_type_parentclass}')
+                        if class_type_parentclass == 'Concrete Class':
+                            dip_.append(1)
+                        else:
+                            dip_.append(0)
+                else:
+                    Info.append(class_type_childclass)
+                    dip_.append(0)     
+        return dip_, Info
+                    
+    def HierarchyOutOfOrder(self, dip):
+        total_hierachies = [] 
+        dip_sequence = []
+        for dip_val in range(0, max(dip)+1, 1):
+            count=0
+            dip_sequence.append(dip_val)
+            for dip_ in dip:
+                if dip_val == dip_:
+                    count += 1
+            total_hierachies.append(count)    
+        return dip_sequence, total_hierachies
 
     def PrintingHierachyData(self):
         # Read hierarchy data for all repos
@@ -245,9 +296,14 @@ class ProjectDataVisualize:
 
         novel_methods_class_occurrence_per_class = []
         overriden_methods_class_occurrence_per_class = []
-
+        depth_per_method_data = []
+        
+        all_class_types_ = []
         class_types = []
         max_abstract_classes_per_hierarchy = []
+        DIP_occurence_per_hierarchy = []
+        dipS = []
+        Info_ = []
 
         for hierachydata_index in self.HierachiesData:
             hierachydata = self.HierachiesData[hierachydata_index]
@@ -268,11 +324,20 @@ class ProjectDataVisualize:
             overriden_methods, overriden_methods_occurrence,  depth_per_method = self.OverridenMethodsMetrics(hierachydata)
             overriden_methods_class_occurrence_per_class += overriden_methods_occurrence
             max_overriden_methods_occurrence_per_hierarchy.append(max(overriden_methods_occurrence))
+
+            depth_per_method_data += depth_per_method
             # class types
-            class_type, abstract_class = self.ClassTypeMetrics(hierachydata)
+            class_type, abstract_class, all_class_types = self.ClassTypeMetrics(hierachydata)
             class_types += class_type # for all hierarchies - types include abstract, concrete, and interface
+            all_class_types_ += all_class_types
             max_abstract_classes_per_hierarchy.append(max(abstract_class)) #for all hierarchies -only abstract classes
+            # store out of order occurrence
+            dip_, Info = self.BreachOfDIP(hierachydata)
+            # Info_ += Info
+            # dipS += dip_
+            DIP_occurence_per_hierarchy.append(max(dip_))
         
+        # print(dipS, Info_)
         # # depth metrics
         depth_ , num_of_hierachy_per_depth = self.HierachyCountPerDepth(DIT_Max)
         plt.figure(1)
@@ -289,7 +354,7 @@ class ProjectDataVisualize:
         self.plotData(public_interface_, num_of_classes_per_public_interface, "Public Interface", "Classes",  "Number of Classes per public_interface")
 
         # methods per depth
-        added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, additional_methods_occurrence, overriden_methods_occurrence, depth_per_method) #, overriden_functions
+        added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, novel_methods_class_occurrence_per_class, overriden_methods_class_occurrence_per_class, depth_per_method_data) #, overriden_functions
         plt.figure(4)
         self.plotData( added_functions['depth'],added_functions['methods'], "Depth", "Novel method",  "Number of novel methods per depth")
         plt.figure(5)
@@ -312,16 +377,28 @@ class ProjectDataVisualize:
         self.plotData( overriden_methods_class_occurrence['Method sequence'], overriden_methods_class_occurrence['Total Classes'], "Methods",  "Classes",  "Overriden Methods vs Classes")
 
         #class types 
-        class_types_data = self.ClassTypesOccurrence(class_types)
+        class_types_data, all_class_types_data = self.ClassTypesOccurrence(class_types, all_class_types_)
         labels = ['Abstract Classes', 'Conctrete Classes', 'Interface Classes']
         fig, plot10 = plt.subplots()
-        plot10.pie(class_types_data, labels=labels, autopct='%1.1f%%')
-        plot10.axis('equal')
+        plt.title('Class Types for all hierarchy members')
+        plot10.pie(all_class_types_data, labels=labels, autopct='%1.1f%%')
+        plot10.axis('equal')       
+        
+        fig, plot11 = plt.subplots()
+        plt.title('Class Types for hierarchy members inside the hierarchies')
+        plot11.pie(class_types_data, labels=labels, autopct='%1.1f%%')
+        plot11.axis('equal')
+
+        print(100 - (class_types_data[0]/all_class_types_data[0])*100, '% Of the abstract classes are hierarchy roots')
 
         #abstract classes
         abstract_classes_, num_of_hierachy_per_abstract_class = self.HierachyCountPerAbstractClass(max_abstract_classes_per_hierarchy)
-        plt.figure(11)
+        plt.figure(12)
         self.plotData( abstract_classes_, num_of_hierachy_per_abstract_class, "Abstract Classes",  "Hierarchies",  "Abstract Classes vs Hierachies")
+
+        Out_of_Order_occurrence, num_of_hierarchy_out_of_order = self. HierarchyOutOfOrder(DIP_occurence_per_hierarchy)
+        plt.figure(13)
+        self.plotData( Out_of_Order_occurrence, num_of_hierarchy_out_of_order, "Out of Order (0 - no, 1 - yes)",  "Hierarchies",  "Hierarchies vs Out of Order")
         plt.show()
     
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
@@ -332,3 +409,5 @@ class ProjectDataVisualize:
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.title(plot_title)
+
+# ProjectDataVisualize().PrintingHierachyData()

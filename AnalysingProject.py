@@ -185,6 +185,8 @@ class ProjectData:
     def getcppClass(self, classname):
         if classname in self.cppClasses:
             return self.cppClasses[classname]
+        else: 
+            return {}
     def computestheclasses(self):
         for _class in self.cppClasses:
             print("classes Available", _class)
@@ -214,7 +216,6 @@ class ProjectData:
                 for Baseclass in self.cppClasses[_class].Baseclasses:
 
                     if Baseclass['inheritancetype'] == 'PUBLIC':
-                        print(Baseclass['BaseClassInfo'].className)
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             BaseClassNameAndType = {}
                             BaseClassNameAndType["rootname"] = Baseclass['BaseClassInfo'].className

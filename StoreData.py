@@ -4,16 +4,20 @@ import os
 class HierachyData:
     def __init__(self):
         self.DepthsInformation = [] # Dictionary for each depth {depth Number:,inheritances[]}
-
+        
 class ProjectDataStorage:
     def __init__(self, ProjectInheritanceData_HierachyLevels_And_Declarations):
-        self.ProjectData, self.HierachiesLevels, Declarations = ProjectInheritanceData_HierachyLevels_And_Declarations
-        print(Declarations)
-        print(self.HierachiesLevels)
-        self.HierachiesData = []
+        self.ProjectData, self.HierachiesLevels, self.Declarations = ProjectInheritanceData_HierachyLevels_And_Declarations
+        #print(Declarations)
+        #print(self.HierachiesLevels)
+        self.ProjectHierachies = {}
+        self.ProjectHierarchiesData = {}
+        self.HierarchiesData = {}
+        self.ClassesUsedInCode = []
         
     def ComputeHieracyData(self):
         for HierachyID, hierachylevels in enumerate(self.HierachiesLevels):
+            print(HierachyID)
             hieracydata = HierachyData()
             #Getting Hierarchy maximum Depth 
             Hierarchy_Max_Depth = max(hierachylevels.values())
@@ -38,7 +42,6 @@ class ProjectDataStorage:
                     for inheritance in self.ProjectData:
                         if inheritance.derivedclassName in max_keys:
                             InheritanceInfo = {}
-                            DepthData["Depth Number"] = depth
                             InheritanceInfo["ClassName"] = inheritance.derivedclassName
                             InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
                             InheritanceInfo["SubClasses"] = inheritance.Parents
@@ -48,32 +51,47 @@ class ProjectDataStorage:
                             InheritanceInfo["Overriden Methods"] = len(inheritance.overridenfunctions)
                             InheritancesData.append(InheritanceInfo)
 
-                    DepthData["Inheritances"] = InheritancesData
-                    hieracydata.DepthsInformation.append(DepthData)
-            if os.path.getsize("HierachiesData.json") == 0: 
-                #-------------------------Store First Hierachy--------------------#
-                self.StoreHierachiesData(hieracydata.DepthsInformation)
-            else:
-                #-------------------------Store Second Hierachy-------------------#
-                self.write_json(hieracydata.DepthsInformation)
-
-    def StoreHierachiesData(self,hierachy):
-        print(len(hierachy))
+                    DepthData["Depth Number " + str(depth)] = InheritancesData
+                    hieracydata.DepthsInformation.append(DepthData)   
+            self.HierarchiesData["Hierarchy " + str(HierachyID + 1)] = hieracydata.DepthsInformation
+            self.ClassesUsedInCode += self.DetermineClassesUsedInCode(hierachylevels)
+        self.ProjectHierarchiesData["Hierarchies"] = self.HierarchiesData
+        self.ProjectHierarchiesData["ClassesUsed"] = self.ClassesUsedInCode
+        print(self.ProjectHierarchiesData)
+        if os.path.getsize("HierachiesData.json") == 0: 
+            #-------------------------Store First Hierachy--------------------#
+            self.StoreHierachiesData(self.ProjectHierarchiesData)
+        else:
+            #-------------------------Store Second Hierachy-------------------#
+            self.write_json(self.ProjectHierarchiesData)
+        #print(self.ProjectHierarchiesData)
+    def StoreHierachiesData(self,ProjectHierachiesData):
+        print(len(ProjectHierachiesData))
         Object = {}
-        Object['1'] = hierachy
+        Object["Project " + '1'] = ProjectHierachiesData
         with open("HierachiesData.json", "w") as outfile:
             json.dump(Object, outfile, indent=4)
 
-    def write_json(self, hierachydata):
-        print(len(hierachydata))
+    def write_json(self, ProjectHierachiesData):
+        print(len(ProjectHierachiesData))
         with open('HierachiesData.json','r+') as file:
           #First we load existing data into a dict.
             file_data = json.load(file)
         # Join new_data with file_data inside emp_details
-            HierachyID = len(file_data) + 1
-            HierachyObject = {}
-            HierachyObject[HierachyID] = hierachydata
-            file_data.update(HierachyObject)
+            ProjectID = len(file_data) + 1
+            ProjectObject = {}
+            ProjectObject["Project " + str(ProjectID)] = ProjectHierachiesData
+            file_data.update(ProjectObject)
         # convert back to json.
         with open('HierachiesData.json', 'w') as json_file:
             json.dump(file_data, json_file, indent=4)
+            
+    def DetermineClassesUsedInCode(self, hierarchyLevels):
+        usedClasses = []
+        hierarchyClasses = hierarchyLevels.keys()
+        for classname in hierarchyClasses:
+            for declaration in self.Declarations:
+                if classname in declaration:
+                    if classname not in usedClasses:
+                        usedClasses.append(classname)   
+        return usedClasses

@@ -105,7 +105,7 @@ class GraphicalUserInterface:
         my_tree.tag_configure('rowsdisplay', background="grey", font=("Comic Sans MS", 11,))
         
         tree_scroll.config(command=my_tree.yview)
-        self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.AnalyseRepositories,args=(my_tree,)).start()), state= DISABLED)
+        self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.AnalyseRepositories,args=(my_tree,)).start()))
         self.Analyzebutton.place(relx=0.1, rely=0.6, height=45, width = 125)
         self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,self.Analyzebutton,)).start()))
         self.clonebutton.place(relx=0.1, rely=0.3, height=45, width = 125)

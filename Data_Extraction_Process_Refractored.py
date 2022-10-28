@@ -4,7 +4,6 @@ import fnmatch
 from AnalysingProject import *
 from git import rmtree
 from StoreData import *
-from Data_Compute import *
 
 idx = clang.cindex.Index.create()
 

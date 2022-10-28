@@ -1,0 +1,309 @@
+{
+    "1": [
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "IOperatorCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "IExpressionCommand",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [
+                                    "CalculationManager::CommandType GetCommandType () const",
+                                    "void Accept (int)"
+                                ],
+                                "virtualfunctions": [],
+                                "normalfunctions": []
+                            },
+                            "TypeOfClass": "Interface Class"
+                        }
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 0,
+                    "Added Methods": 0,
+                    "Overriden Methods": 0
+                },
+                {
+                    "ClassName": "IOpndCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "IExpressionCommand",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [
+                                    "CalculationManager::CommandType GetCommandType () const",
+                                    "void Accept (int)"
+                                ],
+                                "virtualfunctions": [],
+                                "normalfunctions": []
+                            },
+                            "TypeOfClass": "Interface Class"
+                        }
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 1,
+                    "Added Methods": 1,
+                    "Overriden Methods": 0
+                },
+                {
+                    "ClassName": "IParenthesisCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "IExpressionCommand",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [
+                                    "CalculationManager::CommandType GetCommandType () const",
+                                    "void Accept (int)"
+                                ],
+                                "virtualfunctions": [],
+                                "normalfunctions": []
+                            },
+                            "TypeOfClass": "Interface Class"
+                        }
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 0,
+                    "Added Methods": 0,
+                    "Overriden Methods": 0
+                }
+            ]
+        },
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "IUnaryCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        "IOperatorCommand"
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 0,
+                    "Added Methods": 0,
+                    "Overriden Methods": 0
+                },
+                {
+                    "ClassName": "IBinaryCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        "IOperatorCommand"
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 0,
+                    "Added Methods": 0,
+                    "Overriden Methods": 0
+                },
+                {
+                    "ClassName": "CParentheses",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        "IParenthesisCommand"
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 1,
+                    "Added Methods": 1,
+                    "Overriden Methods": 2
+                },
+                {
+                    "ClassName": "COpndCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        "IOpndCommand"
+                    ],
+                    "typeofinheritance": "Implementation Inheritance",
+                    "Public Interface": 6,
+                    "Added Methods": 5,
+                    "Overriden Methods": 7
+                }
+            ]
+        },
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "CUnaryCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        "IUnaryCommand"
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 1,
+                    "Added Methods": 1,
+                    "Overriden Methods": 3
+                },
+                {
+                    "ClassName": "CBinaryCommand",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        "IBinaryCommand"
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 1,
+                    "Added Methods": 1,
+                    "Overriden Methods": 3
+                }
+            ]
+        }
+    ],
+    "2": [
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "CalculationManager::CalculatorHistory",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "IHistoryDisplay",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [
+                                    "unsigned AddToHistory int (int)"
+                                ],
+                                "virtualfunctions": [],
+                                "normalfunctions": []
+                            },
+                            "TypeOfClass": "Interface Class"
+                        }
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 6,
+                    "Added Methods": 6,
+                    "Overriden Methods": 0
+                }
+            ]
+        }
+    ],
+    "3": [
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "CalculationManager::CalculatorManager",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "ICalcDisplay",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [
+                                    "void SetPrimaryDisplay (const int &, bool)",
+                                    "void SetIsInError (bool)",
+                                    "void SetExpressionDisplay (int)",
+                                    "void SetParenthesisNumber (int)",
+                                    "void OnNoRightParenAdded ()",
+                                    "void MaxDigitsReached ()",
+                                    "void BinaryOperatorReceived ()",
+                                    "void OnHistoryItemAdded (int)",
+                                    "void SetMemorizedNumbers (const int &)",
+                                    "void MemoryItemChanged (unsigned int)",
+                                    "void InputChanged ()"
+                                ],
+                                "virtualfunctions": [],
+                                "normalfunctions": []
+                            },
+                            "TypeOfClass": "Interface Class"
+                        }
+                    ],
+                    "typeofinheritance": "Interface Inheritance",
+                    "Public Interface": 31,
+                    "Added Methods": 31,
+                    "Overriden Methods": 6
+                }
+            ]
+        }
+    ],
+    "4": [
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "UnitConversionManager::UnitConverter",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "UnitConversionManager::IUnitConverter",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [
+                                    "void Initialize ()",
+                                    "UnitConversionManager::Category GetCurrentCategory ()",
+                                    "void SetCurrentUnitTypes (const UnitConversionManager::Unit &, const UnitConversionManager::Unit &)",
+                                    "void SwitchActive (const int &)",
+                                    "bool IsSwitchedActive () const",
+                                    "void RestoreUserPreferences (int)",
+                                    "void SendCommand (UnitConversionManager::Command)",
+                                    "void SetViewModelCallback (const int)",
+                                    "void SetViewModelCurrencyCallback (const int)",
+                                    "void Calculate ()",
+                                    "void ResetCategoriesAndRatios ()"
+                                ],
+                                "virtualfunctions": [],
+                                "normalfunctions": [
+                                    "int GetCategories ()",
+                                    "int SetCurrentCategory (const UnitConversionManager::Category &)",
+                                    "int SaveUserPreferences ()"
+                                ]
+                            },
+                            "TypeOfClass": "Abstract Class"
+                        }
+                    ],
+                    "typeofinheritance": "Implementation Inheritance",
+                    "Public Interface": 13,
+                    "Added Methods": 10,
+                    "Overriden Methods": 7
+                }
+            ]
+        }
+    ],
+    "5": [
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "CalculatorApp::ViewModel::DataLoaders::CurrencyHttpClient",
+                    "TypeOfClass": "Abstract Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "CalculatorApp::ViewModel::DataLoaders::ICurrencyHttpClient",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [
+                                    "void SetSourceCurrencyCode (int)",
+                                    "void SetResponseLanguage (int)"
+                                ],
+                                "virtualfunctions": [],
+                                "normalfunctions": [
+                                    "int GetCurrencyMetadata ()",
+                                    "int GetCurrencyRatios ()"
+                                ]
+                            },
+                            "TypeOfClass": "Abstract Class"
+                        }
+                    ],
+                    "typeofinheritance": "Implementation Inheritance",
+                    "Public Interface": 6,
+                    "Added Methods": 4,
+                    "Overriden Methods": 0
+                }
+            ]
+        }
+    ],
+    "6": [
+        {
+            "Inheritances": [
+                {
+                    "ClassName": "GraphControl::DX::RenderMain",
+                    "TypeOfClass": "Concrete Class",
+                    "SubClasses": [
+                        {
+                            "rootname": "GraphControl::DX::IDeviceNotify",
+                            "PublicInterface": {
+                                "purevirtualfunctions": [],
+                                "virtualfunctions": [],
+                                "normalfunctions": []
+                            },
+                            "TypeOfClass": "Abstract Class"
+                        }
+                    ],
+                    "typeofinheritance": "Implementation Inheritance",
+                    "Public Interface": 8,
+                    "Added Methods": 8,
+                    "Overriden Methods": 2
+                }
+            ]
+        }
+    ]
+}

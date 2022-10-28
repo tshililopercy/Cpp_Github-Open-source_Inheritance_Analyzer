@@ -1,3 +1,5 @@
+from cgitb import enable
+from shutil import rmtree
 import tkinter as tk
 import threading
 import os
@@ -11,7 +13,7 @@ import GitHub_Search_And_Clone
 class Clone_And_Analyse:
     def __init__(self):
         self.ClonedRepos = []
-    def CloneOpenSourceRepositories(self,my_tree):
+    def CloneOpenSourceRepositories(self,my_tree, button):
         cloner = GitHub_Search_And_Clone.Cloner()
         repos_info = cloner.get_repos_info()
         for item in my_tree.get_children():
@@ -37,7 +39,7 @@ class Clone_And_Analyse:
                 my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]), tags=('oddrow'))
             if repo["name"] != "tensorflow":
                 cloner.cloneARepo(repo)
-    
+        button['state'] = "active"
     #Analyse Repositories
     def AnalyseRepositories(self,my_tree):
         extractor = Data_Extraction_Process_Refractored.Extractor()
@@ -71,7 +73,7 @@ class GraphicalUserInterface:
         screen_height = str(self.root.winfo_screenheight()//2)
         resolution =screen_width +'x'+screen_height
         self.root.geometry(resolution)
-        
+        self.root.resizable(False, False)
         style = ttk.Style()
         
         style.theme_use("default")
@@ -100,10 +102,11 @@ class GraphicalUserInterface:
         my_tree.tag_configure('rowsdisplay', background="grey", font=("Comic Sans MS", 11,))
         
         tree_scroll.config(command=my_tree.yview)
-        self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,)).start()))
-        self.clonebutton.place(relx=0.1, rely=0.3, height=45, width = 125)
-        self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.AnalyseRepositories,args=(my_tree,)).start()))
+        self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.AnalyseRepositories,args=(my_tree,)).start()), state= DISABLED)
         self.Analyzebutton.place(relx=0.1, rely=0.6, height=45, width = 125)
+        self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,self.Analyzebutton,)).start()))
+        self.clonebutton.place(relx=0.1, rely=0.3, height=45, width = 125)
+        
         # Define Columns
         my_tree['columns'] = ("Repository Name", "Status")
         

@@ -215,7 +215,11 @@ class ProjectData:
 
                     if Baseclass['inheritancetype'] == 'PUBLIC':
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
-                            inheritancedata.Parents.append(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType = {}
+                            BaseClassNameAndType["rootname"] = Baseclass['BaseClassInfo'].className
+                            baseClassInfo = self.getcppClass(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.getClassType()
+                            inheritancedata.Parents.append(BaseClassNameAndType)
                             inheritancedata.PublicMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.PublicMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.PublicMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
@@ -259,7 +263,10 @@ class ProjectData:
                     #-------------------------For Private inheritance----------------------------#
                     elif Baseclass['inheritancetype'] == 'PRIVATE':
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
-                            inheritancedata.Parents.append(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType["rootname"] = Baseclass['BaseClassInfo'].className
+                            baseClassInfo = self.getcppClass(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.getClassType()
+                            inheritancedata.Parents.append(BaseClassNameAndType)
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.PrivateMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
@@ -304,7 +311,11 @@ class ProjectData:
                             
                     elif Baseclass['inheritancetype'] == 'PROTECTED':
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
-                            inheritancedata.Parents.append(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType = {}
+                            BaseClassNameAndType["rootname"] = Baseclass['BaseClassInfo'].className
+                            baseClassInfo = self.getcppClass(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.getClassType()
+                            inheritancedata.Parents.append(BaseClassNameAndType)
                             inheritancedata.ProtectedMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.ProtectedMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.ProtectedMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]

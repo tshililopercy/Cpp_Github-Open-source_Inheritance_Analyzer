@@ -228,6 +228,41 @@ class ProjectDataVisualize:
             total_hierachies.append(count)    
         return abstract_class_sequence, total_hierachies
 
+    def BreachOfDIP(self, hierachydata):
+        dip_ = []
+        Info = []
+        # DIP = 0 (no DIP breach/ Abstract classes). DIP = 1 (direct breach of the DIP - abstract class inheriting from concrete class)
+        for hierachyinfo in hierachydata:
+            for inheritances in hierachyinfo['Inheritances']:
+                class_type_childclass = inheritances['TypeOfClass']
+                if class_type_childclass == 'Abstract Class':
+                    childclass = inheritances['ClassName']
+                    for parentclassInfo in inheritances['SubClasses']:
+                        parentclassName = parentclassInfo['rootname']
+
+                        class_type_parentclass = parentclassInfo['TypeOfClass']
+                        Info.append(f'ClassName:{childclass} Type:{class_type_childclass}  ParentName:{parentclassName} Type:{class_type_parentclass}')
+                        if class_type_parentclass == 'Concrete Class':
+                            dip_.append(1)
+                        else:
+                            dip_.append(0)
+                else:
+                    Info.append(class_type_childclass)
+                    dip_.append(0)     
+        return dip_, Info
+                    
+    def HierarchyOutOfOrder(self, dip):
+        total_hierachies = [] 
+        dip_sequence = []
+        for dip_val in range(0, max(dip)+1, 1):
+            count=0
+            dip_sequence.append(dip_val)
+            for dip_ in dip:
+                if dip_val == dip_:
+                    count += 1
+            total_hierachies.append(count)    
+        return dip_sequence, total_hierachies
+
     def PrintingHierachyData(self):
         # Read hierarchy data for all repos
         self.read_json() 
@@ -248,6 +283,9 @@ class ProjectDataVisualize:
 
         class_types = []
         max_abstract_classes_per_hierarchy = []
+        DIP_occurence_per_hierarchy = []
+        dipS = []
+        Info_ = []
 
         for hierachydata_index in self.HierachiesData:
             hierachydata = self.HierachiesData[hierachydata_index]
@@ -272,7 +310,13 @@ class ProjectDataVisualize:
             class_type, abstract_class = self.ClassTypeMetrics(hierachydata)
             class_types += class_type # for all hierarchies - types include abstract, concrete, and interface
             max_abstract_classes_per_hierarchy.append(max(abstract_class)) #for all hierarchies -only abstract classes
+            # store out of order occurrence
+            dip_, Info = self.BreachOfDIP(hierachydata)
+            # Info_ += Info
+            # dipS += dip_
+            DIP_occurence_per_hierarchy.append(max(dip_))
         
+        # print(dipS, Info_)
         # # depth metrics
         depth_ , num_of_hierachy_per_depth = self.HierachyCountPerDepth(DIT_Max)
         plt.figure(1)
@@ -322,7 +366,11 @@ class ProjectDataVisualize:
         abstract_classes_, num_of_hierachy_per_abstract_class = self.HierachyCountPerAbstractClass(max_abstract_classes_per_hierarchy)
         plt.figure(11)
         self.plotData( abstract_classes_, num_of_hierachy_per_abstract_class, "Abstract Classes",  "Hierarchies",  "Abstract Classes vs Hierachies")
-        plt.show()
+
+        Out_of_Order_occurrence, num_of_hierarchy_out_of_order = self. HierarchyOutOfOrder(DIP_occurence_per_hierarchy)
+        plt.figure(12)
+        self.plotData( Out_of_Order_occurrence, num_of_hierarchy_out_of_order, "Out of Order (0 - no, 1 - yes)",  "Hierarchies",  "Hierarchies vs Out of Order")
+        # plt.show()
     
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
         '''This function plots y_axis vs x_axis'''
@@ -332,3 +380,5 @@ class ProjectDataVisualize:
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.title(plot_title)
+
+ProjectDataVisualize().PrintingHierachyData()

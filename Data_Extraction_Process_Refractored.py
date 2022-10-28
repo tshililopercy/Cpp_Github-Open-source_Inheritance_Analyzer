@@ -82,10 +82,10 @@ class Extractor:
     
     def traverse_AST(self,cursor, project): # Transerving The Abstract Tree
         #get cursors that represents classes
-        # if cursor.kind.is_declaration():
-        #     if (cursor.kind != clang.cindex.CursorKind.CLASS_DECL and cursor.kind != clang.cindex.CursorKind.CXX_ACCESS_SPEC_DECL 
-        #         and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
-        #        self.ExtractDeclarations(cursor, project)
+        if cursor.kind.is_declaration():
+            if (cursor.kind != clang.cindex.CursorKind.CLASS_DECL and cursor.kind != clang.cindex.CursorKind.CXX_ACCESS_SPEC_DECL 
+                and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
+               self.ExtractDeclarations(cursor, project)
         if cursor.kind == clang.cindex.CursorKind.CLASS_DECL:
             self.extractClass(cursor, project)
         for child in cursor.get_children():

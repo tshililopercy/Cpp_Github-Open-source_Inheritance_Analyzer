@@ -8,6 +8,7 @@ class HierachyData:
 class ProjectDataStorage:
     def __init__(self, ProjectInheritanceData_HierachyLevels_And_Declarations):
         self.ProjectData, self.HierachiesLevels, Declarations = ProjectInheritanceData_HierachyLevels_And_Declarations
+        print(Declarations)
         print(self.HierachiesLevels)
         self.HierachiesData = []
         

@@ -214,6 +214,7 @@ class ProjectData:
                 for Baseclass in self.cppClasses[_class].Baseclasses:
 
                     if Baseclass['inheritancetype'] == 'PUBLIC':
+                        print(Baseclass['BaseClassInfo'].className)
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             inheritancedata.Parents.append(Baseclass['BaseClassInfo'].className)
                             inheritancedata.PublicMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
@@ -352,6 +353,7 @@ class ProjectData:
                 inheritancedata.identifyClassType()
                 inheritancedata.compute_public_interface()
                 inheritancedata.compute_Added_Methods()
+                print(inheritancedata)
                 self.ProjectInheritanceData.append(inheritancedata)
         #self.PrintResults()
         #print("Number of inheritances",self.ProjectInheritanceData)

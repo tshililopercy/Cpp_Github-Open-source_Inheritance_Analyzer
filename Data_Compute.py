@@ -296,7 +296,7 @@ class ProjectDataVisualize:
 
         novel_methods_class_occurrence_per_class = []
         overriden_methods_class_occurrence_per_class = []
-
+        depth_per_method_data = []
         
         all_class_types_ = []
         class_types = []
@@ -324,6 +324,8 @@ class ProjectDataVisualize:
             overriden_methods, overriden_methods_occurrence,  depth_per_method = self.OverridenMethodsMetrics(hierachydata)
             overriden_methods_class_occurrence_per_class += overriden_methods_occurrence
             max_overriden_methods_occurrence_per_hierarchy.append(max(overriden_methods_occurrence))
+
+            depth_per_method_data += depth_per_method
             # class types
             class_type, abstract_class, all_class_types = self.ClassTypeMetrics(hierachydata)
             class_types += class_type # for all hierarchies - types include abstract, concrete, and interface
@@ -352,7 +354,7 @@ class ProjectDataVisualize:
         self.plotData(public_interface_, num_of_classes_per_public_interface, "Public Interface", "Classes",  "Number of Classes per public_interface")
 
         # methods per depth
-        added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, additional_methods_occurrence, overriden_methods_occurrence, depth_per_method) #, overriden_functions
+        added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, novel_methods_class_occurrence_per_class, overriden_methods_class_occurrence_per_class, depth_per_method_data) #, overriden_functions
         plt.figure(4)
         self.plotData( added_functions['depth'],added_functions['methods'], "Depth", "Novel method",  "Number of novel methods per depth")
         plt.figure(5)
@@ -408,4 +410,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
 
-ProjectDataVisualize().PrintingHierachyData()
+# ProjectDataVisualize().PrintingHierachyData()

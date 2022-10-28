@@ -7,6 +7,7 @@ from tkinter import ttk
 
 import Data_Extraction_Process_Refractored
 import GitHub_Search_And_Clone
+import Data_Compute
 
 class Clone_And_Analyse:
     def __init__(self):
@@ -61,7 +62,9 @@ class Clone_And_Analyse:
                 my_tree.delete(item)
             for i, print_ in enumerate(self.ClonedRepos):
                 my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]), tags=('oddrow'))
-                
+        # projectdatavisualize = Data_Compute.ProjectDataVisualize()
+        # projectdatavisualize.PrintingHierachyData()
+
 class GraphicalUserInterface:
     def __init__(self):
         _clone_and_analyze = Clone_And_Analyse()

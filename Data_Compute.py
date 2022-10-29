@@ -92,7 +92,7 @@ class ProjectDataVisualize:
         depth_per_method = []
         for hierachyinfo in hierachydata:
             for inheritances in hierachyinfo['Inheritances']:
-                depth_ = len(hierachyinfo)
+                depth_ = len(hierachydata)
                 depth_per_method.append(depth_)
                 additional_method = inheritances['Added Methods']
                 additional_methods_names.append(additional_method)
@@ -110,33 +110,12 @@ class ProjectDataVisualize:
         depth_per_method = [] 
         for hierachyinfo in hierachydata:
             for inheritances in hierachyinfo['Inheritances']:
-                depth_ = len(hierachyinfo)
+                depth_ = hierachyinfo['Depth Number']
                 depth_per_method.append(depth_)
                 overriden_method = inheritances['Overriden Methods']
                 overriden_methods.append(overriden_method)
                 overriden_methods_occurrence.append(overriden_method)
         return overriden_methods, overriden_methods_occurrence, depth_per_method
-
-    def groupedMethodsPerDepth(self, depth_count, methods_iter, max_depths):   
-        methods_type=[]
-        depth_sequence = []
-        methods_per_depth = {}
-        for depth_val in range(1, max(max_depths)+1, 1):
-            count = 0
-            if depth_val == 1:
-                i=depth_val-1
-                i_max = depth_count[depth_val-1]+i
-            else:
-                i=i_max
-                i_max += depth_count[depth_val-1]
-            for index in range(i,i_max, 1):
-                count += methods_iter[index]
-                i+=1
-            methods_type.append(count)
-            depth_sequence.append(depth_val)
-        methods_per_depth['depth'] = depth_sequence
-        methods_per_depth['methods'] = methods_type
-        return methods_per_depth
 
     def MethodsPerClass(self, methods_occurrence):
         total_classes = [] 
@@ -170,22 +149,38 @@ class ProjectDataVisualize:
 
         return methods_per_hierachy_data
 
-    def MethodsPerDepth(self, max_depths, additional_methods_occurrence, overriden_methods_occurrence, depth_per_method):
+    def MethodsPerDepth(self, max_depths, additional_methods_occurrence, overriden_methods_occurrence, depth_per_method_data):
         depth_count = []
+        novel_methods = {}
+        overriden_methods = {}
+        novel_methods_count_ = []
+        overriden_methods_count_ = []
 
         # number of counted methods in each depth
         for depth_val in range(1, max(max_depths)+1, 1):
-            count=0
-            for depth_ in depth_per_method:
-                if depth_val == depth_:
-                    count += 1
-            depth_count.append(count)
+            depths_indices = []
+            novel = 0
+            overriden = 0
 
-        #Group added functions by depth
-        novel_methods =  self.groupedMethodsPerDepth(depth_count, additional_methods_occurrence, max_depths)
-        # print(novel_methods)
-        overriden_methods = self.groupedMethodsPerDepth(depth_count, overriden_methods_occurrence, max_depths)
-        # print(overriden_methods)
+            for depthss in range(len(depth_per_method_data)):
+                if depth_per_method_data[depthss] == depth_val:
+                    depths_indices.append(depthss)
+
+            for depths_index in depths_indices:
+                novel += additional_methods_occurrence[depths_index]
+            
+            for depths_index in depths_indices:
+                overriden += overriden_methods_occurrence[depths_index]
+
+            novel_methods_count_.append(novel)
+            overriden_methods_count_.append(overriden)
+            depth_count.append(depth_val)
+        
+        novel_methods['depth'] = depth_count
+        novel_methods['methods'] = novel_methods_count_
+        overriden_methods['depth'] = depth_count
+        overriden_methods['methods'] = overriden_methods_count_
+
         return novel_methods, overriden_methods
 
    #-------------------------Class types metrics----------------------
@@ -337,9 +332,9 @@ class ProjectDataVisualize:
             # dipS += dip_
             DIP_occurence_per_hierarchy.append(max(dip_))
         
-        # print(dipS, Info_)
         # # depth metrics
         depth_ , num_of_hierachy_per_depth = self.HierachyCountPerDepth(DIT_Max)
+        print(depth_, '\n', num_of_hierachy_per_depth)
         plt.figure(1)
         self.plotData(depth_, num_of_hierachy_per_depth, "Depth", "Hierachies",  "Number of hierachies per depth")
 
@@ -355,6 +350,7 @@ class ProjectDataVisualize:
 
         # methods per depth
         added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, novel_methods_class_occurrence_per_class, overriden_methods_class_occurrence_per_class, depth_per_method_data) #, overriden_functions
+        # print(overriden_functions, '\n', added_functions)
         plt.figure(4)
         self.plotData( added_functions['depth'],added_functions['methods'], "Depth", "Novel method",  "Number of novel methods per depth")
         plt.figure(5)
@@ -399,7 +395,7 @@ class ProjectDataVisualize:
         Out_of_Order_occurrence, num_of_hierarchy_out_of_order = self. HierarchyOutOfOrder(DIP_occurence_per_hierarchy)
         plt.figure(13)
         self.plotData( Out_of_Order_occurrence, num_of_hierarchy_out_of_order, "Out of Order (0 - no, 1 - yes)",  "Hierarchies",  "Hierarchies vs Out of Order")
-        plt.show()
+        # plt.show()
     
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
         '''This function plots y_axis vs x_axis'''
@@ -410,4 +406,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
 
-# ProjectDataVisualize().PrintingHierachyData()
+ProjectDataVisualize().PrintingHierachyData()

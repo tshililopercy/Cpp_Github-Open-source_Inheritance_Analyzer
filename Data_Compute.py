@@ -10,7 +10,7 @@ class ProjectDataVisualize:
             # Reading data from the storage json file 
             self.HierachiesData = json.load(openfile)
         # print(self.HierachiesData)
-        print(len(self.HierachiesData))
+        print('Number of Hierarchies = ', len(self.HierachiesData))
 
     #--------------- depth metrics----------------
     def DepthMetrics(self, hierachydata):
@@ -61,6 +61,17 @@ class ProjectDataVisualize:
             for inheritances in hierachyinfo['Inheritances']:
                 public_interface = inheritances['Public Interface']
                 public_interfaces.append(public_interface)
+                
+                # include root public interfaces
+                root_public_interfaces = 0
+                for rootclassInfo in inheritances['SubClasses']:
+                    # root classes have more infomation, i.e. name of rootclass, type of class and public interfaces
+                    if len(rootclassInfo) > 2:
+                        root_public_interfaces += len((rootclassInfo['PublicInterface']['purevirtualfunctions']))
+                        root_public_interfaces += len((rootclassInfo['PublicInterface']['virtualfunctions']))
+                        root_public_interfaces += len((rootclassInfo['PublicInterface']['normalfunctions']))
+
+                        public_interfaces.append(root_public_interfaces)
         return public_interfaces
 
     def ClassesCountPerPublicInterface(self, total_public_interfaces):
@@ -334,7 +345,6 @@ class ProjectDataVisualize:
         
         # # depth metrics
         depth_ , num_of_hierachy_per_depth = self.HierachyCountPerDepth(DIT_Max)
-        print(depth_, '\n', num_of_hierachy_per_depth)
         plt.figure(1)
         self.plotData(depth_, num_of_hierachy_per_depth, "Depth", "Hierachies",  "Number of hierachies per depth")
 
@@ -395,7 +405,7 @@ class ProjectDataVisualize:
         Out_of_Order_occurrence, num_of_hierarchy_out_of_order = self. HierarchyOutOfOrder(DIP_occurence_per_hierarchy)
         plt.figure(13)
         self.plotData( Out_of_Order_occurrence, num_of_hierarchy_out_of_order, "Out of Order (0 - no, 1 - yes)",  "Hierarchies",  "Hierarchies vs Out of Order")
-        # plt.show()
+        plt.show()
     
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
         '''This function plots y_axis vs x_axis'''
@@ -406,4 +416,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
 
-ProjectDataVisualize().PrintingHierachyData()
+# ProjectDataVisualize().PrintingHierachyData()

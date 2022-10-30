@@ -2,10 +2,16 @@ import clang.cindex
 import os
 import fnmatch
 from AnalysingProject import *
-from git import rmtree
 from StoreData import *
+clang.cindex.Config.set_library_file("C:\\msys64\\mingw64\\bin\\libclang.dll")
+import ccsyspath
 
 idx = clang.cindex.Index.create()
+
+args    = '-x c++ --std=c++17'.split()
+syspath = ccsyspath.system_include_paths('clang++')
+incargs = [ b'-I' + inc for inc in syspath ]
+args    = args
 
 class Extractor:
     def __init__(self):
@@ -80,8 +86,8 @@ class Extractor:
                self.ExtractDeclarations(cursor, project)
         if cursor.kind == clang.cindex.CursorKind.CLASS_DECL:
             self.extractClass(cursor, project)
-        for child in cursor.get_children():
-            self.traverse_AST(child, project)
+        # for child in cursor.get_children():
+        #     self.traverse_AST(child, project)
             
     # Searches The repository and return cpp files path
     def FindRepoFiles(self, RepoName, cppExtensions):
@@ -97,10 +103,15 @@ class Extractor:
     
     def parseTranslationUnit(self, file_path, project):  
         print(file_path)
-        tu = idx.parse(path = file_path, args=['-x', 'c++'],  
+        tu = idx.parse(path = file_path, args=args,  
                     unsaved_files=None,  options=0)
         for node in tu.cursor.walk_preorder():
-            self.traverse_AST(node, project)
+            if node.location.file is None:
+                continue
+            if node.location.file.name != file_path:
+                continue
+            if node.kind.is_declaration():
+                self.traverse_AST(node, project)
     
     def AnalyseRepository(self, RepoName):
         project = ProjectData()

@@ -478,7 +478,7 @@ class ProjectDataVisualize:
         plt.title('Class Types')
         plot14.pie(Types, labels=labels, autopct='%1.1f%%')
         plot14.axis('equal')
-        # plt.show()
+        plt.show()
 
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
         '''This function plots y_axis vs x_axis'''
@@ -489,4 +489,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
 
-ProjectDataVisualize().PrintingHierachyData()
+# ProjectDataVisualize().PrintingHierachyData()

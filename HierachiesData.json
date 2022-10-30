@@ -93,6 +93,31 @@
                 {
                     "Depth Number 1": [
                         {
+                            "ClassName": "Listener",
+                            "TypeOfClass": "Concrete Class",
+                            "SubClasses": [
+                                {
+                                    "rootname": "IME::EventEmitter::IListener",
+                                    "PublicInterface": {
+                                        "purevirtualfunctions": [],
+                                        "virtualfunctions": [],
+                                        "normalfunctions": []
+                                    },
+                                    "TypeOfClass": "Concrete Class"
+                                }
+                            ],
+                            "typeofinheritance": "Interface Inheritance",
+                            "Public Interface": 0,
+                            "Added Methods": 0,
+                            "Overriden Methods": 0
+                        }
+                    ]
+                }
+            ],
+            "Hierarchy 3": [
+                {
+                    "Depth Number 1": [
+                        {
                             "ClassName": "IME::Graphics::Sprite",
                             "TypeOfClass": "Concrete Class",
                             "SubClasses": [
@@ -150,8 +175,12 @@
                                         "purevirtualfunctions": [],
                                         "virtualfunctions": [],
                                         "normalfunctions": [
+                                            "int addEventListener (const std::string &, int)",
+                                            "int on (const std::string &, int)",
+                                            "int addOnceEventListener (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)",
                                             "bool removeAllEventListeners (const std::string &)",
+                                            "void emit (const std::string &, Args...)",
                                             "bool hasEvent (const std::string &) const",
                                             "int getNumOfEventListenersFor (const std::string &) const",
                                             "int getNumberOfEvents () const",
@@ -176,7 +205,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 35,
+                            "Public Interface": 39,
                             "Added Methods": 29,
                             "Overriden Methods": 4
                         },
@@ -190,8 +219,12 @@
                                         "purevirtualfunctions": [],
                                         "virtualfunctions": [],
                                         "normalfunctions": [
+                                            "int addEventListener (const std::string &, int)",
+                                            "int on (const std::string &, int)",
+                                            "int addOnceEventListener (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)",
                                             "bool removeAllEventListeners (const std::string &)",
+                                            "void emit (const std::string &, Args...)",
                                             "bool hasEvent (const std::string &) const",
                                             "int getNumOfEventListenersFor (const std::string &) const",
                                             "int getNumberOfEvents () const",
@@ -216,8 +249,8 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 19,
-                            "Added Methods": 13,
+                            "Public Interface": 25,
+                            "Added Methods": 15,
                             "Overriden Methods": 4
                         }
                     ]
@@ -234,14 +267,14 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 20,
+                            "Public Interface": 26,
                             "Added Methods": 1,
                             "Overriden Methods": 1
                         }
                     ]
                 }
             ],
-            "Hierarchy 3": [
+            "Hierarchy 4": [
                 {
                     "Depth Number 1": [
                         {
@@ -254,8 +287,12 @@
                                         "purevirtualfunctions": [],
                                         "virtualfunctions": [],
                                         "normalfunctions": [
+                                            "int addEventListener (const std::string &, int)",
+                                            "int on (const std::string &, int)",
+                                            "int addOnceEventListener (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)",
                                             "bool removeAllEventListeners (const std::string &)",
+                                            "void emit (const std::string &, Args...)",
                                             "bool hasEvent (const std::string &) const",
                                             "int getNumOfEventListenersFor (const std::string &) const",
                                             "int getNumberOfEvents () const",
@@ -280,7 +317,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 35,
+                            "Public Interface": 39,
                             "Added Methods": 29,
                             "Overriden Methods": 4
                         },
@@ -294,8 +331,12 @@
                                         "purevirtualfunctions": [],
                                         "virtualfunctions": [],
                                         "normalfunctions": [
+                                            "int addEventListener (const std::string &, int)",
+                                            "int on (const std::string &, int)",
+                                            "int addOnceEventListener (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)",
                                             "bool removeAllEventListeners (const std::string &)",
+                                            "void emit (const std::string &, Args...)",
                                             "bool hasEvent (const std::string &) const",
                                             "int getNumOfEventListenersFor (const std::string &) const",
                                             "int getNumberOfEvents () const",
@@ -320,8 +361,8 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 19,
-                            "Added Methods": 13,
+                            "Public Interface": 25,
+                            "Added Methods": 15,
                             "Overriden Methods": 4
                         }
                     ]
@@ -338,14 +379,14 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 20,
+                            "Public Interface": 26,
                             "Added Methods": 1,
                             "Overriden Methods": 1
                         }
                     ]
                 }
             ],
-            "Hierarchy 4": [
+            "Hierarchy 5": [
                 {
                     "Depth Number 1": [
                         {
@@ -384,7 +425,7 @@
                     ]
                 }
             ],
-            "Hierarchy 5": [
+            "Hierarchy 6": [
                 {
                     "Depth Number 1": [
                         {
@@ -434,7 +475,7 @@
                     ]
                 }
             ],
-            "Hierarchy 6": [
+            "Hierarchy 7": [
                 {
                     "Depth Number 1": [
                         {
@@ -460,6 +501,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -467,7 +509,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 22,
+                            "Public Interface": 23,
                             "Added Methods": 10,
                             "Overriden Methods": 1
                         },
@@ -494,6 +536,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -501,7 +544,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 15,
+                            "Public Interface": 16,
                             "Added Methods": 3,
                             "Overriden Methods": 1
                         },
@@ -528,6 +571,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -535,7 +579,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 14,
+                            "Public Interface": 15,
                             "Added Methods": 2,
                             "Overriden Methods": 1
                         },
@@ -562,6 +606,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -569,7 +614,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 14,
+                            "Public Interface": 15,
                             "Added Methods": 2,
                             "Overriden Methods": 1
                         },
@@ -596,6 +641,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -623,7 +669,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 22,
+                            "Public Interface": 23,
                             "Added Methods": 2,
                             "Overriden Methods": 2
                         },
@@ -650,6 +696,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -669,7 +716,7 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 13,
+                            "Public Interface": 14,
                             "Added Methods": 1,
                             "Overriden Methods": 3
                         },
@@ -696,6 +743,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -703,14 +751,14 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 12,
+                            "Public Interface": 13,
                             "Added Methods": 0,
                             "Overriden Methods": 1
                         }
                     ]
                 }
             ],
-            "Hierarchy 7": [
+            "Hierarchy 8": [
                 {
                     "Depth Number 1": [
                         {
@@ -736,6 +784,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -763,14 +812,14 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 22,
+                            "Public Interface": 23,
                             "Added Methods": 2,
                             "Overriden Methods": 2
                         }
                     ]
                 }
             ],
-            "Hierarchy 8": [
+            "Hierarchy 9": [
                 {
                     "Depth Number 1": [
                         {
@@ -796,6 +845,7 @@
                                             "IME::Position getPosition () const",
                                             "bool isVulnerable () const",
                                             "bool isCollidable () const",
+                                            "int onEvent (const std::string &, int)",
                                             "bool removeEventListener (const std::string &, int)"
                                         ]
                                     },
@@ -815,14 +865,14 @@
                                 }
                             ],
                             "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 13,
+                            "Public Interface": 14,
                             "Added Methods": 1,
                             "Overriden Methods": 3
                         }
                     ]
                 }
             ],
-            "Hierarchy 9": [
+            "Hierarchy 10": [
                 {
                     "Depth Number 1": [
                         {
@@ -910,6 +960,8 @@
         "ClassesUsed": [
             "IME::Audio::MusicPlayer",
             "IME::Audio::SoundEffectPlayer",
+            "IME::EventEmitter::IListener",
+            "Listener",
             "IME::Graphics::IDrawable",
             "IME::Graphics::Sprite",
             "IME::Graphics::Tile",
@@ -928,1453 +980,6 @@
             "SuperPacMan::Pellet",
             "IME::State",
             "SuperPacMan::MainMenuState"
-        ]
-    },
-    "Project 2": {
-        "Hierarchies": {},
-        "ClassesUsed": []
-    },
-    "Project 3": {
-        "Hierarchies": {
-            "Hierarchy 1": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "Pellets",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "MazeEntity",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void ReadEntityFromFile ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Interface Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 1,
-                            "Added Methods": 1,
-                            "Overriden Methods": 1
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 2": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "Player",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "MovableEntity",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "x_and_y getEntityPosition () const",
-                                            "x_and_y getSizeOfEntity () const",
-                                            "void setEntityMoveDirection (Orientation &)",
-                                            "Orientation getEntityMoveDirection () const",
-                                            "void setEntityPosition (float, float)",
-                                            "void moveEntity ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Interface Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 2,
-                            "Added Methods": 2,
-                            "Overriden Methods": 6
-                        }
-                    ]
-                }
-            ]
-        },
-        "ClassesUsed": [
-            "Pellets",
-            "MovableEntity",
-            "Player"
-        ]
-    },
-    "Project 4": {
-        "Hierarchies": {},
-        "ClassesUsed": []
-    },
-    "Project 5": {
-        "Hierarchies": {
-            "Hierarchy 1": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "door",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 2,
-                            "Added Methods": 2,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Fruit",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 0,
-                            "Added Methods": 0,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Ghost",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 9,
-                            "Added Methods": 9,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Key",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 3,
-                            "Added Methods": 3,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Player",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "accessTools",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "double getWidth ()",
-                                            "double getHeight ()",
-                                            "double getX ()",
-                                            "double getY ()",
-                                            "std::string getSpriteName ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Interface Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 6,
-                            "Added Methods": 6,
-                            "Overriden Methods": 9
-                        },
-                        {
-                            "ClassName": "wall",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 0,
-                            "Added Methods": 0,
-                            "Overriden Methods": 5
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 2": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "door",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 2,
-                            "Added Methods": 2,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Fruit",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 0,
-                            "Added Methods": 0,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Ghost",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 9,
-                            "Added Methods": 9,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Key",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 3,
-                            "Added Methods": 3,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "Player",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "accessTools",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "double getWidth ()",
-                                            "double getHeight ()",
-                                            "double getX ()",
-                                            "double getY ()",
-                                            "std::string getSpriteName ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Interface Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 6,
-                            "Added Methods": 6,
-                            "Overriden Methods": 9
-                        },
-                        {
-                            "ClassName": "wall",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 0,
-                            "Added Methods": 0,
-                            "Overriden Methods": 5
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 3": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "Player",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "accessTools",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "double getWidth ()",
-                                            "double getHeight ()",
-                                            "double getX ()",
-                                            "double getY ()",
-                                            "std::string getSpriteName ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Interface Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                },
-                                {
-                                    "rootname": "data",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 6,
-                            "Added Methods": 6,
-                            "Overriden Methods": 9
-                        }
-                    ]
-                }
-            ]
-        },
-        "ClassesUsed": [
-            "accessTools",
-            "Ghost",
-            "Key",
-            "Player",
-            "wall",
-            "Ghost",
-            "Key",
-            "Player",
-            "wall",
-            "Player"
-        ]
-    },
-    "Project 6": {
-        "Hierarchies": {
-            "Hierarchy 1": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "Engine::DefaultScene",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "Engine::Scene",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": [
-                                            "void onAwake ()",
-                                            "void onUpdate (int)",
-                                            "void onRender (int &)",
-                                            "void onSleep ()",
-                                            "void onDestroy ()",
-                                            "void attachApplication (int)",
-                                            "void setBackgroundColor (const int &)",
-                                            "int width ()",
-                                            "int height ()",
-                                            "int getBackGroundColour ()",
-                                            "int getApplication ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 11,
-                            "Added Methods": 0,
-                            "Overriden Methods": 0
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 2": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "SuperPacMan::BlueGhost",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Ghost",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void setTarget ()"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void calculateNextDirection ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void update (int)",
-                                            "void onCollision (int)",
-                                            "int getTarget ()",
-                                            "SuperPacMan::State getState ()",
-                                            "void setState (SuperPacMan::State)",
-                                            "bool isHostile ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 8,
-                            "Added Methods": 0,
-                            "Overriden Methods": 2
-                        },
-                        {
-                            "ClassName": "SuperPacMan::OrangeGhost",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Ghost",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void setTarget ()"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void calculateNextDirection ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void update (int)",
-                                            "void onCollision (int)",
-                                            "int getTarget ()",
-                                            "SuperPacMan::State getState ()",
-                                            "void setState (SuperPacMan::State)",
-                                            "bool isHostile ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 8,
-                            "Added Methods": 0,
-                            "Overriden Methods": 2
-                        },
-                        {
-                            "ClassName": "SuperPacMan::GreenGhost",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Ghost",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void setTarget ()"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void calculateNextDirection ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void update (int)",
-                                            "void onCollision (int)",
-                                            "int getTarget ()",
-                                            "SuperPacMan::State getState ()",
-                                            "void setState (SuperPacMan::State)",
-                                            "bool isHostile ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 8,
-                            "Added Methods": 0,
-                            "Overriden Methods": 2
-                        },
-                        {
-                            "ClassName": "SuperPacMan::RedGhost",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Ghost",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void setTarget ()"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void calculateNextDirection ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void update (int)",
-                                            "void onCollision (int)",
-                                            "int getTarget ()",
-                                            "SuperPacMan::State getState ()",
-                                            "void setState (SuperPacMan::State)",
-                                            "bool isHostile ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 8,
-                            "Added Methods": 0,
-                            "Overriden Methods": 2
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 3": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "SuperPacMan::Door",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Obstacle",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "bool isOpen () const"
-                                        ],
-                                        "normalfunctions": [
-                                            "bool isRotated ()",
-                                            "int getX ()",
-                                            "int getY ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 7,
-                            "Added Methods": 3,
-                            "Overriden Methods": 1
-                        },
-                        {
-                            "ClassName": "SuperPacMan::Wall",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Obstacle",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "bool isOpen () const"
-                                        ],
-                                        "normalfunctions": [
-                                            "bool isRotated ()",
-                                            "int getX ()",
-                                            "int getY ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 4,
-                            "Added Methods": 0,
-                            "Overriden Methods": 0
-                        },
-                        {
-                            "ClassName": "SuperPacMan::SpawnBlock",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Obstacle",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "bool isOpen () const"
-                                        ],
-                                        "normalfunctions": [
-                                            "bool isRotated ()",
-                                            "int getX ()",
-                                            "int getY ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 4,
-                            "Added Methods": 0,
-                            "Overriden Methods": 1
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 4": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "SuperPacMan::Player",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Movable",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void update (int)",
-                                            "void respawn ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "float getSpeed ()",
-                                            "int getCurrentNode ()",
-                                            "int getDirection ()",
-                                            "void setCurrentNode (const int &)",
-                                            "void stop ()",
-                                            "void setSpeed (float)",
-                                            "int getId () const"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 17,
-                            "Added Methods": 7,
-                            "Overriden Methods": 2
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 5": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "SuperPacMan::Fruit",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Points",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void update (int)",
-                                            "void onCollision (int)"
-                                        ],
-                                        "normalfunctions": [
-                                            "int getScore ()",
-                                            "int getCoordinate ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 5,
-                            "Added Methods": 0,
-                            "Overriden Methods": 0
-                        },
-                        {
-                            "ClassName": "SuperPacMan::PowerPill",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Points",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void update (int)",
-                                            "void onCollision (int)"
-                                        ],
-                                        "normalfunctions": [
-                                            "int getScore ()",
-                                            "int getCoordinate ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 6,
-                            "Added Methods": 1,
-                            "Overriden Methods": 1
-                        },
-                        {
-                            "ClassName": "SuperPacMan::SuperPowerPill",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Points",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void update (int)",
-                                            "void onCollision (int)"
-                                        ],
-                                        "normalfunctions": [
-                                            "int getScore ()",
-                                            "int getCoordinate ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 5,
-                            "Added Methods": 0,
-                            "Overriden Methods": 0
-                        },
-                        {
-                            "ClassName": "SuperPacMan::Key",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Points",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void update (int)",
-                                            "void onCollision (int)"
-                                        ],
-                                        "normalfunctions": [
-                                            "int getScore ()",
-                                            "int getCoordinate ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 9,
-                            "Added Methods": 4,
-                            "Overriden Methods": 0
-                        },
-                        {
-                            "ClassName": "SuperPacMan::Star",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "SuperPacMan::Points",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [
-                                            "void awake ()",
-                                            "void update (int)",
-                                            "void onCollision (int)"
-                                        ],
-                                        "normalfunctions": [
-                                            "int getScore ()",
-                                            "int getCoordinate ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 5,
-                            "Added Methods": 0,
-                            "Overriden Methods": 0
-                        }
-                    ]
-                }
-            ]
-        },
-        "ClassesUsed": []
-    },
-    "Project 7": {
-        "Hierarchies": {},
-        "ClassesUsed": []
-    },
-    "Project 8": {
-        "Hierarchies": {},
-        "ClassesUsed": []
-    },
-    "Project 9": {
-        "Hierarchies": {},
-        "ClassesUsed": []
-    },
-    "Project 10": {
-        "Hierarchies": {
-            "Hierarchy 1": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "Ghosts",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "body",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": [
-                                            "float getScreenPosX ()",
-                                            "float getScreenPosY ()",
-                                            "int getTileX ()",
-                                            "int getTileY ()",
-                                            "void move (float, float)",
-                                            "void teleport (int, int)",
-                                            "bool isBetweenTiles ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 23,
-                            "Added Methods": 16,
-                            "Overriden Methods": 0
-                        },
-                        {
-                            "ClassName": "PacMan",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "body",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": [
-                                            "float getScreenPosX ()",
-                                            "float getScreenPosY ()",
-                                            "int getTileX ()",
-                                            "int getTileY ()",
-                                            "void move (float, float)",
-                                            "void teleport (int, int)",
-                                            "bool isBetweenTiles ()"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 21,
-                            "Added Methods": 14,
-                            "Overriden Methods": 0
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 2": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "HighScoreState",
-                            "TypeOfClass": "Abstract Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "GameState",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void loop ()",
-                                            "void render (int *)",
-                                            "void keyPressed (int)",
-                                            "void keyReleased (int)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void init ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void registerGameStateEventListener (GameStateEventListener *)"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 3,
-                            "Added Methods": 1,
-                            "Overriden Methods": 4
-                        },
-                        {
-                            "ClassName": "instructionState",
-                            "TypeOfClass": "Abstract Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "GameState",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void loop ()",
-                                            "void render (int *)",
-                                            "void keyPressed (int)",
-                                            "void keyReleased (int)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void init ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void registerGameStateEventListener (GameStateEventListener *)"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 3,
-                            "Added Methods": 1,
-                            "Overriden Methods": 4
-                        },
-                        {
-                            "ClassName": "PlayingState",
-                            "TypeOfClass": "Abstract Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "GameState",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void loop ()",
-                                            "void render (int *)",
-                                            "void keyPressed (int)",
-                                            "void keyReleased (int)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void init ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void registerGameStateEventListener (GameStateEventListener *)"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 26,
-                            "Added Methods": 24,
-                            "Overriden Methods": 4
-                        },
-                        {
-                            "ClassName": "SplashState",
-                            "TypeOfClass": "Abstract Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "GameState",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void loop ()",
-                                            "void render (int *)",
-                                            "void keyPressed (int)",
-                                            "void keyReleased (int)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "void init ()"
-                                        ],
-                                        "normalfunctions": [
-                                            "void registerGameStateEventListener (GameStateEventListener *)"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 3,
-                            "Added Methods": 1,
-                            "Overriden Methods": 4
-                        }
-                    ]
-                }
-            ]
-        },
-        "ClassesUsed": [
-            "body",
-            "Ghosts",
-            "PacMan",
-            "GameState"
-        ]
-    },
-    "Project 11": {
-        "Hierarchies": {
-            "Hierarchy 1": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "IStaticMazeEntity",
-                            "TypeOfClass": "Abstract Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IMazeEntity",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "Entity_ID getEntityID () const",
-                                            "STATUS getStatus () const",
-                                            "void Delete ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": [
-                                            "int getPosition () const"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 2,
-                            "Added Methods": 1,
-                            "Overriden Methods": 0
-                        },
-                        {
-                            "ClassName": "Path",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IMazeEntity",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "Entity_ID getEntityID () const",
-                                            "STATUS getStatus () const",
-                                            "void Delete ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": [
-                                            "int getPosition () const"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 2,
-                            "Added Methods": 1,
-                            "Overriden Methods": 3
-                        },
-                        {
-                            "ClassName": "Wall",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IMazeEntity",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "Entity_ID getEntityID () const",
-                                            "STATUS getStatus () const",
-                                            "void Delete ()"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": [
-                                            "int getPosition () const"
-                                        ]
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 2,
-                            "Added Methods": 1,
-                            "Overriden Methods": 3
-                        }
-                    ]
-                },
-                {
-                    "Depth Number 2": [
-                        {
-                            "ClassName": "Keys",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IStaticMazeEntity",
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 4,
-                            "Added Methods": 2,
-                            "Overriden Methods": 3
-                        },
-                        {
-                            "ClassName": "PowerPellet",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IStaticMazeEntity",
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 4,
-                            "Added Methods": 2,
-                            "Overriden Methods": 3
-                        },
-                        {
-                            "ClassName": "SuperPellet",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IStaticMazeEntity",
-                                    "TypeOfClass": "Concrete Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 4,
-                            "Added Methods": 2,
-                            "Overriden Methods": 3
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 2": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "MainMenu",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IGameScreen",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void LoadContent ()",
-                                            "void RemoveContent ()",
-                                            "void Update (int &, int &)",
-                                            "void Draw (int &)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "Menu menuSelection ()",
-                                            "Game_Status returnGameProgress ()",
-                                            "HighScore returnHighScore ()",
-                                            "void saveHighScore (HighScore)",
-                                            "std::string returnMapName ()"
-                                        ],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 5,
-                            "Added Methods": 0,
-                            "Overriden Methods": 5
-                        },
-                        {
-                            "ClassName": "MapEditor",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IGameScreen",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void LoadContent ()",
-                                            "void RemoveContent ()",
-                                            "void Update (int &, int &)",
-                                            "void Draw (int &)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "Menu menuSelection ()",
-                                            "Game_Status returnGameProgress ()",
-                                            "HighScore returnHighScore ()",
-                                            "void saveHighScore (HighScore)",
-                                            "std::string returnMapName ()"
-                                        ],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 5,
-                            "Added Methods": 0,
-                            "Overriden Methods": 6
-                        },
-                        {
-                            "ClassName": "PlayScreen",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IGameScreen",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void LoadContent ()",
-                                            "void RemoveContent ()",
-                                            "void Update (int &, int &)",
-                                            "void Draw (int &)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "Menu menuSelection ()",
-                                            "Game_Status returnGameProgress ()",
-                                            "HighScore returnHighScore ()",
-                                            "void saveHighScore (HighScore)",
-                                            "std::string returnMapName ()"
-                                        ],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 5,
-                            "Added Methods": 0,
-                            "Overriden Methods": 7
-                        },
-                        {
-                            "ClassName": "SplashScreen",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IGameScreen",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void LoadContent ()",
-                                            "void RemoveContent ()",
-                                            "void Update (int &, int &)",
-                                            "void Draw (int &)"
-                                        ],
-                                        "virtualfunctions": [
-                                            "Menu menuSelection ()",
-                                            "Game_Status returnGameProgress ()",
-                                            "HighScore returnHighScore ()",
-                                            "void saveHighScore (HighScore)",
-                                            "std::string returnMapName ()"
-                                        ],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Abstract Class"
-                                }
-                            ],
-                            "typeofinheritance": "Implementation Inheritance",
-                            "Public Interface": 5,
-                            "Added Methods": 0,
-                            "Overriden Methods": 5
-                        }
-                    ]
-                }
-            ],
-            "Hierarchy 3": [
-                {
-                    "Depth Number 1": [
-                        {
-                            "ClassName": "Pacman",
-                            "TypeOfClass": "Concrete Class",
-                            "SubClasses": [
-                                {
-                                    "rootname": "IDynamicMazeEntity",
-                                    "PublicInterface": {
-                                        "purevirtualfunctions": [
-                                            "void reSpawn ()",
-                                            "void Reset ()",
-                                            "Ghost_ID getGhostID () const",
-                                            "void setPosition (int)",
-                                            "Orientation getOrientation () const",
-                                            "void moveUp (double)",
-                                            "void moveDown (double)",
-                                            "void moveLeft (double)",
-                                            "void moveRight (double)",
-                                            "Direction getDesiredDirection () const",
-                                            "void setDesiredDirection (Direction)",
-                                            "EffectStatus getEffectStatus () const",
-                                            "void setEffectStatus (EffectStatus)"
-                                        ],
-                                        "virtualfunctions": [],
-                                        "normalfunctions": []
-                                    },
-                                    "TypeOfClass": "Interface Class"
-                                }
-                            ],
-                            "typeofinheritance": "Interface Inheritance",
-                            "Public Interface": 6,
-                            "Added Methods": 6,
-                            "Overriden Methods": 13
-                        }
-                    ]
-                }
-            ]
-        },
-        "ClassesUsed": [
-            "IMazeEntity",
-            "Path",
-            "IDynamicMazeEntity",
-            "Pacman"
         ]
     }
 }

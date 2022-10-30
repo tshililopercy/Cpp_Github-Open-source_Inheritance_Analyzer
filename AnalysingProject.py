@@ -138,7 +138,7 @@ class InheritanceData:
     def determineinheritanceType(self):
         if (len(self.PublicMethods["inherited_virtual"]) == 0 and len(self.PrivateMethods["inherited_virtual"]) == 0 and len(self.ProtectedMethods["inherited_virtual"]) == 0
         and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and len(self.PublicMethods["inherited_normal"]) == 0 and len(self.ProtectedMethods["inherited_normal"]) == 0 
-        and (self.PublicMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"])):
+        and (self.PublicMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"] != 0 or self.PrivateMethods["inherited_pure_virtual"]) != 0):
             self.typeofinheritance = "Interface Inheritance"
         else: self.typeofinheritance = "Implementation Inheritance"
     #Checks if there is nonoverriden pure virtual function in public section
@@ -192,20 +192,6 @@ class ProjectData:
             return self.cppClasses[classname]
         else:
             return {}
-#---------------------------------------- Organize Classes and Their Children Objects (For preorder traversal)-----------------------#
-    # def computestheclasses(self):
-    #     for _class in self.cppClasses:
-    #         if len(self.cppClasses[_class].Baseclasses) != 0:
-    #             BaseClasses = []
-    #             for base in self.cppClasses[_class].Baseclasses:
-    #                 Parent = {}
-    #                 inheritancetype = base["inheritancetype"]
-    #                 baseObject = self.getcppClass(base["BaseClassName"])
-    #                 if baseObject != None:
-    #                    Parent['BaseClassInfo'] = baseObject
-    #                    Parent['inheritancetype'] = inheritancetype
-    #                    BaseClasses.append(Parent)
-    #             self.cppClasses[_class].Baseclasses = BaseClasses
     
     def computeInheritanceData(self):
         for _class in self.cppClasses:
@@ -380,8 +366,6 @@ class ProjectData:
                 inheritancedata.compute_Added_Methods()
                 print(inheritancedata)
                 self.ProjectInheritanceData.append(inheritancedata)
-        #self.PrintResults()
-        #print("Number of inheritances",self.ProjectInheritanceData)
         return self.ProjectInheritanceData
     
     #Re-arranging inheritance in form of Superclass and its subclasses to get Hierachy DEPTHS

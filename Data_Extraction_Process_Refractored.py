@@ -1,3 +1,5 @@
+from inspect import signature
+from sqlite3 import Cursor
 import clang.cindex
 import os
 import fnmatch
@@ -20,60 +22,79 @@ class Extractor:
         return self.RepoNames
     def ExtractDeclarations(self,cursor, project):
         project.Declarations.append(cursor.type.spelling)
+        
+    def BaseClassData(self, cursor, baseclassname, project):
+        Parent = {}
+        Parent['BaseClassInfo'] = project.getcppClass(baseclassname)
+        if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
+            Parent['inheritancetype'] = 'PUBLIC'
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
+            Parent['inheritancetype'] = 'PRIVATE'
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
+            Parent['inheritancetype'] = 'PROTECTED'
+        return Parent
+    
+    def MethodsData(self, cursor, classinfo):
+        returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
+                #Extract class Public Methods Signatures
+        if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
+            if cursor.is_pure_virtual_method():
+                classinfo.publicMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+            elif cursor.is_virtual_method():
+                classinfo.publicMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+            else:
+                classinfo.publicMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+        #Extract class Private Methods Signatures
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
+            if cursor.is_pure_virtual_method():
+                classinfo.privateMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+            elif cursor.is_virtual_method():
+                classinfo.privateMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+            else:
+                classinfo.privateMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+        #Extract class Protected Methods Signatures
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
+            if cursor.is_pure_virtual_method():
+                classinfo.protectedMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+            elif cursor.is_virtual_method():
+                classinfo.protectedMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+            else:
+                classinfo.protectedMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
 
     def extractClassData(self, cursor, classinfo, project):
         if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
             for baseClass in cursor.get_children():
                 if baseClass.kind == clang.cindex.CursorKind.TYPE_REF:
-                   Parent = {}
-                   if project.getcppClass(baseClass.type.spelling) == {}:
-                       return
-                   else:
-                       Parent['BaseClassInfo'] = project.getcppClass(baseClass.type.spelling)
-                   if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
-                       Parent['inheritancetype'] = 'PUBLIC'
-                   elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
-                       Parent['inheritancetype'] = 'PRIVATE'
-                   elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
-                       Parent['inheritancetype'] = 'PROTECTED'
-                   classinfo.Baseclasses.append(Parent)
+                    if project.getcppClass(baseClass.type.spelling) == {}:
+                        return
+                    else:
+                        classinfo.Baseclasses.append(self.BaseClassData(cursor, baseClass.type.spelling, project))
+                elif baseClass.kind == clang.cindex.CursorKind.TEMPLATE_REF:
+                    if project.getcppClass(baseClass.spelling) == {}:
+                        return
+                    else:
+                        classinfo.Baseclasses.append(self.BaseClassData(cursor, baseClass.spelling, project))
         elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
             try:
-                returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
-                #Extract class Public Methods Signatures
-                if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
-                    if cursor.is_pure_virtual_method():
-                        classinfo.publicMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                    elif cursor.is_virtual_method():
-                        classinfo.publicMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                    else:
-                        classinfo.publicMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                #Extract class Private Methods Signatures
-                elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
-                    if cursor.is_pure_virtual_method():
-                        classinfo.privateMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                    elif cursor.is_virtual_method():
-                        classinfo.privateMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                    else:
-                        classinfo.privateMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                #Extract class Protected Methods Signatures
-                elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
-                    if cursor.is_pure_virtual_method():
-                        classinfo.protectedMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                    elif cursor.is_virtual_method():
-                        classinfo.protectedMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                    else:
-                        classinfo.protectedMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
+                self.MethodsData(cursor, classinfo)
             except:
                 print("Invalid CXX_METHOD declaration! " + str(cursor.type.spelling))
                 return
+        elif cursor.kind == clang.cindex.CursorKind.FUNCTION_TEMPLATE:
+            #Extract class Public Methods Signatures
+            self.MethodsData(cursor, classinfo)
         project.cppClasses[classinfo.className] = classinfo
         
     def extractClass(self, cursor, project):  
         #The full name of class is stored
         classinfo = cppClass()
-        classinfo.className = cursor.type.spelling
-        print(cursor.type.spelling)
+        if cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE:
+            classinfo.className = cursor.spelling
+            print(classinfo.className)
+        else:
+            classinfo.className = cursor.type.spelling
+            print(classinfo.className)
+        
         for children in cursor.get_children():
             #Extracting Class Members (methods declaration of classes)
             self.extractClassData(children, classinfo, project)
@@ -84,10 +105,10 @@ class Extractor:
                 and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
                #Extract All Other Declarations
                self.ExtractDeclarations(cursor, project)
-        if cursor.kind == clang.cindex.CursorKind.CLASS_DECL:
+        if (cursor.kind == clang.cindex.CursorKind.CLASS_DECL
+			or cursor.kind == clang.cindex.CursorKind.STRUCT_DECL
+			or cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE):
             self.extractClass(cursor, project)
-        # for child in cursor.get_children():
-        #     self.traverse_AST(child, project)
             
     # Searches The repository and return cpp files path
     def FindRepoFiles(self, RepoName, cppExtensions):
@@ -120,6 +141,7 @@ class Extractor:
         self.RepoNames.append({'name': RepoName, 'Status': 'Analysing'})
         for file_path in RepositoryFiles:
             self.parseTranslationUnit(file_path, project)
+        print(project.cppClasses)
         self.RepoNames.append({'name': RepoName, 'Status': 'Done Analysing'})
         #Deleting Repo After Finishing with Analysis
         dir = ( "../Repository", RepoName)

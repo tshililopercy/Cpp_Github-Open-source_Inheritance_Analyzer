@@ -4,7 +4,6 @@ import fnmatch
 from AnalysingProject import *
 from git import rmtree
 from StoreData import *
-from Data_Compute import *
 
 idx = clang.cindex.Index.create()
 
@@ -15,7 +14,6 @@ class Extractor:
         return self.RepoNames
     def ExtractDeclarations(self,cursor, project):
         project.Declarations.append(cursor.type.spelling)
-    #print(project.Declarations)
 
     def extractClassData(self, cursor, classinfo, project):
         if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
@@ -36,28 +34,23 @@ class Extractor:
         elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
             try:
                 returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
+                #Extract class Public Methods Signatures
                 if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
                     if cursor.is_pure_virtual_method():
-                    #print(cursor.spelling)
                         classinfo.publicMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                        #classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
                     elif cursor.is_virtual_method():
                         classinfo.publicMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                        #classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
                     else:
                         classinfo.publicMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                        #classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
+                #Extract class Private Methods Signatures
                 elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
                     if cursor.is_pure_virtual_method():
-                    #print(cursor.spelling)
                         classinfo.privateMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                        #classinfo.purevirtualfunctions.append((returnType,cursor.spelling, argumentTypes))
                     elif cursor.is_virtual_method():
                         classinfo.privateMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                        #classinfo.virtualfunctions.append((returnType,cursor.spelling, argumentTypes))
                     else:
                         classinfo.privateMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-                        #classinfo.normalfunctions.append((returnType,cursor.spelling, argumentTypes))
+                #Extract class Protected Methods Signatures
                 elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
                     if cursor.is_pure_virtual_method():
                         classinfo.protectedMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
@@ -70,22 +63,21 @@ class Extractor:
                 return
         project.cppClasses[classinfo.className] = classinfo
         
-    def extractClass(self, cursor, project):
-        
-        # The full name of class is stored
+    def extractClass(self, cursor, project):  
+        #The full name of class is stored
         classinfo = cppClass()
         classinfo.className = cursor.type.spelling
         print(cursor.type.spelling)
         for children in cursor.get_children():
-            #Extracting Class Members (Data and methods declaration)
+            #Extracting Class Members (methods declaration of classes)
             self.extractClassData(children, classinfo, project)
     
-    def traverse_AST(self,cursor, project): # Transerving The Abstract Tree
-        #get cursors that represents classes
-        # if cursor.kind.is_declaration():
-        #     if (cursor.kind != clang.cindex.CursorKind.CLASS_DECL and cursor.kind != clang.cindex.CursorKind.CXX_ACCESS_SPEC_DECL 
-        #         and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
-        #        self.ExtractDeclarations(cursor, project)
+    def traverse_AST(self,cursor, project): #Transerving The Abstract Tree Using Recursion
+        if cursor.kind.is_declaration():
+            if (cursor.kind != clang.cindex.CursorKind.CLASS_DECL and cursor.kind != clang.cindex.CursorKind.CXX_ACCESS_SPEC_DECL 
+                and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
+               #Extract All Other Declarations
+               self.ExtractDeclarations(cursor, project)
         if cursor.kind == clang.cindex.CursorKind.CLASS_DECL:
             self.extractClass(cursor, project)
         for child in cursor.get_children():
@@ -107,7 +99,8 @@ class Extractor:
         print(file_path)
         tu = idx.parse(path = file_path, args=['-x', 'c++'],  
                     unsaved_files=None,  options=0)
-        self.traverse_AST(tu.cursor, project)
+        for node in tu.cursor.walk_preorder():
+            self.traverse_AST(node, project)
     
     def AnalyseRepository(self, RepoName):
         project = ProjectData()
@@ -120,10 +113,5 @@ class Extractor:
         #Deleting Repo After Finishing with Analysis
         dir = ( "../Repository", RepoName)
         RepoToDelete = os.path.join(dir[0], dir[1])
-        #rmtree(RepoToDelete)
-        #shutil.rmtree("../Repository")
-        #File Must be deleted After Extraction to save Memory
-        #Return Inheritance data 
         return project.computeInheritanceData(), project.organizeHierachy(), project.Declarations
-        #rmtree("../Repository")
     #analyseAllRepositories()

@@ -10,6 +10,12 @@ class ProjectDataVisualize:
             # Reading data from the storage json file 
             self.HierachiesData = json.load(openfile)
         # print(self.HierachiesData)
+#----------------------------------Code To Go through every thing -------------------------#
+        # for project in self.HierachiesData:
+        #         for hierarachy in self.HierachiesData[project]['Hierarchies']:
+        #             for index, depths in enumerate(self.HierachiesData[project]['Hierarchies'][hierarachy]):
+        #                 for depth in depths:
+        #                     print(len(depths[depth]))
         print(len(self.HierachiesData))
 
     #--------------- depth metrics----------------

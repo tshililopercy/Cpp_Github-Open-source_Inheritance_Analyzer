@@ -5,7 +5,7 @@ import numpy as np
 class ProjectDataVisualize:
     def __init__(self):
         self.HierarchiesData = []
-        self.hierarchy_count = []
+        self.project_count = []
         self.count = 0
         self.types_ = []
         
@@ -250,7 +250,7 @@ class ProjectDataVisualize:
         count_ABC = 0
         count_Interface = 0
         count_neither = 0
-        self.hierarchy_count.append(self.count)
+        self.project_count.append(self.count)
         for c_class in concrete_classes:
             if classes_used_in_code.count(c_class) > 0:
                 count_reuse += 1
@@ -497,7 +497,7 @@ class ProjectDataVisualize:
         print(len(self.types_))
         fig14, plot14 = plt.subplots()
         columns = ('Reuse', 'Role modelling - ABC', 'Role modelling - Interface', 'Not Used in client code')
-        rows = ['Hierarchy %d' % h for h in self.hierarchy_count] 
+        rows = ['Hierarchy %d' % h for h in self.project_count] 
         the_table = plot14.table(cellText=self.types_, rowLabels =rows,colLabels=columns, loc='center', bbox=[0.0, 0, 1, 1])
         plt.subplots_adjust(bottom = 0.3)
         plot14.axes.get_yaxis().set_visible(False)

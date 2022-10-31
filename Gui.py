@@ -14,7 +14,7 @@ import Data_Compute
 
 class Clone_And_Analyse:
     def __init__(self):
-        self.ClonedRepos = []
+        self.ClonedRepos = []    
     def CloneOpenSourceRepositories(self,my_tree, button):
         cloner = GitHub_Search_And_Clone.Cloner()
         repos_info = cloner.get_repos_info()
@@ -32,7 +32,7 @@ class Clone_And_Analyse:
                     clonedRepo.append({'name': repo2["name"], 'status': 'Cloning...'})
                     before_current = False
                 elif before_current:
-                    clonedRepo.append({'name': repo2["name"], 'status': 'Clone Complete..'})
+                    clonedRepo.append({'name': repo2["name"], 'status': 'Clone Complete'})
                 else:
                     clonedRepo.append({'name': repo2["name"], 'status': 'Waiting...'})
                 self.ClonedRepos = clonedRepo
@@ -42,31 +42,34 @@ class Clone_And_Analyse:
             if repo["name"] != "tensorflow":
                 cloner.cloneARepo(repo)
         button['state'] = "active"
-    #Analyse Repositories
+
     def AnalyseRepositories(self,my_tree):
         extractor = Data_Extraction_Process_Refractored.Extractor()
-            #Deleting Data Available in HierachiesData.json, for new analysis
+        #Deleting Data Available in HierachiesData.json, for new analysis
         open('HierachiesData.json', 'w').close()
-        for name in os.listdir('../Repository'):
+        ClonedRepoNames = os.listdir('../Repository')
+        for name in ClonedRepoNames:
             for item in my_tree.get_children():
                 my_tree.delete(item)
-            for index, clonerepo in enumerate(self.ClonedRepos):
-                if clonerepo["name"] == name:
-                    self.ClonedRepos[index]['status'] = "Analysing" 
-            for i, print_ in enumerate(self.ClonedRepos):
+            ClonedRepos = []
+            before_current = True
+            for name_2 in ClonedRepoNames:
+                if (name == name_2):
+                    ClonedRepos.append({'name': name_2, 'status': 'Analysing....'})
+                    before_current = False
+                elif before_current:
+                    ClonedRepos.append({'name': name_2, 'status': 'Done Analysing'})
+                else:
+                    ClonedRepos.append({'name': name_2, 'status': 'Waiting...'})
+            for i, print_ in enumerate(ClonedRepos):
+                print(i)
                 my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]))
-            print("analysing", name)
             projectdatastorage = ProjectDataStorage(extractor.AnalyseRepository(name))
             projectdatastorage.ComputeHieracyData()
-            for index, clonerepo in enumerate(self.ClonedRepos):
-                if clonerepo["name"] == name:
-                    self.ClonedRepos[index]['status'] = "Done Analysing"
-            for item in my_tree.get_children():
-                my_tree.delete(item)
-            for i, print_ in enumerate(self.ClonedRepos):
-                my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]), tags=('oddrow'))
+            
         # projectdatavisualize = Data_Compute.ProjectDataVisualize()
         # projectdatavisualize.PrintingHierachyData()
+
 
 class GraphicalUserInterface:
     def __init__(self):
@@ -107,6 +110,7 @@ class GraphicalUserInterface:
         my_tree.tag_configure('rowsdisplay', background="grey", font=("Comic Sans MS", 11,))
         
         tree_scroll.config(command=my_tree.yview)
+            
         self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.AnalyseRepositories,args=(my_tree,)).start()))
         self.Analyzebutton.place(relx=0.1, rely=0.6, height=45, width = 125)
         self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,self.Analyzebutton,)).start()))

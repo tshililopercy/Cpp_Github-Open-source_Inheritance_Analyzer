@@ -15,7 +15,7 @@ Windows:
 1. install clang using MSYS2 (link)...set the installation directory (msys64\mingw64\bin) on the path.
 2. verify the installation
 
-For Both OS:
+For Both Linux and Windows:
 
 3. `pip install Gitpython`
 4. `pip install ccsyspath`

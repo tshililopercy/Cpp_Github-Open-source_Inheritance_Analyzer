@@ -1,9 +1,13 @@
 import matplotlib.pyplot as plt
 import json
+import numpy as np
 
 class ProjectDataVisualize:
     def __init__(self):
         self.HierarchiesData = []
+        self.hierarchy_count = []
+        self.count = 0
+        self.types_ = []
         
     def read_json(self):
         with open('HierachiesData.json', 'r') as openfile:
@@ -241,35 +245,38 @@ class ProjectDataVisualize:
     def CheckRoleModellingUse(self, abstract_classes, concrete_classes, interface_classes, classes_used_in_code):
         # print(abstract_classes, classes_used_in_code, '\n')
         #check if concrete class is used in code, if yes, re-use, If abc or interface is used in code, then role modelling
+        self.count +=1
         count_reuse = 0
         count_ABC = 0
         count_Interface = 0
         count_neither = 0
+        self.hierarchy_count.append(self.count)
         for c_class in concrete_classes:
             if classes_used_in_code.count(c_class) > 0:
                 count_reuse += 1
-                print (c_class, "Reuse")
+                # print (c_class, "Reuse")
             else:
-                print(c_class, "NOPE NOPE")
+                # print(c_class, "NOPE NOPE")
                 count_neither += 1 
         
         for abc_class in abstract_classes:
             if classes_used_in_code.count(abc_class) > 0:
                 count_ABC += 1
-                print (abc_class, "ABC Role modelling")
+                # print (abc_class, "ABC Role modelling")
             else:
-                print(abc_class, "NOPE NOPE")
+                # print(abc_class, "NOPE NOPE")
                 count_neither += 1 
 
         for interface in interface_classes:
             if classes_used_in_code.count(interface) > 0:
                 count_Interface += 1
-                print (interface, "INTERFACE Role modelling") 
+                # print (interface, "INTERFACE Role modelling") 
             else:
-                print(interface, "NOPE NOPE")
+                # print(interface, "NOPE NOPE")
                 count_neither += 1 
 
-        return count_reuse, count_ABC, count_Interface, count_neither
+        self.types_.append([count_reuse, count_ABC, count_Interface, count_neither])
+        # return count_reuse, count_ABC, count_Interface, count_neither
 
     #-------------------------Abstract Class metrics----------------------
     def HierachyCountPerAbstractClass(self, max_abstract_classes_per_hierarchy):
@@ -357,6 +364,7 @@ class ProjectDataVisualize:
             abstract_classes = []
             concrete_classes = []
             interface_classes = []
+            classes_used_in_code = self.HierachiesData[project]['ClassesUsed']
             for hierarchy in self.HierachiesData[project]['Hierarchies']:
                 # depth
                 depths_per_hierarchy = len(self.HierachiesData[project]['Hierarchies'][hierarchy])
@@ -391,22 +399,21 @@ class ProjectDataVisualize:
                         concrete_classes += concrete_class
                         interface_classes += interface_class
 
+                        # print(abstract_class, concrete_class, interface_class, '\n')
                         # store out of order occurrence
                         dip_, Info = self.BreachOfDIP(depths[depth])
                         # Info_ += Info
                         # dipS += dip_
                         DIP_occurence_per_hierarchy.append(max(dip_))
-            classes_used_in_code = self.HierachiesData[project]['ClassesUsed']
-            # print(clientCodeUse)
-            # print(count, '\n')
-            count_reuse, count_ABC, count_Interface, count_neither = self.CheckRoleModellingUse(abstract_classes, concrete_classes, interface_classes, classes_used_in_code)
-            reuse += count_reuse
-            role_modelling_ABC += count_ABC
-            role_modelling_interface += count_Interface
-            no_client_code += count_neither
+                        self.CheckRoleModellingUse(abstract_classes, concrete_classes, interface_classes, classes_used_in_code)
+                        # print(count_reuse, count_ABC, count_Interface, count_neither)
+            # classes_used_in_code = self.HierachiesData[project]['ClassesUsed']
+            # print(count)# print('\n')
+            # reuse += count_reuse
+            # role_modelling_ABC += count_ABC
+            # role_modelling_interface += count_Interface
+            # no_client_code += count_neither
             
-            
-
         # # depth metrics
         depth_ , num_of_hierachy_per_depth = self.HierachyCountPerDepth(DIT_Max)
         # print(depth_, num_of_hierachy_per_depth)
@@ -471,14 +478,25 @@ class ProjectDataVisualize:
         plt.figure(13)
         self.plotData( Out_of_Order_occurrence, num_of_hierarchy_out_of_order, "Out of Order (0 - no, 1 - yes)",  "Hierarchies",  "Hierarchies vs Out of Order")
         
-        Types = [reuse, role_modelling_ABC, role_modelling_interface, no_client_code]
-        labels = ['Reuse', 'Role modelling - ABC', 'Role modelling - Interface', 'Not Used in client code']
-        print(reuse, role_modelling_ABC, role_modelling_interface)
-        fig, plot14 = plt.subplots()
-        plt.title('Class Types')
-        plot14.pie(Types, labels=labels, autopct='%1.1f%%')
-        plot14.axis('equal')
+        # Types = [count_reuse, count_ABC, count_Interface, count_neither ]
+        # labels = ['Reuse', 'Role modelling - ABC', 'Role modelling - Interface', 'Not Used in client code']
+        # fig, plot14 = plt.subplots()
+        # plt.title('Class Types')
+        # plot14.pie(Types, labels=labels, autopct='%1.1f%%')
+        # plot14.axis('equal')
+
+        # plt.figure(14)
+        
+        # Add a table at the bottom of the axes
+        fig14, plot14 = plt.subplots()
+        columns = ('Reuse', 'Role modelling - ABC', 'Role modelling - Interface', 'Not Used in client code')
+        rows = ['Hierarchy %d' % h for h in self.hierarchy_count] 
+        the_table = plot14.table(cellText=self.types_, rowLabels =rows,colLabels=columns, loc='center')
+        plot14.axes.get_yaxis().set_visible(False)
+        plot14.axes.get_xaxis().set_visible(False)
         plt.show()
+
+        # print(self.types_)
 
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
         '''This function plots y_axis vs x_axis'''
@@ -489,4 +507,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
 
-# ProjectDataVisualize().PrintingHierachyData()
+ProjectDataVisualize().PrintingHierachyData()

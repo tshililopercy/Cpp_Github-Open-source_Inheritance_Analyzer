@@ -275,7 +275,13 @@ class ProjectDataVisualize:
                 # print(interface, "NOPE NOPE")
                 count_neither += 1 
 
-        self.types_.append([count_reuse, count_ABC, count_Interface, count_neither])
+        total = count_reuse+ count_ABC+ count_Interface+ count_neither
+        if total == 0: total=1
+        results_reuse = "{:.2f}".format((count_reuse/total)*100)
+        results_ABC = "{:.2f}".format((count_ABC/total)*100)
+        results_Inter = "{:.2f}".format((count_Interface/total)*100)
+        results_none = "{:.2f}".format((count_neither/total)*100)
+        self.types_.append([results_reuse, results_ABC, results_Inter, results_none])
         # return count_reuse, count_ABC, count_Interface, count_neither
 
     #-------------------------Abstract Class metrics----------------------
@@ -405,7 +411,7 @@ class ProjectDataVisualize:
                         # Info_ += Info
                         # dipS += dip_
                         DIP_occurence_per_hierarchy.append(max(dip_))
-                        self.CheckRoleModellingUse(abstract_classes, concrete_classes, interface_classes, classes_used_in_code)
+            self.CheckRoleModellingUse(abstract_classes, concrete_classes, interface_classes, classes_used_in_code)
                         # print(count_reuse, count_ABC, count_Interface, count_neither)
             # classes_used_in_code = self.HierachiesData[project]['ClassesUsed']
             # print(count)# print('\n')
@@ -488,10 +494,12 @@ class ProjectDataVisualize:
         # plt.figure(14)
         
         # Add a table at the bottom of the axes
+        print(len(self.types_))
         fig14, plot14 = plt.subplots()
         columns = ('Reuse', 'Role modelling - ABC', 'Role modelling - Interface', 'Not Used in client code')
         rows = ['Hierarchy %d' % h for h in self.hierarchy_count] 
-        the_table = plot14.table(cellText=self.types_, rowLabels =rows,colLabels=columns, loc='center')
+        the_table = plot14.table(cellText=self.types_, rowLabels =rows,colLabels=columns, loc='center', bbox=[0.0, 0, 1, 1])
+        plt.subplots_adjust(bottom = 0.3)
         plot14.axes.get_yaxis().set_visible(False)
         plot14.axes.get_xaxis().set_visible(False)
         plt.show()
@@ -507,4 +515,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
 
-ProjectDataVisualize().PrintingHierachyData()
+# ProjectDataVisualize().PrintingHierachyData()

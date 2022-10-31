@@ -1,6 +1,6 @@
 # Cpp_Github-Open-source_Inheritance_Analyzer
 
-Software tool that analyzes inheritance of GitHub Open source c++ projects, written using clang with python3.11
+Software tool that analyzes inheritance of GitHub Open source c++ projects, written using clang with python3.11. It uses these metrics to analyse (Method Novelty, Abstract classes, Overriden Methods, Public interfaces, Hierachy Depth, Width)
 
 It Runs on windows and Linux (Ubuntu 22.04)
 

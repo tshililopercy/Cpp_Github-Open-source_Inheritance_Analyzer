@@ -38,6 +38,7 @@ class Extractor:
         returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
                 #Extract class Public Methods Signatures
         if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
+            #Extract information
             if cursor.is_pure_virtual_method():
                 classinfo.publicMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
             elif cursor.is_virtual_method():

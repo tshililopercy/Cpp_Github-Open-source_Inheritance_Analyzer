@@ -32,7 +32,7 @@ class Clone_And_Analyse:
                     clonedRepo.append({'name': repo2["name"], 'status': 'Cloning...'})
                     before_current = False
                 elif before_current:
-                    clonedRepo.append({'name': repo2["name"], 'status': 'Clone Complete..'})
+                    clonedRepo.append({'name': repo2["name"], 'status': 'Clone Complete'})
                 else:
                     clonedRepo.append({'name': repo2["name"], 'status': 'Waiting...'})
                 self.ClonedRepos = clonedRepo
@@ -58,7 +58,7 @@ class Clone_And_Analyse:
                     ClonedRepos.append({'name': name_2, 'status': 'Analysing....'})
                     before_current = False
                 elif before_current:
-                    ClonedRepos.append({'name': name_2, 'status': 'Done Analysing....'})
+                    ClonedRepos.append({'name': name_2, 'status': 'Done Analysing'})
                 else:
                     ClonedRepos.append({'name': name_2, 'status': 'Waiting...'})
             for i, print_ in enumerate(ClonedRepos):

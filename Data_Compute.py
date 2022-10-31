@@ -507,4 +507,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
 
-ProjectDataVisualize().PrintingHierachyData()
+#ProjectDataVisualize().PrintingHierachyData()

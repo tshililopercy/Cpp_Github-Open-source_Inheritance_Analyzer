@@ -18,5 +18,5 @@ Windows:
 For Both OS:
 
 3. `pip install Gitpython`
-4. 'pip install ccsyspath`
+4. `pip install ccsyspath`
 5. `git clone https://github.com/tshililopercy/Cpp_Github-Open-source_Inheritance_Analyzer.git`

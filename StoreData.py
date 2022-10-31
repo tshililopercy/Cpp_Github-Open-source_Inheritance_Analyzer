@@ -22,6 +22,7 @@ class ProjectDataStorage:
                     for inheritance in self.ProjectData:
                         if inheritance.derivedclassName in max_keys:
                             InheritanceInfo = {}
+                            InheritanceInfo["Depth"] = depth
                             InheritanceInfo["ClassName"] = inheritance.derivedclassName
                             InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
                             InheritanceInfo["SubClasses"] = inheritance.Parents

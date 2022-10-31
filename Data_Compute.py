@@ -13,6 +13,17 @@ class ProjectDataVisualize:
         with open('HierachiesData.json', 'r') as openfile:
             # Reading data from the storage json file 
             self.HierachiesData = json.load(openfile)
+            #self.CalculateData()
+    # def CalculateData(self):
+    #     for project in self.HierachiesData:
+    #         for hierachy in self.HierachiesData[project]["Hierarchies"]:
+    #             for depth in self.HierachiesData[project]["Hierarchies"][hierachy]:
+    #                 for inheritances in depth:
+    #                    for inheritance in  depth[inheritances]:
+    #                        print("ClassName: ", inheritance["ClassName"], "ClassType: ", inheritance["TypeOfClass"],"Public pure virtual: ", inheritance["public pure virtual functions"], "Public interface: ", inheritance["Public Interface"])
+    #                        for ID, parent in enumerate(inheritance["SubClasses"]):
+    #                            print("parent " + str(ID), inheritance["SubClasses"])
+                           
 
     #--------------- depth metrics----------------
     def HierachyCountPerDepth(self, max_depths):

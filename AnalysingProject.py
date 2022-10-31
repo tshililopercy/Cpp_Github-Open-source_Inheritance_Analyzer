@@ -57,6 +57,7 @@ class InheritanceData:
         self.typeofinheritance = None
         self.inherited_overriden = []
         self.TypeOfClass = None
+        self.public_Pure_virtual_Methods = []
         self.PublicInterface = [] # Public methods of a class
         self.Novelmethods = [] #added public normal, added virtual functions
     def compute_public_interface(self):
@@ -64,6 +65,9 @@ class InheritanceData:
         self.PublicInterface += self.PublicMethods["Addednormalfunctions"]
         self.PublicInterface += self.PublicMethods["inherited_virtual"]
         self.PublicInterface += self.PublicMethods["inherited_normal"]
+    def compute_public_pure_virtual_methods(self):
+        self.public_Pure_virtual_Methods += self.PublicMethods['Addedpurevirtualfunctions']
+        self.public_Pure_virtual_Methods += self.PublicMethods['inherited_pure_virtual']
     def compute_Added_Methods(self):
         self.Novelmethods += self.PublicMethods["Addednormalfunctions"]
         self.Novelmethods += self.PublicMethods['Addedvirtualfunctions']
@@ -346,9 +350,9 @@ class ProjectData:
                 inheritancedata.determineinheritanceType()
                 inheritancedata.ComputesOverridenMethods()
                 inheritancedata.identifyClassType()
+                inheritancedata.compute_public_pure_virtual_methods()
                 inheritancedata.compute_public_interface()
                 inheritancedata.compute_Added_Methods()
-                print(inheritancedata)
                 self.ProjectInheritanceData.append(inheritancedata)
         #self.PrintResults()
         #print("Number of inheritances",self.ProjectInheritanceData)

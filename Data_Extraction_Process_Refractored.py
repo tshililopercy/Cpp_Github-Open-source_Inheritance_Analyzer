@@ -1,5 +1,3 @@
-from inspect import signature
-from sqlite3 import Cursor
 import clang.cindex
 import os
 import fnmatch
@@ -13,7 +11,7 @@ idx = clang.cindex.Index.create()
 args    = '-x c++ --std=c++17'.split()
 syspath = ccsyspath.system_include_paths('clang++')
 incargs = [ b'-I' + inc for inc in syspath ]
-args    = args
+args    = args + incargs
 
 class Extractor:
     def __init__(self):

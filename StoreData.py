@@ -27,6 +27,7 @@ class ProjectDataStorage:
                             InheritanceInfo["TypeOfClass"] = inheritance.TypeOfClass
                             InheritanceInfo["SubClasses"] = inheritance.Parents
                             InheritanceInfo["typeofinheritance"] = inheritance.typeofinheritance
+                            InheritanceInfo["public pure virtual functions"] = len(inheritance.public_Pure_virtual_Methods)
                             InheritanceInfo["Public Interface"] = len(inheritance.PublicInterface)
                             InheritanceInfo["Added Methods"] = len(inheritance.Novelmethods)
                             InheritanceInfo["Overriden Methods"] = len(inheritance.overridenfunctions)

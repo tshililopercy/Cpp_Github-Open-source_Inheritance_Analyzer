@@ -8,10 +8,10 @@ import ccsyspath
 
 idx = clang.cindex.Index.create()
 
-args    = '-x c++ --std=c++17'.split()
-syspath = ccsyspath.system_include_paths('clang++')
-incargs = [ b'-I' + inc for inc in syspath ]
-args    = args + incargs
+# args    = '-x c++ --std=c++17'.split()
+# syspath = ccsyspath.system_include_paths('clang++')
+# incargs = [ b'-I' + inc for inc in syspath ]
+# args    = args + incargs
 
 class Extractor:
     def __init__(self):
@@ -123,7 +123,7 @@ class Extractor:
     
     def parseTranslationUnit(self, file_path, project):  
         print(file_path)
-        tu = idx.parse(path = file_path, args=args,  
+        tu = idx.parse(path = file_path, args=['-x','c++'],  
                     unsaved_files=None,  options=0)
         for node in tu.cursor.walk_preorder():
             if node.location.file is None:

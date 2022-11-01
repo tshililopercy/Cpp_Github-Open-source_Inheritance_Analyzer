@@ -115,7 +115,7 @@ class GraphicalUserInterface:
         self.Analyzebutton.place(relx=0.1, rely=0.6, height=45, width = 125)
         self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,self.Analyzebutton,)).start()))
         self.clonebutton.place(relx=0.1, rely=0.3, height=45, width = 125)
-        self.resultsbutton = tk.Button(self.root, text="Show results", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=projectdatavisualize.PrintingHierachyData()).start()))
+        self.resultsbutton = tk.Button(self.root, text="Show results", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=projectdatavisualize.PrintingHierarchyData()).start()))
         self.resultsbutton.place(relx=0.1, rely=0.8, height=35, width = 105)
         
         # Define Columns

@@ -99,7 +99,7 @@ class ProjectDataVisualize:
     def AdditionalMethodsMetrics(self, hierarchydata):
         '''Returns additional methods for all hierarchies'''
         # Names of added methods per depth for all hierarchies
-        additional_methods_names = []
+        # additional_methods_names = []
         # Number of added methods per depth for all hierarchies
         additional_methods_occurrence = []
         # keep track which added method belongs to which depth
@@ -108,15 +108,15 @@ class ProjectDataVisualize:
             depth_ = hierarchyinfo['Depth']
             depth_per_method.append(depth_)
             additional_method = hierarchyinfo['Added Methods']
-            additional_methods_names.append(additional_method)
+            # additional_methods_names.append(additional_method)
             additional_methods_occurrence.append(additional_method)
-        return additional_methods_names, additional_methods_occurrence, depth_per_method
+        return additional_methods_occurrence, depth_per_method
 
     #------------------------------overrriden------------------
     def OverridenMethodsMetrics(self, hierarchydata):
         '''Returns overriden for all hierarchies'''
         # Names of overriden methods per depth for all hierarchies 
-        overriden_methods = []
+        # overriden_methods = []
         # Number of overriden methods per depth for all hierarchies
         overriden_methods_occurrence = []
         # keep track which pverriden method belongs to which depth
@@ -126,9 +126,8 @@ class ProjectDataVisualize:
             depth_ = hierarchyinfo['Depth']
             depth_per_method.append(depth_)
             overriden_method = hierarchyinfo['Overriden Methods']
-            overriden_methods.append(overriden_method)
             overriden_methods_occurrence.append(overriden_method)
-        return overriden_methods, overriden_methods_occurrence, depth_per_method
+        return overriden_methods_occurrence, depth_per_method
 
     def MethodsPerClass(self, methods_occurrence):
         total_classes = [] 
@@ -195,6 +194,96 @@ class ProjectDataVisualize:
         overriden_methods['methods'] = overriden_methods_count_
 
         return novel_methods, overriden_methods
+
+    def MethodsPerDepthLargeHierarchies(self, hierarchydata, hierarchy_information):
+        added_hierarchy_functions = []
+        overriden_hierarchy_functions = []
+        public_interface_hierarchy_functions = []
+        pure_virtual_hierarchy_functions = []
+        depth_per_hierarchy_methods = []
+
+        if len(hierarchy_information) > 2:
+            for index, depths in enumerate(hierarchy_information):
+                added_methods_ = []
+                overriden_methods_ = []
+                public_interface_ = []
+                pure_virtual_methods_ =[]
+                depth_per_method = []
+
+                for depth in depths:
+                    for hierarchyinfo in depths[depth]:
+                        depth_ = hierarchyinfo['Depth']
+                        depth_per_method.append(depth_)
+                        added_methods = hierarchyinfo['Added Methods']
+                        overriden_methods = hierarchyinfo['Overriden Methods']
+                        public_interface = hierarchyinfo['Public Interface']
+                        pure_virtual_methods = hierarchyinfo['public pure virtual functions']
+                        
+                        root_public_interfaces = 0
+                        for rootclassInfo in hierarchyinfo['SubClasses']:
+                            # root classes have more infomation, i.e. name of rootclass, type of class and public interfaces
+                            if len(rootclassInfo) > 2:
+                                root_public_interfaces += len((rootclassInfo['PublicInterface']['purevirtualfunctions']))
+                                root_public_interfaces += len((rootclassInfo['PublicInterface']['virtualfunctions']))
+                                root_public_interfaces += len((rootclassInfo['PublicInterface']['normalfunctions']))
+                                public_interface_.append(root_public_interfaces)
+                                
+                        added_methods_.append(added_methods)
+                        overriden_methods_.append(overriden_methods)
+                        public_interface_.append(public_interface )
+                        pure_virtual_methods_.append(pure_virtual_methods)
+
+                added_hierarchy_functions += added_methods_
+                overriden_hierarchy_functions += overriden_methods_
+                public_interface_hierarchy_functions += public_interface_
+                pure_virtual_hierarchy_functions += pure_virtual_methods_
+                depth_per_hierarchy_methods += depth_per_method
+           
+            novel_methods_count_ = []
+            overriden_methods_count_ = []
+            pure_virtual_methods_count_ = []
+            public_interface_methods_count_ = []
+            depth_count = []
+
+            for depth_val in range(1, len(hierarchy_information)+1, 1):
+                novel = 0
+                overriden = 0
+                pure_virtual = 0
+                public_interface = 0
+                depths_indices = [] 
+
+                for depthss in range(len(depth_per_hierarchy_methods)):
+                    if depth_per_hierarchy_methods[depthss] == depth_val:
+                        depths_indices.append(depthss)
+
+                for depths_index in depths_indices:
+                    novel += added_hierarchy_functions[depths_index]
+
+                for depths_index in depths_indices:
+                    pure_virtual += pure_virtual_hierarchy_functions[depths_index]
+
+                for depths_index in depths_indices:
+                    public_interface += public_interface_hierarchy_functions[depths_index]
+                
+                for depths_index in depths_indices:
+                    overriden += overriden_hierarchy_functions[depths_index]
+
+                novel_methods_count_.append(novel)
+                overriden_methods_count_.append(overriden)
+                pure_virtual_methods_count_.append(pure_virtual)
+                public_interface_methods_count_.append(public_interface)
+                depth_count.append(depth_val)
+
+            plt.figure(16)
+            plt.plot(depth_count, novel_methods_count_, 'bo', label = f"Novel Methods")
+            plt.plot(depth_count, overriden_methods_count_,'go', label = "Overriden methods")
+            plt.plot(depth_count, public_interface_methods_count_, 'r+', label = "Public Interface methods")
+            plt.plot(depth_count, pure_virtual_methods_count_, 'm^', label = "Added and inheritted pure virtual methods")
+            plt.xlabel('Depth')
+            plt.ylabel('Number of functions')
+            plt.title(f'Number of functions in one hierarchy with depth = {len(hierarchy_information)}')
+            plt.legend()
+            plt.show()
 
     def PureVirtualMetrics(self, hierarchydata):
         '''Returns the number of added and inherited methods in all class of a project'''
@@ -377,26 +466,28 @@ class ProjectDataVisualize:
         class_types = []
         max_abstract_classes_per_hierarchy = []
         DIP_occurence_per_hierarchy = []
-        dipS = []
-        Info_ = []
+        # dipS = []
+        # Info_ = []
         count=0
 
-        Types = {}
-        reuse = 0
-        role_modelling_ABC = 0
-        role_modelling_interface = 0
-        no_client_code = 0
+        # Types = {}
+        # reuse = 0
+        # role_modelling_ABC = 0
+        # role_modelling_interface = 0
+        # no_client_code = 0
 
         # for hierarchydata_index in self.HierarchiesData:
+        abstract_classes = []
+        concrete_classes = []
+        interface_classes = []
         for project in self.HierarchiesData:
             count +=1
-            abstract_classes = []
-            concrete_classes = []
-            interface_classes = []
+            
             classes_used_in_code = self.HierarchiesData[project]['ClassesUsed']
             for hierarchy in self.HierarchiesData[project]['Hierarchies']:
                 # depth
                 depths_per_hierarchy = len(self.HierarchiesData[project]['Hierarchies'][hierarchy])
+                hierarchy_information = self.HierarchiesData[project]['Hierarchies'][hierarchy]
                 DIT_Max.append(depths_per_hierarchy)
 
                 for index, depths in enumerate(self.HierarchiesData[project]['Hierarchies'][hierarchy]):
@@ -409,11 +500,11 @@ class ProjectDataVisualize:
                         total_public_interfaces = self.PublicInterfaceMetrics(depths[depth])
                         max_public_interfaces_per_class += total_public_interfaces
                         # novel methods
-                        added_methods, additional_methods_occurrence,  depth_per_method = self.AdditionalMethodsMetrics(depths[depth])
+                        additional_methods_occurrence,  depth_per_method = self.AdditionalMethodsMetrics(depths[depth])
                         novel_methods_class_occurrence_per_class += additional_methods_occurrence
                         max_additional_methods_occurrence_per_hierarchy.append(max(additional_methods_occurrence))
                         # overriden methods
-                        overriden_methods, overriden_methods_occurrence,  depth_per_method = self.OverridenMethodsMetrics(depths[depth])
+                        overriden_methods_occurrence,  depth_per_method = self.OverridenMethodsMetrics(depths[depth])
                         overriden_methods_class_occurrence_per_class += overriden_methods_occurrence
                         max_overriden_methods_occurrence_per_hierarchy.append(max(overriden_methods_occurrence))
 
@@ -437,19 +528,21 @@ class ProjectDataVisualize:
                         # Info_ += Info
                         # dipS += dip_
                         DIP_occurence_per_hierarchy.append(max(dip_))
-            count_reuse, count_ABC, count_Interface, count_neither = self.CheckRoleModellingUse(abstract_classes, concrete_classes, interface_classes, classes_used_in_code)
-                        # print(count_reuse, count_ABC, count_Interface, count_neither)
+
+                self.MethodsPerDepthLargeHierarchies(hierarchy, hierarchy_information)
+            self.CheckRoleModellingUse(abstract_classes, concrete_classes, interface_classes, classes_used_in_code)
+            
+                       # print(count_reuse, count_ABC, count_Interface, count_neither)
             # classes_used_in_code = self.HierarchiesData[project]['ClassesUsed']
             # print(count)# print('\n')
-            reuse += count_reuse
-            role_modelling_ABC += count_ABC
-            role_modelling_interface += count_Interface
-            no_client_code += count_neither
+            # reuse += count_reuse
+            # role_modelling_ABC += count_ABC
+            # role_modelling_interface += count_Interface
+            # no_client_code += count_neither
             
         # --------------------------- Plots --------------------------------------------
         # # depth metrics
         depth_ , num_of_hierarchy_per_depth = self.HierarchyCountPerDepth(DIT_Max)
-        # print(depth_, num_of_hierarchy_per_depth)
         plt.figure(1)
         self.plotData(depth_, num_of_hierarchy_per_depth, "Depth", "Hierarchies",  "Number of hierarchies per depth")
 
@@ -463,9 +556,8 @@ class ProjectDataVisualize:
         plt.figure(3)
         self.plotData(public_interface_, num_of_classes_per_public_interface, "Public Interface", "Classes",  "Number of Classes per public_interface")
 
-    #     # methods per depth
-        added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, novel_methods_class_occurrence_per_class, overriden_methods_class_occurrence_per_class, depth_per_method_data) #, overriden_functions
-        # print(overriden_functions, '\n', added_functions)
+        # methods per depth
+        added_functions, overriden_functions = self.MethodsPerDepth(DIT_Max, novel_methods_class_occurrence_per_class, overriden_methods_class_occurrence_per_class, depth_per_method_data)
         plt.figure(4)
         self.plotData( added_functions['depth'],added_functions['methods'], "Depth", "Novel method",  "Number of novel methods per depth")
         plt.figure(5)
@@ -478,8 +570,8 @@ class ProjectDataVisualize:
         self.plotData( novel_methods_hierarchy_occurrence['Method sequence'], novel_methods_hierarchy_occurrence['Total Hierarchies'], "Methods", "Hierarchies", "Hierarchies vs Novel Methods")
         plt.figure(7)
         self.plotData( overriden_methods_hierarchy_occurrence['Method sequence'], overriden_methods_hierarchy_occurrence['Total Hierarchies'], "Methods",  "Hierarchies",  "Hierarchies vs Overriden Methods") 
-        
-        # methods per class
+
+        # classses per method
         novel_methods_class_occurrence= self. MethodsPerClass(novel_methods_class_occurrence_per_class)
         overriden_methods_class_occurrence = self. MethodsPerClass(overriden_methods_class_occurrence_per_class)
         plt.figure(8)
@@ -494,12 +586,13 @@ class ProjectDataVisualize:
         plt.title('Class Types for all hierarchy members')
         plot10.pie(all_class_types_data, labels=labels, autopct='%1.1f%%')
         plot10.axis('equal')       
-        
+        plt.savefig('../Class Types for all hierarchy members.svg', format='svg', dpi=1200)
+
         fig, plot11 = plt.subplots()
         plt.title('Class Types for hierarchy members inside the hierarchies (excluding hierarchy roots)')
         plot11.pie(class_types_data, labels=labels, autopct='%1.1f%%')
         plot11.axis('equal')
-
+        plt.savefig('../Class Types for hierarchy members inside the hierarchies.svg', format='svg', dpi=1200)
         print(100 - (class_types_data[0]/all_class_types_data[0])*100, '% Of the abstract classes are hierarchy roots')
 
         #abstract classes
@@ -510,7 +603,7 @@ class ProjectDataVisualize:
         Out_of_Order_occurrence, num_of_hierarchy_out_of_order = self. HierarchyOutOfOrder(DIP_occurence_per_hierarchy)
         plt.figure(13)
         self.plotData( Out_of_Order_occurrence, num_of_hierarchy_out_of_order, "Out of Order (0 - no, 1 - yes)",  "Hierarchies",  "Hierarchies vs Out of Order")
-        
+
         # Types = [count_reuse, count_ABC, count_Interface, count_neither ]
         # labels = ['Reuse', 'Role modelling - ABC', 'Role modelling - Interface', 'Not Used in client code']
         # fig, plot14 = plt.subplots()
@@ -518,26 +611,27 @@ class ProjectDataVisualize:
         # plot14.pie(Types, labels=labels, autopct='%1.1f%%')
         # plot14.axis('equal')
 
-        # Add a table 
-        print(len(self.types_))
+        # Add a table to show class type distribution amongst projects
         fig14, plot14 = plt.subplots()
         columns = ('Re-use', 'Role modelling - ABC', 'Role modelling - Interface', 'Not Used in client code')
-        rows = ['Hierarchy %d' % h for h in self.project_count] 
+        rows = ['Project %d' % h for h in self.project_count] 
         the_table = plot14.table(cellText=self.types_, rowLabels =rows,colLabels=columns, loc='center', bbox=[0.0, 0, 1, 1])
         plt.subplots_adjust(bottom = 0.3)
         plot14.axes.get_yaxis().set_visible(False)
         plot14.axes.get_xaxis().set_visible(False)
+        plt.savefig('../Role Modelleing.svg', format='svg', dpi=1200)
 
-         # actual methods per class
-        print(novel_methods_class_occurrence_per_class, '\n')
-        print(overriden_methods_class_occurrence_per_class)
+        # all methods methods per class
         plt.figure(15)
-        plt.hist(novel_methods_class_occurrence_per_class, alpha = 0.5, label = "Novel Methods")
-        plt.hist(public_pure_virtual_methods, alpha=0.5, label = "Added and inheritted pure virtual methods")
+        plt.plot(novel_methods_class_occurrence_per_class, 'bo', label = "Novel Methods")
+        plt.plot(overriden_methods_class_occurrence_per_class, 'go', label = "Overriden methods")
+        plt.plot(max_public_interfaces_per_class, 'r+', label = "Public Interface methods")
+        plt.plot(public_pure_virtual_methods, 'm^', label = "Added and inheritted pure virtual methods")
         plt.xlabel('Classes')
         plt.ylabel('Number of functions')
-        plt.title('Relationship between public functions in derived classes')
+        plt.title('Relationship between public functions in all classes')
         plt.legend()
+        plt.savefig('../Relationship between public functions in all classes.svg', format='svg', dpi=1200)
         plt.show()
 
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
@@ -548,5 +642,5 @@ class ProjectDataVisualize:
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.title(plot_title)
-
+        plt.savefig(f'../{plot_title}.svg', format='svg', dpi=1200)
 # ProjectDataVisualize().PrintingHierarchyData()

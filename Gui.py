@@ -62,13 +62,9 @@ class Clone_And_Analyse:
                 else:
                     ClonedRepos.append({'name': name_2, 'status': 'Waiting...'})
             for i, print_ in enumerate(ClonedRepos):
-                print(i)
                 my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]))
             projectdatastorage = ProjectDataStorage(extractor.AnalyseRepository(name))
             projectdatastorage.ComputeHieracyData()
-            
-        # projectdatavisualize = Data_Compute.ProjectDataVisualize()
-        # projectdatavisualize.PrintingHierachyData()
 
 
 class GraphicalUserInterface:

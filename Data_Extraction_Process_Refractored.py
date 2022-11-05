@@ -3,111 +3,71 @@ import os
 import fnmatch
 from AnalysingProject import *
 from StoreData import *
-clang.cindex.Config.set_library_file("C:\\msys64\\mingw64\\bin\\libclang.dll")
 import ccsyspath
-
-idx = clang.cindex.Index.create()
-
-# args    = '-x c++ --std=c++17'.split()
-# syspath = ccsyspath.system_include_paths('clang++')
-# incargs = [ b'-I' + inc for inc in syspath ]
-# args    = args + incargs
 
 class Extractor:
     def __init__(self):
+
         self.RepoNames = []
+        self.clang_path = "//usr//bin//clang++"
+        self.libclangpath = ""
+
+        if os.sys.platform == "linux" or os.sys.platform == "linux2":
+            self.libclangpath = "/usr/lib/x86_64-linux-gnu/libclang-14.so"
+            self.clang_system_include_paths = [path.decode('utf-8') for path in ccsyspath.system_include_paths(self.clang_path)]
+        elif os.sys.platform == "win32":
+            self.libclangpath = "C:\\msys64\\mingw64\\bin\\libclang.dll"
+            self.clang_system_include_paths = []
+        
+        clang.cindex.Config.set_library_file(self.libclangpath)
+        self.index = clang.cindex.Index.create()
+
     def getRepoNames(self):
         return self.RepoNames
-    def ExtractDeclarations(self,cursor, project):
-        project.Declarations.append(cursor.type.spelling)
-        
-    def BaseClassData(self, cursor, baseclassname, project):
-        Parent = {}
-        Parent['BaseClassInfo'] = project.getcppClass(baseclassname)
-        if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
-            Parent['inheritancetype'] = 'PUBLIC'
-        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
-            Parent['inheritancetype'] = 'PRIVATE'
-        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
-            Parent['inheritancetype'] = 'PROTECTED'
-        return Parent
-    
-    def MethodsData(self, cursor, classinfo):
-        returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
-                #Extract class Public Methods Signatures
-        if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
-            #Extract information
-            if cursor.is_pure_virtual_method():
-                classinfo.publicMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-            elif cursor.is_virtual_method():
-                classinfo.publicMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-            else:
-                classinfo.publicMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-        #Extract class Private Methods Signatures
-        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
-            if cursor.is_pure_virtual_method():
-                classinfo.privateMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-            elif cursor.is_virtual_method():
-                classinfo.privateMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-            else:
-                classinfo.privateMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-        #Extract class Protected Methods Signatures
-        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
-            if cursor.is_pure_virtual_method():
-                classinfo.protectedMethods["purevirtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-            elif cursor.is_virtual_method():
-                classinfo.protectedMethods["virtualfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
-            else:
-                classinfo.protectedMethods["normalfunctions"].append(returnType + ' ' + cursor.spelling + ' ' + argumentTypes)
 
-    def extractClassData(self, cursor, classinfo, project):
-        if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
-            for baseClass in cursor.get_children():
-                if baseClass.kind == clang.cindex.CursorKind.TYPE_REF:
-                    if project.getcppClass(baseClass.type.spelling) == {}:
-                        return
-                    else:
-                        classinfo.Baseclasses.append(self.BaseClassData(cursor, baseClass.type.spelling, project))
-                elif baseClass.kind == clang.cindex.CursorKind.TEMPLATE_REF:
-                    if project.getcppClass(baseClass.spelling) == {}:
-                        return
-                    else:
-                        classinfo.Baseclasses.append(self.BaseClassData(cursor, baseClass.spelling, project))
-        elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
-            try:
-                self.MethodsData(cursor, classinfo)
-            except:
-                print("Invalid CXX_METHOD declaration! " + str(cursor.type.spelling))
-                return
-        elif cursor.kind == clang.cindex.CursorKind.FUNCTION_TEMPLATE:
-            #Extract class Public Methods Signatures
-            self.MethodsData(cursor, classinfo)
-        project.cppClasses[classinfo.className] = classinfo
+    def traverse_Data(self, project):
+        for _class in project.cppClasses:
+            print(_class)
+            for parent in project.cppClasses[_class].Baseclasses:
+                print(parent)
         
-    def extractClass(self, cursor, project):  
+    def extractClass(self, cursor, RepositoryFiles, excludeNamespaces : list, excludeFilepaths : list, project):  
         #The full name of class is stored
-        classinfo = cppClass()
-        if cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE:
-            classinfo.className = cursor.spelling
-            print(classinfo.className)
-        else:
-            classinfo.className = cursor.type.spelling
-            print(classinfo.className)
+        classinfo = cppClass(cursor)
+
+        if classinfo.isUnamed() or classinfo.isAnonymous():
+            return
         
-        for children in cursor.get_children():
-            #Extracting Class Members (methods declaration of classes)
-            self.extractClassData(children, classinfo, project)
+        if classinfo.location_file is None:
+            return
+        for ns in excludeNamespaces:
+            if re.search(ns, classinfo.className) != None:
+                return
+        
+        abspath = os.path.abspath(classinfo.filename)
+        for xp in excludeFilepaths:
+            if abspath.find(xp) != -1:
+                return
+
+        if project.hasClass(classinfo.className):
+            return
+        
+        #print(classinfo.className)
+        classinfo.Process(cursor)
     
-    def traverse_AST(self,cursor, project): #Transerving The Abstract Tree Using Recursion
-        if cursor.kind.is_declaration():
-            if (cursor.kind != clang.cindex.CursorKind.CLASS_DECL and cursor.kind != clang.cindex.CursorKind.CXX_ACCESS_SPEC_DECL 
-                and cursor.kind != clang.cindex.CursorKind.CXX_METHOD):
-               #Extract All Other Declarations
-               self.ExtractDeclarations(cursor, project)
-        if (cursor.kind == clang.cindex.CursorKind.CLASS_DECL
-			or cursor.kind == clang.cindex.CursorKind.STRUCT_DECL
-			or cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE):
-            self.extractClass(cursor, project)
+        project.addClass(classinfo)
+
+    
+    def traverse_AST(self,cursor,RepositoryFiles, excludeNamespaces, excludeFilepaths, project): #Transerving The Abstract Tree Using Recursion
+        try:
+            if (cursor.kind == clang.cindex.CursorKind.CLASS_DECL
+			       or cursor.kind == clang.cindex.CursorKind.STRUCT_DECL
+			       or cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE):
+               self.extractClass(cursor,RepositoryFiles, excludeNamespaces, excludeFilepaths, project)
+            for child in cursor.get_children():
+                self.traverse_AST(child,RepositoryFiles, excludeNamespaces, excludeFilepaths, project)
+        except Exception:
+            pass
             
     # Searches The repository and return cpp files path
     def FindRepoFiles(self, RepoName, cppExtensions):
@@ -121,29 +81,48 @@ class Extractor:
                      cppFiles.append(os.path.join(root, filename))
        return cppFiles
     
-    def parseTranslationUnit(self, file_path, project):  
-        print(file_path)
-        tu = idx.parse(path = file_path, args=['-x','c++'],  
+    def parseTranslationUnit(self, file_path : str,RepositoryFiles, clangArgs : list, includeDirs : list, excludeNamespaces : list, excludeFilepaths : list, project):  
+        includeDirs = includeDirs + self.clang_system_include_paths
+        clangArgs += ['-I' + includeDir for includeDir in includeDirs]
+        tu = self.index .parse(path = file_path, args=clangArgs,  
                     unsaved_files=None,  options=0)
-        for node in tu.cursor.walk_preorder():
-            if node.location.file is None:
-                continue
-            if node.location.file.name != file_path:
-                continue
-            if node.kind.is_declaration():
-                self.traverse_AST(node, project)
+        self.traverse_AST(tu.cursor,RepositoryFiles, excludeNamespaces, excludeFilepaths, project)
     
     def AnalyseRepository(self, RepoName):
         project = ProjectData()
         cppExtensions = ['*.hpp', '*.hxx', '*.h']
+
+        excludeNamespace = ["std"]
+        excludeFilepath = ["\vs2022","\vs2019","\vs2017","\vs2012","\Windows Kits", "\msys64"]
+
+        clangArgs=['-x','c++']
+        clangstandard = "c++17"
+        clangArgs += [ f"-std={clangstandard.strip()}" ]
+        clangdefines = "_IS_WINDOWS,_MBCS"
+        clangDefines = [ f"-D{s.strip()}" for s in clangdefines.split(',') ]
+        include = "../include,../Repository"
+        includeDirs = include.split(",")
+        includeDirs = [ s.strip() for s in includeDirs ]
+
+        clangArgs += clangDefines
+
         RepositoryFiles = self.FindRepoFiles(RepoName,cppExtensions)
+        
+        RepoFiles = []
+        
+        for files in RepositoryFiles:
+            RepoFiles.append(files)
         self.RepoNames.append({'name': RepoName, 'Status': 'Analysing'})
         for file_path in RepositoryFiles:
-            self.parseTranslationUnit(file_path, project)
-        print(project.cppClasses)
+             print(file_path)
+             self.parseTranslationUnit(file_path, RepoFiles, clangArgs, includeDirs, excludeNamespace, excludeFilepath, project)
+        #self.traverse_Data(project)
+        #print(project.cppClasses)
+        project.computestheclasses()
         self.RepoNames.append({'name': RepoName, 'Status': 'Done Analysing'})
         #Deleting Repo After Finishing with Analysis
-        dir = ( "../Repository", RepoName)
-        RepoToDelete = os.path.join(dir[0], dir[1])
-        return project.computeInheritanceData(), project.organizeHierachy(), project.Declarations
+        #dir = ( "../Repository", RepoName)
+        #RepoToDelete = os.path.join(dir[0], dir[1])
+        return project.computeInheritanceData(), project.organizeHierachy(), project.getdeclarations()
+
     #analyseAllRepositories()

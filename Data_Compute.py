@@ -965,11 +965,11 @@ class ProjectDataVisualize:
         self.interface_instances()
         Label = ["Abstract only", "Abstract And Interface", "Concrete Only", "Concrete And Abstract", "Concrete And Interface"]
         data = [len(self.interf_inh_abstractOnly), len(self.interf_inh_abstract_Interface), len(self.interf_inh_concreteOnly), len(self.interf_inh_concrete_Abstract), len(self.interf_inh_concrete_Interface)]
-        # print(data)
-        # # returns an error if no instances of inheritance are found
-        # fig, plot24 = plt.subplots()
-        # plt.title('Interface Inheritance breakdown')
-        # plot24.pie(data, labels = Label, autopct='%1.1f%%')
+        print(data)
+        # returns an error if no instances of inheritance are found
+        fig, plot24 = plt.subplots()
+        plt.title('Interface Inheritance breakdown')
+        plot24.pie(data, labels = Label, autopct='%1.1f%%')
 
         y = self.DerivedConcreteClassesNovelMethods
         x = []

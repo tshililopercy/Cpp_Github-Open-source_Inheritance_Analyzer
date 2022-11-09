@@ -33,11 +33,11 @@
                     "Depth Number 1": [
                         {
                             "Depth": 1,
-                            "ClassName": "IME::Graphics::Sprite",
-                            "TypeOfClass": "Concrete Class",
+                            "ClassName": "IME::Audio::AudioPlayer",
+                            "TypeOfClass": "Abstract Class",
                             "SubClasses": [
                                 {
-                                    "rootname": "IME::Graphics::IDrawable",
+                                    "rootname": "IME::EventEmitter",
                                     "PublicInterface": {
                                         "purevirtualfunctions": [
                                             "draw (IME::Graphics::Window &)",
@@ -46,9 +46,20 @@
                                             "isHidden () const"
                                         ],
                                         "virtualfunctions": [],
-                                        "normalfunctions": []
+                                        "normalfunctions": [
+                                            "int addEventListener (const std::string &, int)",
+                                            "int on (const std::string &, int)",
+                                            "int addOnceEventListener (const std::string &, int)",
+                                            "bool removeEventListener (const std::string &, int)",
+                                            "bool removeAllEventListeners (const std::string &)",
+                                            "void emit (const std::string &, Args...)",
+                                            "bool hasEvent (const std::string &) const",
+                                            "int getNumOfEventListenersFor (const std::string &) const",
+                                            "int getNumberOfEvents () const",
+                                            "bool hasEventListener (const std::string &, int) const"
+                                        ]
                                     },
-                                    "TypeOfClass": "Interface Class"
+                                    "TypeOfClass": "Concrete Class"
                                 }
                             ],
                             "typeofinheritance": "Interface inheritance",
@@ -361,6 +372,18 @@
                                         ]
                                     },
                                     "TypeOfClass": "Abstract Class"
+                                },
+                                {
+                                    "rootname": "SuperPacMan::IEatable",
+                                    "PublicInterface": {
+                                        "purevirtualfunctions": [
+                                            "void eat ()",
+                                            "bool isEaten () const"
+                                        ],
+                                        "virtualfunctions": [],
+                                        "normalfunctions": []
+                                    },
+                                    "TypeOfClass": "Interface Class"
                                 }
                             ],
                             "typeofinheritance": "Implementation inheritance",
@@ -496,6 +519,26 @@
                                             "getFontName std::string &() const",
                                             "toggleVisibility ()",
                                             "contains (float, float) const"
+                                        ]
+                                    },
+                                    "TypeOfClass": "Abstract Class"
+                                },
+                                {
+                                    "rootname": "SuperPacMan::Movable",
+                                    "PublicInterface": {
+                                        "purevirtualfunctions": [
+                                            "void update (float)"
+                                        ],
+                                        "virtualfunctions": [],
+                                        "normalfunctions": [
+                                            "void move ()",
+                                            "void setSpeed (float)",
+                                            "void adjustSpeed (float)",
+                                            "void setMovable (bool)",
+                                            "float getSpeed () const",
+                                            "bool isMoving () const",
+                                            "void stop ()",
+                                            "bool isMovable () const"
                                         ]
                                     },
                                     "TypeOfClass": "Abstract Class"
@@ -1675,7 +1718,7 @@
                             "public pure virtual functions": 3,
                             "Public Interface": 14,
                             "Added Methods": 1,
-                            "Overriden Methods": 3
+                            "Overriden Methods": 1
                         },
                         {
                             "Depth": 1,
@@ -1779,7 +1822,7 @@
                                         "virtualfunctions": [],
                                         "normalfunctions": []
                                     },
-                                    "TypeOfClass": "Abstract Class"
+                                    "TypeOfClass": "Concrete Class"
                                 }
                             ],
                             "typeofinheritance": "Implementation inheritance",

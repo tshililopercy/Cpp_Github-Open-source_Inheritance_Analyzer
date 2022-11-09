@@ -4,6 +4,7 @@ import os
 class ProjectDataStorage:
     def __init__(self, ProjectInheritanceData_HierachyLevels_And_Declarations):
         self.ProjectData, self.HierachiesLevels, self.Declarations = ProjectInheritanceData_HierachyLevels_And_Declarations
+        print(self.HierachiesLevels)
         self.ProjectHierachies = {}
         self.ProjectHierarchiesData = {}
         self.HierarchiesData = {}
@@ -75,3 +76,18 @@ class ProjectDataStorage:
                     if classname not in usedClasses:
                         usedClasses.append(classname)   
         return usedClasses
+
+
+#How many interface inheritance do we have 
+#How many implementation inheritance do we have
+#Of all the implementation inheritance how many were combination of all Super CLasses
+#1. Abstract and interface
+#2. concrete and Abstract class
+#3. concrete only 
+#4. Abstract only
+#6. Their public interfaces.
+#5. The public interface of the abstract classes (Ratio of implemented functions and pure vitrtual)
+#6. The public interface of the Super Class Concrete classes
+#7. The public interface of the Interface super classes
+#8. Novel methods Added by the the derived concrete classes.
+#9. The Number of children for each classTYpes of classes.

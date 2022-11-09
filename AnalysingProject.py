@@ -1,16 +1,139 @@
-from operator import truediv
-
+import os
+import re
+import html
+import clang.cindex
 
 class cppClass:
-    def __init__(self):
+    def __init__(self, cursor : clang.cindex.Cursor):
+
+        self.filename = os.path.abspath(cursor.location.file.name).strip()
+        
+        self.relname = ""
+
+        self.line = cursor.location.line
+        
+        
+        self.location_file_name = self.filename
+        
+        self.location_file =  cursor.location.file
+        
         self.className = None
-        #Stores the class Parents classes
+
+        if cursor.kind == clang.cindex.CursorKind.CLASS_TEMPLATE:
+            self.className = cursor.spelling
+            #print(self.className)
+        else:
+            self.className = cursor.type.spelling
+            #print(self.className)
+    
         self.Baseclasses = []
         self.publicMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []}
         self.protectedMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []}
         self.privateMethods = {"purevirtualfunctions": [],"virtualfunctions": [], "normalfunctions": []} # pure virtual functions[], virtual functions[], normal functions[]
         self.typeofclass = None
         self.overridenfunctions = []
+        self.declarations = []
+
+    def addParentByFQN(self, fullyQualifiedClassName):
+            
+        self.Baseclasses.append(fullyQualifiedClassName)
+        
+    def getLocation(self) -> str:
+
+        return str(f"{self.filename}:{self.line}\n")
+		
+    def isUnamed(self) -> bool:
+        ret = "(unnamed struct" in self.className
+        return ret
+        
+    def isAnonymous(self) -> bool:
+        ret = "(anonymous struct" in self.className
+        return ret
+        #Stores the class Parents classes
+    def BaseClassData(self, cursor, baseclassname):
+        Parent = {}
+        #print(baseclassname)
+        Parent['BaseClassName'] = baseclassname
+        if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
+            Parent['inheritancetype'] = 'PUBLIC'
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
+            Parent['inheritancetype'] = 'PRIVATE'
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
+            Parent['inheritancetype'] = 'PROTECTED'
+        return Parent
+    def _getting_types_from_class_field(self, cursor):
+        types = list()
+        classfields = list(cursor.get_children())
+        if len(classfields) == 0:
+           types.append(cursor.type.spelling)
+        else:
+            types.append(cursor.type.spelling)
+            for field in classfields:
+                if field.kind == clang.cindex.CursorKind.TEMPLATE_REF:
+                    types.append(field.spelling)
+                elif field.kind == clang.cindex.CursorKind.TYPE_REF:
+                    types.append(field.type.spelling)
+        return types
+        
+
+        
+
+
+    def _processClassMemberDeclaration(self, cursor):
+        if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
+            for baseClass in cursor.get_children():
+                if baseClass.kind == clang.cindex.CursorKind.TYPE_REF:
+                    self.Baseclasses.append(self.BaseClassData(cursor,baseClass.type.spelling))
+                elif baseClass.kind == clang.cindex.CursorKind.TEMPLATE_REF:
+                    self.Baseclasses.append(self.BaseClassData(cursor,baseClass.spelling))
+        elif cursor.kind == clang.cindex.CursorKind.CXX_METHOD:
+            try:
+                self.MethodsData(cursor)
+            except:
+                print("Invalid CXX_METHOD declaration! " + str(cursor.type.spelling))
+                return
+        elif cursor.kind == clang.cindex.CursorKind.FUNCTION_TEMPLATE:
+            #Extract class Public Methods Signatures
+            self.MethodsData(cursor)
+        elif cursor.kind == clang.cindex.CursorKind.FIELD_DECL:
+            self.declarations += self._getting_types_from_class_field(cursor)
+
+    def MethodsData(self, cursor):
+        returnType, argumentTypes = cursor.type.spelling.split(' ', 1)
+        #Extract types from methods
+        self.declarations.append(returnType)
+        self.declarations.append(argumentTypes)
+        print(self.declarations)
+        if cursor.access_specifier == clang.cindex.AccessSpecifier.PUBLIC:
+            #Extract information
+            if cursor.is_pure_virtual_method():
+                self.publicMethods["purevirtualfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+            elif cursor.is_virtual_method():
+                self.publicMethods["virtualfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+            else:
+                self.publicMethods["normalfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+        #Extract class Private Methods Signatures
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
+            if cursor.is_pure_virtual_method():
+                self.privateMethods["purevirtualfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+            elif cursor.is_virtual_method():
+                self.privateMethods["virtualfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+            else:
+                self.privateMethods["normalfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+        #Extract class Protected Methods Signatures
+        elif cursor.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
+            if cursor.is_pure_virtual_method():
+                self.protectedMethods["purevirtualfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+            elif cursor.is_virtual_method():
+                self.protectedMethods["virtualfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+            else:
+                self.protectedMethods["normalfunctions"].append(cursor.spelling + ' ' + argumentTypes)
+
+    def Process(self,cursor):
+        for c in cursor.get_children():
+            self._processClassMemberDeclaration(c)
+
+
     def getoverridenfunctions(self):
         for baseclass in self.Baseclasses:
             for pure in baseclass.publicMethods["purevirtualfunctions"]:
@@ -65,13 +188,12 @@ class InheritanceData:
         self.PublicInterface += self.PublicMethods["Addednormalfunctions"]
         self.PublicInterface += self.PublicMethods["inherited_virtual"]
         self.PublicInterface += self.PublicMethods["inherited_normal"]
-    def compute_public_pure_virtual_methods(self):
-        self.public_Pure_virtual_Methods += self.PublicMethods['Addedpurevirtualfunctions']
-        self.public_Pure_virtual_Methods += self.PublicMethods['inherited_pure_virtual']
     def compute_Added_Methods(self):
         self.Novelmethods += self.PublicMethods["Addednormalfunctions"]
         self.Novelmethods += self.PublicMethods['Addedvirtualfunctions']
-        
+    def compute_public_pure_virtual_methods(self):
+        self.public_Pure_virtual_Methods += self.PublicMethods['Addedpurevirtualfunctions']
+        self.public_Pure_virtual_Methods += self.PublicMethods['inherited_pure_virtual'] 
     def ComputesOverridenMethods(self):
         self.identifyoverridenmethods(self.PublicMethods)
         self.identifyoverridenmethods(self.PrivateMethods)
@@ -89,6 +211,16 @@ class InheritanceData:
             elif inherited_pure_virtual in (self.ProtectedMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_pure_virtual)
                 self.ProtectedMethods["Addedvirtualfunctions"].remove(inherited_pure_virtual)
+            #Check presence in normal functions 
+            if inherited_pure_virtual in (self.PublicMethods["Addednormalfunctions"]):
+                self.overridenfunctions.append(inherited_pure_virtual)
+                self.PublicMethods["Addednormalfunctions"].remove(inherited_pure_virtual)
+            elif inherited_pure_virtual in (self.PrivateMethods["Addednormalfunctions"]):
+                self.overridenfunctions.append(inherited_pure_virtual)
+                self.PrivateMethods["Addednormalfunctions"].remove(inherited_pure_virtual) 
+            elif inherited_pure_virtual in (self.ProtectedMethods["Addednormalfunctions"]):
+                self.overridenfunctions.append(inherited_pure_virtual)
+                self.ProtectedMethods["Addednormalfunctions"].remove(inherited_pure_virtual)
             #Get inherited Pure Virtual Methods
             self.inherited_pure_virtual.append(inherited_pure_virtual) 
         #-------------Determing Overriden Virtual methods-------------#
@@ -103,14 +235,28 @@ class InheritanceData:
             elif inherited_virtual in (self.ProtectedMethods["Addedvirtualfunctions"]):
                 self.overridenfunctions.append(inherited_virtual)
                 self.ProtectedMethods["Addedvirtualfunctions"].remove(inherited_virtual)
+            if inherited_virtual in (self.PublicMethods["Addednormalfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.PublicMethods["Addednormalfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.PrivateMethods["Addednormalfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.PrivateMethods["Addednormalfunctions"].remove(inherited_virtual)
+            elif inherited_virtual in (self.ProtectedMethods["Addednormalfunctions"]):
+                self.overridenfunctions.append(inherited_virtual)
+                self.ProtectedMethods["Addednormalfunctions"].remove(inherited_virtual)
             #Get inherited Virtual Methods
             self.inherited_virtual.append(inherited_virtual)
     
     def determineinheritanceType(self):
-        if (len(self.inherited_virtual) == 0 and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and len(self.PublicMethods["inherited_normal"]) == 0 and len(self.ProtectedMethods["inherited_normal"]) == 0 
-        and len(self.inherited_pure_virtual) != 0):
-            self.typeofinheritance = "Interface Inheritance"
-        else: self.typeofinheritance = "Implementation Inheritance"
+        typesOfparents = []
+        for parent in self.Parents:
+            typesOfparents.append(parent.type)
+
+        # if (len(self.inherited_virtual) == 0 and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and len(self.PublicMethods["inherited_normal"]) == 0 and len(self.ProtectedMethods["inherited_normal"]) == 0 
+        # and len(self.inherited_pure_virtual) != 0):
+        #     self.typeofinheritance = "Interface Inheritance"
+        # elif: 
+        # else: self.typeofinheritance = "Implementation Inheritance"
     #Checks if there is nonoverriden pure virtual function in public section
     # def PureVirtualPresentInPublic(self):
     #     for pure_virtual in self.PublicMethods["inherited_pure_virtual"]:
@@ -130,8 +276,9 @@ class InheritanceData:
     #             return True
     #     return False
     def is_non_overriden_pure_method_present(self):
+        OverridenMethods = self.overridenfunctions + self.inherited_overriden
         for pure_virtual in self.inherited_pure_virtual:
-            if not pure_virtual in self.overridenfunctions:
+            if not pure_virtual in OverridenMethods:
                 return True
         return False
     #Identifies the class Type
@@ -149,13 +296,20 @@ class InheritanceData:
 class ProjectData:
     def __init__(self):
         #Stores Project Classes information
-        self.cppClasses = {} 
+        self.cppClasses = {}
+        
         #Stores All The Declaration present in a project
         self.Declarations = []
         #Stores Project Classes in Hierachy form (Parents and children)
         self.cppClassesNew = {}
         self.ProjectInheritanceData = [] #Store each inheritance information Data
     #Returns Inheritance Data Of A class
+    def hasClass(self, aClass) -> bool:
+        return self.cppClasses.get(aClass) is not None
+    def addClass(self, aClass) -> None:
+        self.cppClasses[aClass.className] = aClass
+    def count(self) -> int:
+        return len(self.cppClasses)
     def getinheritancedata(self, className):
         for inheritancedata in self.ProjectInheritanceData:
             if inheritancedata.derivedclassName == className:
@@ -166,20 +320,34 @@ class ProjectData:
             return self.cppClasses[classname]
         else:
             return {}
+    def getdeclarations(self):
+        return self.Declarations
 #---------------------------------------- Organize Classes and Their Children Objects (For preorder traversal)-----------------------#
-    # def computestheclasses(self):
-    #     for _class in self.cppClasses:
-    #         if len(self.cppClasses[_class].Baseclasses) != 0:
-    #             BaseClasses = []
-    #             for base in self.cppClasses[_class].Baseclasses:
-    #                 Parent = {}
-    #                 inheritancetype = base["inheritancetype"]
-    #                 baseObject = self.getcppClass(base["BaseClassName"])
-    #                 if baseObject != None:
-    #                    Parent['BaseClassInfo'] = baseObject
-    #                    Parent['inheritancetype'] = inheritancetype
-    #                    BaseClasses.append(Parent)
-    #             self.cppClasses[_class].Baseclasses = BaseClasses
+    def computestheclasses(self):
+        for _class in self.cppClasses:
+            self.Declarations += self.cppClasses[_class].declarations
+            if len(self.cppClasses[_class].Baseclasses) != 0:
+                BaseClasses = []
+                for base in self.cppClasses[_class].Baseclasses:
+                    Parent = {}
+                    inheritancetype = base["inheritancetype"]
+                    baseObject = self.getcppClass(base["BaseClassName"])
+                    if baseObject != {}:
+                       #print(baseObject.className)
+                       Parent['BaseClassInfo'] = baseObject
+                       Parent['inheritancetype'] = inheritancetype
+                       BaseClasses.append(Parent)
+                #print(BaseClasses)
+                self.cppClasses[_class].Baseclasses = BaseClasses
+    def check_same_elements(self, baseclasstypes):
+        return len(set(baseclasstypes)) == 1
+    def determine_inheritance_type(self, baseclasstypes):
+        if self.check_same_elements(baseclasstypes) and baseclasstypes[0] == "Interface Class":
+            return "Interface inheritance"
+        else: 
+            return "Implementation inheritance"
+
+
     
     def computeInheritanceData(self):
         for _class in self.cppClasses:
@@ -200,15 +368,17 @@ class ProjectData:
                 inheritancedata.ProtectedMethods["Addednormalfunctions"] = self.cppClasses[_class].protectedMethods["normalfunctions"]
                 inheritancedata.derivedclassName = _class
                 inherited_overriden = []
+                typesofBaseclasses = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
-                    print(Baseclass)
                     if Baseclass['inheritancetype'] == 'PUBLIC':
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             BaseClassNameAndType = {}
-                            BaseClassNameAndType["rootname"] = Baseclass['BaseClassInfo'].className
-                            baseClassInfo = self.getcppClass(Baseclass['BaseClassInfo'].className)
-                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.getClassType()
+                            BaseClassNameAndType["SuperClassName"] = Baseclass['BaseClassInfo'].className
+                            baseClassInfo = self.getinheritancedata(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType["public interface"] = baseClassInfo.PublicMethods
+                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.TypeOfClass
                             inheritancedata.Parents.append(BaseClassNameAndType)
+                            typesofBaseclasses.append(baseClassInfo.TypeOfClass)
                             inheritancedata.PublicMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.PublicMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.PublicMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
@@ -239,6 +409,7 @@ class ProjectData:
                             RootObject["PublicInterface"] = baseclassOject.publicMethods
                             RootObject["TypeOfClass"] = baseclassOject.getClassType()
                             inheritancedata.Parents.append(RootObject)
+                            typesofBaseclasses.append(baseclassOject.getClassType())
                             inheritancedata.PublicMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
                             inheritancedata.PublicMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
                             inheritancedata.PublicMethods["inherited_normal"] += Baseclass['BaseClassInfo'].publicMethods["normalfunctions"]
@@ -252,10 +423,12 @@ class ProjectData:
                     #-------------------------For Private inheritance----------------------------#
                     elif Baseclass['inheritancetype'] == 'PRIVATE':
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
-                            BaseClassNameAndType["rootname"] = Baseclass['BaseClassInfo'].className
-                            baseClassInfo = self.getcppClass(Baseclass['BaseClassInfo'].className)
-                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.getClassType()
+                            BaseClassNameAndType["SuperClassName"] = Baseclass['BaseClassInfo'].className
+                            baseClassInfo = self.getinheritancedata(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.TypeOfClass
+                            BaseClassNameAndType["public interface"] = baseClassInfo.PublicMethods
                             inheritancedata.Parents.append(BaseClassNameAndType)
+                            typesofBaseclasses.append(baseClassInfo.TypeOfClass)
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.PrivateMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
@@ -281,11 +454,13 @@ class ProjectData:
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
                         else:
+                            RootObject = {}
                             RootObject["rootname"] = Baseclass['BaseClassInfo'].className
                             baseclassOject = self.getcppClass(Baseclass['BaseClassInfo'].className)
                             RootObject["PublicInterface"] = baseclassOject.publicMethods
                             RootObject["TypeOfClass"] = baseclassOject.getClassType()
                             inheritancedata.Parents.append(RootObject)
+                            typesofBaseclasses.append(baseclassOject.getClassType())
                             inheritancedata.PrivateMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
                             inheritancedata.PrivateMethods["inherited_normal"] += Baseclass['BaseClassInfo'].publicMethods["normalfunctions"]
@@ -301,10 +476,12 @@ class ProjectData:
                     elif Baseclass['inheritancetype'] == 'PROTECTED':
                         if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             BaseClassNameAndType = {}
-                            BaseClassNameAndType["rootname"] = Baseclass['BaseClassInfo'].className
-                            baseClassInfo = self.getcppClass(Baseclass['BaseClassInfo'].className)
-                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.getClassType()
+                            BaseClassNameAndType["SuperClassName"] = Baseclass['BaseClassInfo'].className
+                            baseClassInfo = self.getinheritancedata(Baseclass['BaseClassInfo'].className)
+                            BaseClassNameAndType["TypeOfClass"] = baseClassInfo.TypeOfClass
+                            BaseClassNameAndType["public interface"] = baseClassInfo.PublicMethods
                             inheritancedata.Parents.append(BaseClassNameAndType)
+                            typesofBaseclasses.append(baseClassInfo.TypeOfClass)
                             inheritancedata.ProtectedMethods["inherited_pure_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_pure_virtual"]
                             inheritancedata.ProtectedMethods["inherited_virtual"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_virtual"]
                             inheritancedata.ProtectedMethods["inherited_normal"] += self.getinheritancedata(Baseclass['BaseClassInfo'].className).PublicMethods["inherited_normal"]
@@ -336,6 +513,7 @@ class ProjectData:
                             RootObject["PublicInterface"] = baseclassOject.publicMethods
                             RootObject["TypeOfClass"] = baseclassOject.getClassType()
                             inheritancedata.Parents.append(RootObject)
+                            typesofBaseclasses.append(baseclassOject.getClassType())
                             inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].publicMethods["purevirtualfunctions"]
                             inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].publicMethods["virtualfunctions"]
                             inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].publicMethods["normalfunctions"]
@@ -346,8 +524,8 @@ class ProjectData:
                             inheritancedata.ProtectedMethods["inherited_pure_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["purevirtualfunctions"]
                             inheritancedata.ProtectedMethods["inherited_virtual"] += Baseclass['BaseClassInfo'].protectedMethods["virtualfunctions"]
                             inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
+                inheritancedata.typeofinheritance = self.determine_inheritance_type(typesofBaseclasses)
                 inheritancedata.inherited_overriden = inherited_overriden
-                inheritancedata.determineinheritanceType()
                 inheritancedata.ComputesOverridenMethods()
                 inheritancedata.identifyClassType()
                 inheritancedata.compute_public_pure_virtual_methods()

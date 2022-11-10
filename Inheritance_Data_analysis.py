@@ -2,9 +2,7 @@ import json
 from collections import Counter
 
 class DataAnalysis:
-    def __init__(self):
-#---------------------------------------Information per Depth-------------------------------------------------#
-        
+    def __init__(self):       
 #----------------------------------------This is for ALL inheritances available----------------------#
         #Total number of pure interface inheritance
         self.interfaceinheritance = 0
@@ -186,7 +184,6 @@ class DataAnalysis:
                            #----------------------------------Interface inheritance Information----------------#
                            elif inheritance["typeofinheritance"] == "Interface inheritance":
                                if inheritance["TypeOfClass"] == "Concrete Class":
-                                    print("Concrete/Interface Base")
                                     self.DerivedConcreteClassesNovelMethods.append(inheritance["Added Methods"])
                                     self.DerivedConcreteClassesOverridenMethods.append(inheritance["Overriden Methods"])
                                     self.DerivedConcreteClassesInheritedMethods.append(inheritance["Public Interface"]-inheritance["Added Methods"])
@@ -216,12 +213,12 @@ class DataAnalysis:
                 for abstractclass in AbstractClassesNames:
                         splittedabstractclass = abstractclass.split("::")
                         name = splittedabstractclass[-1]
-                        if _classUsed in name:
+                        if _classUsed == name:
                              Used_Abstract_Classes.append(_classUsed)
                 for interfaceclass in InterfaceClassesNAmes:
                         splittedinterfaceclass = interfaceclass.split("::")
                         name = splittedinterfaceclass[-1]
-                        if _classUsed in name:
+                        if _classUsed == name:
                             Used_Interface_Classes.append(_classUsed)
             for interface_class in InterfaceClassesNAmes:
                 counts = Counter(number_of_children_per_interface_class)
@@ -235,17 +232,29 @@ class DataAnalysis:
                 #print(concrete_class)
                 counts = Counter(number_of_children_per_Concrete_SuperClass)
                 self.number_of_children_per_Concrete_SuperClass.append(counts[concrete_class])
-            #Number of each classes Used
+            #print("Concrete Classes Names: ", concreteClassesNames)
+            print("Interface Classes Names: ", InterfaceClassesNAmes)
+            print("Used Interface Classes: ", Used_Interface_Classes)
             self.abstract_classes += len(AbstractClassesNames)
             self.concrete_classes += len(concreteClassesNames)
             self.interface_classes += len(InterfaceClassesNAmes)
             #Used Abstract Classes & Interface
             self.Used_Abstract_Classes += len(Used_Abstract_Classes)
             self.Used_Interface_Classes += len(Used_Interface_Classes)
-
             #Number Of Concrete Super Class
             self.concreteSuperclass += len(concreteSuperClassName)
-        
+        print("Abstract class interface: ", self.AbstractClassesInterface)
+        print("Number of implementation inheritance: ", self.implementationinheritance)
+        print("Number of interface inheritance: ", self.interfaceinheritance)
+        print("NOC PER INTERFACE: ", self.number_of_children_per_interface_class)
+        print("NOC PER ABSTRACT: ", self.number_of_children_per_abstract_class)
+        print("NOC PER CONCRETE: ", self.number_of_children_per_Concrete_SuperClass)
+        print("Abstract Classes: ", self.abstract_classes)
+        print("Concrete Classes: ", self.concrete_classes)
+        print("Interface Classes: ", self.interface_classes)
+        print("Derived Concrete classes Novel Methods", self.DerivedConcreteClassesNovelMethods)
+        print("Derived Concrete classes Overriden Methods", self.DerivedConcreteClassesOverridenMethods)
+        print("Derived Concrete classes Inherited Unoverriden", self.DerivedConcreteClassesInheritedMethods)
     def implementation_instances(self):
         for instance in self.implementationinheritanceCombinations:
             instanceSet = set(instance)
@@ -360,7 +369,3 @@ class DataAnalysis:
         self.implementation_instances()
         self.subclasses_percentage_distribution()
         self.abstract_classes_public_interface_distribution()
-
-data_analysis = DataAnalysis()
-
-data_analysis.startAnalysis()

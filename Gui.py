@@ -40,7 +40,10 @@ class Clone_And_Analyse:
                 print(i)
                 my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]), tags=('oddrow'))
             if repo["name"] != "tensorflow":
-                cloner.cloneARepo(repo)
+                try:
+                   cloner.cloneARepo(repo)
+                except Exception:
+                    pass
         button['state'] = "active"
 
     def AnalyseRepositories(self,my_tree):

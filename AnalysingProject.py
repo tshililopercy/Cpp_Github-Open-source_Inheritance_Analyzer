@@ -75,10 +75,6 @@ class cppClass:
                     types.append(field.type.spelling)
         return types
         
-
-        
-
-
     def _processClassMemberDeclaration(self, cursor):
         if cursor.kind == clang.cindex.CursorKind.CXX_BASE_SPECIFIER:
             for baseClass in cursor.get_children():
@@ -251,30 +247,7 @@ class InheritanceData:
         typesOfparents = []
         for parent in self.Parents:
             typesOfparents.append(parent.type)
-
-        # if (len(self.inherited_virtual) == 0 and len(self.PrivateMethods["inherited_normal"]) == 0 and len(self.inherited_overriden) == 0 and len(self.PublicMethods["inherited_normal"]) == 0 and len(self.ProtectedMethods["inherited_normal"]) == 0 
-        # and len(self.inherited_pure_virtual) != 0):
-        #     self.typeofinheritance = "Interface Inheritance"
-        # elif: 
-        # else: self.typeofinheritance = "Implementation Inheritance"
-    #Checks if there is nonoverriden pure virtual function in public section
-    # def PureVirtualPresentInPublic(self):
-    #     for pure_virtual in self.PublicMethods["inherited_pure_virtual"]:
-    #         if not pure_virtual in self.overridenfunctions and not pure_virtual in self.inherited_overriden:
-    #             return True
-    #     return False
-    # #Checks if there is nonoverriden pure virtual function in private section
-    # def PureVirtualPresentInPrivate(self):
-    #     for pure_virtual in self.PrivateMethods["inherited_pure_virtual"]:
-    #         if not pure_virtual in self.overridenfunctions and not pure_virtual in self.inherited_overriden:
-    #             return True
-    #     return False
-    # #Checks if there is nonoverriden pure virtual function in protected section
-    # def PureVirtualPresentInProtected(self):
-    #     for pure_virtual in self.ProtectedMethods["inherited_pure_virtual"]:
-    #         if not pure_virtual in self.overridenfunctions and not pure_virtual in self.inherited_overriden:
-    #             return True
-    #     return False
+            
     def is_non_overriden_pure_method_present(self):
         OverridenMethods = self.overridenfunctions + self.inherited_overriden
         for pure_virtual in self.inherited_pure_virtual:
@@ -373,7 +346,7 @@ class ProjectData:
                 typesofBaseclasses = []
                 for Baseclass in self.cppClasses[_class].Baseclasses:
                     if Baseclass['inheritancetype'] == 'PUBLIC':
-                        if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
+                        if self.cppClasses[Baseclass['BaseClassInfo'].className].is_derivedclass() and self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             BaseClassNameAndType = {}
                             BaseClassNameAndType["SuperClassName"] = Baseclass['BaseClassInfo'].className
                             baseClassInfo = self.getinheritancedata(Baseclass['BaseClassInfo'].className)
@@ -424,7 +397,7 @@ class ProjectData:
                             inheritancedata.ProtectedMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
                     #-------------------------For Private inheritance----------------------------#
                     elif Baseclass['inheritancetype'] == 'PRIVATE':
-                        if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
+                        if self.cppClasses[Baseclass['BaseClassInfo'].className].is_derivedclass() and self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             BaseClassNameAndType["SuperClassName"] = Baseclass['BaseClassInfo'].className
                             baseClassInfo = self.getinheritancedata(Baseclass['BaseClassInfo'].className)
                             BaseClassNameAndType["TypeOfClass"] = baseClassInfo.TypeOfClass
@@ -476,7 +449,7 @@ class ProjectData:
                             inheritancedata.PrivateMethods["inherited_normal"] += Baseclass['BaseClassInfo'].protectedMethods["normalfunctions"]
                             
                     elif Baseclass['inheritancetype'] == 'PROTECTED':
-                        if self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
+                        if self.cppClasses[Baseclass['BaseClassInfo'].className].is_derivedclass() and self.getinheritancedata(Baseclass['BaseClassInfo'].className) != None:
                             BaseClassNameAndType = {}
                             BaseClassNameAndType["SuperClassName"] = Baseclass['BaseClassInfo'].className
                             baseClassInfo = self.getinheritancedata(Baseclass['BaseClassInfo'].className)

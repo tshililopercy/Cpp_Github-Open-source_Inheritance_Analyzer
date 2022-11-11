@@ -128,7 +128,9 @@ class DataAnalysis:
                                   pure_virtual_functions = []
                                   Abstract_public_interface = []
                                   eachdepthcombination.append(superclass["TypeOfClass"])
-                                  if index >= 1 :
+                                  _superclass_keys = superclass.keys()
+                                  
+                                  if "SuperClassName" in  _superclass_keys:
                                     if superclass["TypeOfClass"] == "Abstract Class":
                                        number_of_children_per_abstract_class.append(superclass["SuperClassName"])
                                        if superclass["SuperClassName"] not in AbstractClassesNames:
@@ -158,6 +160,7 @@ class DataAnalysis:
                                            InterfaceClassesNAmes.append(superclass["SuperClassName"])
                                     #Public interface for concrete Classes  
                                   else:
+                                    print(superclass["rootname"])
                                     if superclass["TypeOfClass"] == "Abstract Class":
                                        number_of_children_per_abstract_class.append(superclass["rootname"])
                                        if superclass["rootname"] not in AbstractClassesNames:
@@ -194,7 +197,8 @@ class DataAnalysis:
                                for superclass in inheritance["SubClasses"]:
                                   pure_virtual_functions = []
                                   self.interfacecombination.append(superclass["TypeOfClass"])
-                                  if index >= 1 :
+                                  _superclass_keys = superclass.keys()
+                                  if "SuperClassName" in  _superclass_keys :
                                     number_of_children_per_interface_class.append(superclass["SuperClassName"])
                                     if superclass["SuperClassName"] not in InterfaceClassesNAmes:
                                        pure_virtual_functions += superclass["public interface"]["Addedpurevirtualfunctions"]

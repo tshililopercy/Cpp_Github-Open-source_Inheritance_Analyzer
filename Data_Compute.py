@@ -1009,4 +1009,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
         plt.savefig(f'../{plot_title}.svg', format='svg', dpi=1200)
-ProjectDataVisualize().PrintingHierarchyData()
+#ProjectDataVisualize().PrintingHierarchyData()

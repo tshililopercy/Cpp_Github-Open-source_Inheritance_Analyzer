@@ -564,6 +564,29 @@ class ProjectData:
               traversedNodes += self.breadth_first_trasversal(_class, level)
               hierachiesLevels.append(level)
               #print(traversedNodes)
+        return self.merge_hierarachiesLevels(hierachiesLevels)
+        #return hierachiesLevels
+    
+    def check_common_key(self,first_dictionary_keys, second_dictionary_keys):
+        for key_ in first_dictionary_keys:
+           if key_ in second_dictionary_keys:
+               return True
+        return False
+        
+    def merge_hierarachiesLevels(self, hierachiesLevels):
+        merged_dictionaries= []
+        for i in range(len(hierachiesLevels)):
+            akeys_ = hierachiesLevels[i].keys()
+            for j in range(len(hierachiesLevels)):
+                bkeys_ = hierachiesLevels[j].keys()
+                if i < j:
+                   if self.check_common_key(akeys_,bkeys_):
+                       hierachiesLevels[i].update(hierachiesLevels[j])
+                       merged_dictionaries.append(hierachiesLevels[j])
+                       
+        for merged_dictionary in merged_dictionaries:
+            if merged_dictionary in hierachiesLevels:
+                hierachiesLevels.remove(merged_dictionary)
         return hierachiesLevels
     #Do Breadth first traversal on each inheritance hierachy 
     def breadth_first_trasversal(self, current_node, level):

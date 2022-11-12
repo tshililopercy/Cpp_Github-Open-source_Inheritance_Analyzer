@@ -1,9 +1,10 @@
 import requests
-from git import Repo, rmtree
+from git import Repo
 import os
 
 class Cloner:
     def __init__(self):
+        # Get 100 repositories (1 page) from the results returned by GitHub API
         response = requests.get('https://api.github.com/search/repositories?q=language:Cpp&&per_page=100&page='+ str(1))
         self.repos_info = {}
         if response.status_code == 200:

@@ -4,42 +4,41 @@ import fnmatch
 from AnalysingProject import *
 from StoreData import *
 import ccsyspath
+import configparser
+config = configparser.ConfigParser()
 
 class Extractor:
     def __init__(self):
 
         self.RepoNames = []
+        config.read("Setup.ini")
         self.clang_path = "//usr//bin//clang++"
         self.libclangpath = ""
-
+        
         if os.sys.platform == "linux" or os.sys.platform == "linux2":
             self.libclangpath = "/usr/lib/x86_64-linux-gnu/libclang-14.so"
             self.clang_system_include_paths = [path.decode('utf-8') for path in ccsyspath.system_include_paths(self.clang_path)]
         elif os.sys.platform == "win32":
             self.libclangpath = "C:\\msys64\\mingw64\\bin\\libclang.dll"
             self.clang_system_include_paths = []
-        
+        #Set the libclang_path to create the Index Entry point
         clang.cindex.Config.set_library_file(self.libclangpath)
         self.index = clang.cindex.Index.create()
 
     def getRepoNames(self):
         return self.RepoNames
-
-    def traverse_Data(self, project):
-        for _class in project.cppClasses:
-            print(_class)
-            for parent in project.cppClasses[_class].Baseclasses:
-                print(parent)
         
     def extractClass(self, cursor, RepositoryFiles, excludeNamespaces : list, excludeFilepaths : list, project):  
-        #The full name of class is stored
+    
         classinfo = cppClass(cursor)
-
+        
+        #Exclude classes, structs that don't have defined names
         if classinfo.isUnamed() or classinfo.isAnonymous():
             return
         
         if classinfo.location_file is None:
             return
+        #Excluding the standard c++ classes
         for ns in excludeNamespaces:
             if re.search(ns, classinfo.className) != None:
                 return
@@ -48,17 +47,17 @@ class Extractor:
         for xp in excludeFilepaths:
             if abspath.find(xp) != -1:
                 return
-
+        #Checking if the class has already been stored
         if project.hasClass(classinfo.className):
             return
-        
-        #print(classinfo.className)
+        #Process The Class Information Data
         classinfo.Process(cursor)
-    
+        
+        #Store extracted class, struct or template
         project.addClass(classinfo)
 
-    
-    def traverse_AST(self,cursor,RepositoryFiles, excludeNamespaces, excludeFilepaths, project): #Transerving The Abstract Tree Using Recursion
+    #Resursively transversing The Abstract Teree
+    def traverse_AST(self,cursor,RepositoryFiles, excludeNamespaces, excludeFilepaths, project):
         try:
             if (cursor.kind == clang.cindex.CursorKind.CLASS_DECL
 			       or cursor.kind == clang.cindex.CursorKind.STRUCT_DECL
@@ -80,14 +79,14 @@ class Extractor:
                 for filename in fnmatch.filter(files, extension):
                      cppFiles.append(os.path.join(root, filename))
        return cppFiles
-    
+    #Parse source files using LibClang API Python binding
     def parseTranslationUnit(self, file_path : str,RepositoryFiles, clangArgs : list, includeDirs : list, excludeNamespaces : list, excludeFilepaths : list, project):  
         includeDirs = includeDirs + self.clang_system_include_paths
         clangArgs += ['-I' + includeDir for includeDir in includeDirs]
         tu = self.index .parse(path = file_path, args=clangArgs,  
                     unsaved_files=None,  options=0)
         self.traverse_AST(tu.cursor,RepositoryFiles, excludeNamespaces, excludeFilepaths, project)
-    
+    #Analyse a Repository
     def AnalyseRepository(self, RepoName):
         project = ProjectData()
         cppExtensions = ['*.hpp', '*.hxx', '*.h']
@@ -116,13 +115,6 @@ class Extractor:
         for file_path in RepositoryFiles:
              print(file_path)
              self.parseTranslationUnit(file_path, RepoFiles, clangArgs, includeDirs, excludeNamespace, excludeFilepath, project)
-        #self.traverse_Data(project)
-        #print(project.cppClasses)
         project.computestheclasses()
         self.RepoNames.append({'name': RepoName, 'Status': 'Done Analysing'})
-        #Deleting Repo After Finishing with Analysis
-        #dir = ( "../Repository", RepoName)
-        #RepoToDelete = os.path.join(dir[0], dir[1])
         return project.computeInheritanceData(), project.organizeHierachy(), project.getdeclarations()
-
-    #analyseAllRepositories()

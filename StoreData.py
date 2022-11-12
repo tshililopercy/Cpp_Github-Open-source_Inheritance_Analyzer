@@ -4,8 +4,6 @@ import os
 class ProjectDataStorage:
     def __init__(self, ProjectInheritanceData_HierachyLevels_And_Declarations):
         self.ProjectData, self.HierachiesLevels, self.Declarations = ProjectInheritanceData_HierachyLevels_And_Declarations
-        print(self.HierachiesLevels)
-        self.ProjectHierachies = {}
         self.ProjectHierarchiesData = {}
         self.HierarchiesData = {}
         self.ClassesUsedInCode = []

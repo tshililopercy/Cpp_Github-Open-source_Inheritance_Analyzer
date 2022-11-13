@@ -670,7 +670,7 @@ class ProjectDataVisualize:
                     name = splittedinterfaceclass[-1]
                     if _classUsed in name:
                         Used_Interface_Classes.append(_classUsed)
-        for concreteclass in concreteClassesNames:
+            for concreteclass in concreteClassesNames:
                 splittedconcreteclass = concreteclass.split("::")
                 name = splittedconcreteclass[-1]
                 if _classUsed in name:

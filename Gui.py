@@ -11,13 +11,12 @@ from tkinter import ttk
 import Data_Extraction_Process_Refractored
 import GitHub_Search_And_Clone
 import Data_Compute
+import Visualiser
 
 
 class Clone_And_Analyse:
     def __init__(self):
         self.ClonedRepos = []   
-    def import_visualizer():
-        import Visualiser 
     def CloneOpenSourceRepositories(self,my_tree, button):
         cloner = GitHub_Search_And_Clone.Cloner()
         repos_info = cloner.get_repos_info()
@@ -77,6 +76,7 @@ class GraphicalUserInterface:
     def __init__(self):
         _clone_and_analyze = Clone_And_Analyse()
         projectdatavisualize = Data_Compute.ProjectDataVisualize()
+        analysisvisualizer = Visualiser.DataAnalysisVisualizer()
         self.root = tk.Tk()
         self.root.title("GitHub Open Source Inheritance Analyzer")
         screen_width = str(self.root.winfo_screenwidth()//2)
@@ -114,11 +114,13 @@ class GraphicalUserInterface:
         tree_scroll.config(command=my_tree.yview)
             
         self.Analyzebutton = tk.Button(self.root, text="Analyze Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.AnalyseRepositories,args=(my_tree,)).start()))
-        self.Analyzebutton.place(relx=0.1, rely=0.6, height=45, width = 125)
+        self.Analyzebutton.place(relx=0.1, rely=0.5, height=45, width = 125)
         self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,self.Analyzebutton,)).start()))
         self.clonebutton.place(relx=0.1, rely=0.3, height=45, width = 125)
-        self.resultsbutton = tk.Button(self.root, text="Show results", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=Clone_And_Analyse.import_visualizer()).start()))
-        self.resultsbutton.place(relx=0.1, rely=0.8, height=35, width = 105)
+        self.resultsbutton = tk.Button(self.root, text="Show results", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=projectdatavisualize.PrintingHierarchyData()).start()))
+        self.resultsbutton.place(relx=0.1108, rely=0.65, height=35, width = 105)
+        self.InheritanceAnalysisButton = tk.Button(self.root, text="Analysis", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=analysisvisualizer.perform_Analysis()).start()))
+        self.InheritanceAnalysisButton.place(relx=0.1108, rely=0.8, height=35, width = 105)
         
         # Define Columns
         my_tree['columns'] = ("Repository Name", "Status")

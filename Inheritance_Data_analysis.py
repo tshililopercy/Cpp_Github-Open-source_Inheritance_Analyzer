@@ -138,7 +138,6 @@ class DataAnalysis:
                                eachdepthcombination = []
                                #The number of implementation inheritance
                                self.implementationinheritance += 1
-                               
                                if inheritance["TypeOfClass"] == "Concrete Class":
                                    if inheritance["ClassName"] not in concreteClassesNames:
                                         concreteClassesNames.append(inheritance["ClassName"])
@@ -177,7 +176,6 @@ class DataAnalysis:
                                            InterfaceClassesNAmes.append(superclass["SuperClassName"])
                                     #Public interface for concrete Classes  
                                   else:
-                                    print(superclass["rootname"])
                                     if superclass["TypeOfClass"] == "Abstract Class":
                                        number_of_children_per_abstract_class.append(superclass["rootname"])
                                        if superclass["rootname"] not in AbstractClassesNames:
@@ -205,7 +203,8 @@ class DataAnalysis:
                                     if len(set(eachdepthcombination)) == 1 and "Concrete Class" in eachdepthcombination:
                                         self.DerivedConcreteClassesNovelMethods.append(inheritance["Added Methods"])
                                         self.DerivedConcreteClassesOverridenMethods.append(inheritance["Overriden Methods"])
-                                        self.DerivedConcreteClassesInheritedMethods.append(inheritance["Public Interface"]-inheritance["Added Methods"])
+                                        #Verified formula
+                                        self.DerivedConcreteClassesInheritedMethods.append(inheritance["Public Interface"]-inheritance["Added Methods"]-inheritance["Overriden Methods"])
                                     elif len(set(eachdepthcombination)) == 1 and "Abstract Class" in eachdepthcombination:
                                         self.AbstractDerivedConcreteClassesNovelMethods.append(inheritance["Added Methods"])
                                         self.AbstractDerivedConcreteClassesOverridenVirtualMethods.append(inheritance["Overriden Methods"])
@@ -216,7 +215,6 @@ class DataAnalysis:
                                if inheritance["TypeOfClass"] == "Concrete Class":
                                     self.InterfaceDerivedConcreteClassesNovelMethods.append(inheritance["Added Methods"])
                                     self.InterfaceDerivedConcreteClassesOverridenMethods.append(inheritance["Overriden Methods"])
-                                    #self.DerivedConcreteClassesInheritedMethods.append(inheritance["Public Interface"]-inheritance["Added Methods"])
                                     if inheritance["ClassName"] not in concreteClassesNames:
                                         concreteClassesNames.append(inheritance["ClassName"])
                                #number of interface inheritance
@@ -238,9 +236,7 @@ class DataAnalysis:
                                        self.InterfaceClassesInterface.append(len(superclass["PublicInterface"]["purevirtualfunctions"]))
                                        InterfaceClassesNAmes.append(superclass["rootname"])
                             # The public interface of the SuperClasses
-
             for _classUsed in self.HierarchiesData[project]["ClassesUsed"]:
-                
                 for abstractclass in AbstractClassesNames:
                         splittedabstractclass = abstractclass.split("::")
                         name = splittedabstractclass[-1]
@@ -264,8 +260,6 @@ class DataAnalysis:
                 counts = Counter(number_of_children_per_Concrete_SuperClass)
                 self.number_of_children_per_Concrete_SuperClass.append(counts[concrete_class])
             #print("Concrete Classes Names: ", concreteClassesNames)
-            print("Interface Classes Names: ", InterfaceClassesNAmes)
-            print("Used Interface Classes: ", Used_Interface_Classes)
             self.abstract_classes += len(AbstractClassesNames)
             self.concrete_classes += len(concreteClassesNames)
             self.interface_classes += len(InterfaceClassesNAmes)
@@ -274,18 +268,6 @@ class DataAnalysis:
             self.Used_Interface_Classes += len(Used_Interface_Classes)
             #Number Of Concrete Super Class
             self.concreteSuperclass += len(concreteSuperClassName)
-        print("Abstract class interface: ", self.AbstractClassesInterface)
-        print("Number of implementation inheritance: ", self.implementationinheritance)
-        print("Number of interface inheritance: ", self.interfaceinheritance)
-        print("NOC PER INTERFACE: ", self.number_of_children_per_interface_class)
-        print("NOC PER ABSTRACT: ", self.number_of_children_per_abstract_class)
-        print("NOC PER CONCRETE: ", self.number_of_children_per_Concrete_SuperClass)
-        print("Abstract Classes: ", self.abstract_classes)
-        print("Concrete Classes: ", self.concrete_classes)
-        print("Interface Classes: ", self.interface_classes)
-        print("Derived Concrete classes Novel Methods", len(self.DerivedConcreteClassesNovelMethods))
-        print("Derived Concrete classes Overriden Methods", self.DerivedConcreteClassesOverridenMethods)
-        print("Derived Concrete classes Inherited Unoverriden", self.DerivedConcreteClassesInheritedMethods)
     def implementation_instances(self):
         for instance in self.implementationinheritanceCombinations:
             instanceSet = set(instance)
@@ -310,23 +292,24 @@ class DataAnalysis:
             if counts_abstract_interface[percentage] != 0:
                 self.AbstractClasses_per_interface_ratio.append(counts_abstract_interface[percentage])
                 self._abstract_interface_percentage.append(percentage)
-        print(self.AbstractClasses_per_interface_ratio)
                 
     def subclasses_percentage_distribution(self):
         #----------------------------------------For Derived Concrete Classes From Concrete-------------------------------------#
         for concrete_class_number in range(0,len(self.DerivedConcreteClassesInheritedMethods)):
             total_interface = self.DerivedConcreteClassesInheritedMethods[concrete_class_number] + self.DerivedConcreteClassesNovelMethods[concrete_class_number] + self.DerivedConcreteClassesOverridenMethods[concrete_class_number]
             self.DerivedClasses_Public_interface.append(total_interface)
+            inheriting_data_class = False
             if total_interface != 0:
                 ratio_inherited = self.DerivedConcreteClassesInheritedMethods[concrete_class_number]/total_interface
-                self.derivedConcrete_Classes_ratio_inherited.append(round(ratio_inherited*100))
-                
-                ratio_overriden = self.DerivedConcreteClassesOverridenMethods[concrete_class_number]/total_interface
-                self.derivedConcrete_Classes_ratio_overriden.append(round(ratio_overriden*100))
-                
-                ratio_NovelMethods = self.DerivedConcreteClassesNovelMethods[concrete_class_number]/total_interface
-                self.derivedConcrete_Classes_ratio_NovelMethods.append(round(ratio_NovelMethods*100))
-        
+                if ratio_inherited != 0:
+                    self.derivedConcrete_Classes_ratio_inherited.append(round(ratio_inherited*100))
+                    inheriting_data_class = True
+                if inheriting_data_class:
+                    ratio_overriden = self.DerivedConcreteClassesOverridenMethods[concrete_class_number]/total_interface
+                    self.derivedConcrete_Classes_ratio_overriden.append(round(ratio_overriden*100))
+                    
+                    ratio_NovelMethods = self.DerivedConcreteClassesNovelMethods[concrete_class_number]/total_interface
+                    self.derivedConcrete_Classes_ratio_NovelMethods.append(round(ratio_NovelMethods*100))
         #-----------------------------------------For Derived Concrete Classes From Abstract-----------------------------------# 
         for concrete_class_number in range(0,len(self.AbstractDerivedConcreteClassesInheritedMethods)):
             total_interface = self.AbstractDerivedConcreteClassesInheritedMethods[concrete_class_number] + self.AbstractDerivedConcreteClassesNovelMethods[concrete_class_number] + self.AbstractDerivedConcreteClassesOverridenVirtualMethods[concrete_class_number]
@@ -343,7 +326,6 @@ class DataAnalysis:
                 
         for concrete_class_number in range(0,len(self.InterfaceDerivedConcreteClassesNovelMethods)):
             total_interface = self.InterfaceDerivedConcreteClassesNovelMethods[concrete_class_number] + self.InterfaceDerivedConcreteClassesOverridenMethods[concrete_class_number]
-            #self.AbstractDerivedClasses_Public_interface.append(total_interface)
             if total_interface != 0:
                 
                 ratio_overriden = self.InterfaceDerivedConcreteClassesOverridenMethods[concrete_class_number]/total_interface
@@ -351,12 +333,7 @@ class DataAnalysis:
                 
                 ratio_NovelMethods = self.InterfaceDerivedConcreteClassesNovelMethods[concrete_class_number]/total_interface
                 self.InterfacederivedConcrete_Classes_ratio_NovelMethods.append(round(ratio_NovelMethods*100))
-               
-        
-        
-        print(len(self.DerivedConcreteClassesOverridenMethods))
-        print(len(self.DerivedConcreteClassesInheritedMethods))
-        print(len(self.DerivedConcreteClassesNovelMethods))
+                
         for percentage in range(0,101):
             counts_inherited_ratio = Counter(self.derivedConcrete_Classes_ratio_inherited)
             if counts_inherited_ratio[percentage] != 0:

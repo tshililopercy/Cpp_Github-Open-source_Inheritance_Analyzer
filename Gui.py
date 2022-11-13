@@ -12,9 +12,12 @@ import Data_Extraction_Process_Refractored
 import GitHub_Search_And_Clone
 import Data_Compute
 
+
 class Clone_And_Analyse:
     def __init__(self):
-        self.ClonedRepos = []    
+        self.ClonedRepos = []   
+    def import_visualizer():
+        import Visualiser 
     def CloneOpenSourceRepositories(self,my_tree, button):
         cloner = GitHub_Search_And_Clone.Cloner()
         repos_info = cloner.get_repos_info()
@@ -40,7 +43,10 @@ class Clone_And_Analyse:
                 print(i)
                 my_tree.insert(parent='', index='end',iid=i, text="", values=(print_["name"],print_["status"]), tags=('oddrow'))
             if repo["name"] != "tensorflow":
-                cloner.cloneARepo(repo)
+                try:
+                   cloner.cloneARepo(repo)
+                except Exception:
+                    pass
         button['state'] = "active"
 
     def AnalyseRepositories(self,my_tree):
@@ -111,7 +117,7 @@ class GraphicalUserInterface:
         self.Analyzebutton.place(relx=0.1, rely=0.6, height=45, width = 125)
         self.clonebutton = tk.Button(self.root, text="Clone Repositories", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=_clone_and_analyze.CloneOpenSourceRepositories,args=(my_tree,self.Analyzebutton,)).start()))
         self.clonebutton.place(relx=0.1, rely=0.3, height=45, width = 125)
-        self.resultsbutton = tk.Button(self.root, text="Show results", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=projectdatavisualize.PrintingHierarchyData()).start()))
+        self.resultsbutton = tk.Button(self.root, text="Show results", font=('Arial', 8, 'bold'), command=lambda:(threading.Thread(target=Clone_And_Analyse.import_visualizer()).start()))
         self.resultsbutton.place(relx=0.1, rely=0.8, height=35, width = 105)
         
         # Define Columns

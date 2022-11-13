@@ -109,12 +109,12 @@ class Extractor:
         
         RepoFiles = []
         
-        for files in RepositoryFiles:
-            RepoFiles.append(files)
+        #for files in RepositoryFiles:
+            #RepoFiles.append(files)
         self.RepoNames.append({'name': RepoName, 'Status': 'Analysing'})
         for file_path in RepositoryFiles:
-             print(file_path)
-             self.parseTranslationUnit(file_path, RepoFiles, clangArgs, includeDirs, excludeNamespace, excludeFilepath, project)
+            print(file_path)
+            self.parseTranslationUnit(file_path, RepoFiles, clangArgs, includeDirs, excludeNamespace, excludeFilepath, project)
         project.computestheclasses()
         self.RepoNames.append({'name': RepoName, 'Status': 'Done Analysing'})
         return project.computeInheritanceData(), project.organizeHierachy(), project.getdeclarations()

@@ -9,66 +9,6 @@ class ProjectDataVisualize:
         self.project_count = []
         self.count = 0
         self.types_ = []
-
-        #----------------------------------------This is for ALL inheritances available----------------------#
-        #Total number of pure interface inheritance
-        self.interfaceinheritance = 0
-        #Total number of implementation inheritance (either concrete or abstract or any mixture of interface)
-        self.implementationinheritance = 0
-        #number of abstract only inheritance
-        self.abstractOnly = []
-        self.interf_inh_abstractOnly = []
-        #number of concrete only inheritance
-        self.concreteOnly = []
-        self.interf_inh_concreteOnly = []
-        #number of concrete, abstract, and interface commbined
-        self.concrete_Abstract_interface = []
-        self.interf_inh_concrete_Abstract_interface = []
-        #concrete and interface inheritance
-        self.concrete_Interface = []
-        self.interf_inh_concrete_Interface = []
-        #abstract and interface inheritance
-        self.abstract_Interface = []
-        self.interf_inh_abstract_Interface = []
-        #Concrete and Abstract inheritance
-        self.concrete_Abstract = []
-        self.interf_inh_concrete_Abstract = []
-        #The SuperClass combination to deduce the above
-        self.implementationinheritanceCombinations = []
-        self.interfaceinheritanceCombinations = []
-        #interface combination 
-        self.interfacecombination = []
-        #The size of Concrete Super Classes
-        self.PublicInterfaceOfConcreteSuperClasses = []
-        self.AbstractClassesInterface = [] #Pure virtual functions/ virtual functions
-        self.DerivedAbstractClassesInterface = []
-        self.InterfaceClassesInterface = []
-        self.DerivedInterfaceClassesInterface = []
-        #Concrete classes Are either root or children
-        self.ConcreteClassesInterface = []
-        self.DerivedConcreteClassesInterface = []
-        #Derived Concrete classes that don't add Novel methods.
-        self.DerivedConcreteClassesNovelMethods = []
-        #Derived Concrete classes Overriden Methods.
-        self.DerivedConcreteClassesOverridenMethods = []
-        #Number_of_children_per_interface_class
-        #Total number of Abstract classes
-        self.abstract_classes = 0
-        #Total number of Concrete Classes
-        self.concrete_classes = 0
-        #Total number of Interface Classes
-        self.interface_classes = 0
-        #Used Abstract Classes
-        self.Used_Abstract_Classes = 0
-        #Used Interface Classes
-        self.Used_Interface_Classes = 0
-        #Used Concrete Classes
-        self.Used_Concrete_Classes = 0
-        self.number_of_children_per_interface_class = []
-        #NUmber_of_children_per_abstract_class
-        self.number_of_children_per_abstract_class = []
-        #Number_of_children_per_concrete_super_class
-        self.number_of_children_per_Concrete_SuperClass = []
         
     def read_json(self):
         with open('HierachiesData.json', 'r') as openfile:
@@ -353,7 +293,7 @@ class ProjectDataVisualize:
             plt.ylabel('Number of functions')
             plt.title(f'Number of functions in one hierarchy with depth = {len(hierarchy_information)}')
             plt.legend()
-            # plt.show()
+            plt.show()
 
     def PureVirtualMetrics(self, hierarchydata):
         '''Returns the number of added and inherited methods in all class of a project'''
@@ -477,41 +417,6 @@ class ProjectDataVisualize:
             total_hierarchies.append(count)    
         return abstract_class_sequence, total_hierarchies
 
-    #-----------------------------NOC per class type metrics----------------------------
-    def NOCOccurenceForAbstractClasses(self):
-        '''Count NOC occurence for abstract classes, for all inheritance instances'''
-        NOC_abstract_class_count = []
-        Noc_ = []
-        for noc in range(0, max(self.number_of_children_per_abstract_class)+1, 1):
-            counts = self.number_of_children_per_abstract_class.count(noc)
-            NOC_abstract_class_count.append(counts)
-            Noc_.append(noc)
-        return Noc_, NOC_abstract_class_count
-
-    def NOCOccurenceForInterfaceClasses(self):
-        '''Count NOC occurence for interface classes, for all inheritance instances'''
-        NOC_interface_class_count = []
-        Noc_ = []
-        for interface_class in range(0, max(self.number_of_children_per_interface_class)+1, 1):
-                counts = self.number_of_children_per_interface_class.count(interface_class)
-                NOC_interface_class_count.append(counts)
-                Noc_.append(interface_class)
-        return Noc_, NOC_interface_class_count
-
-    def NOCOccurenceForConcreteClasses(self):
-        '''Count NOC occurence for concrete classes, for all inheritance instances'''
-        NOC_concrete_class_count = []
-        Noc_ = []
-        for concrete_class in range(0, max(self.number_of_children_per_Concrete_SuperClass)+1, 1):
-            # for abstract_class in self.number_of_children_per_abstract_class:
-                counts = self.number_of_children_per_Concrete_SuperClass.count(concrete_class)
-                NOC_concrete_class_count.append(counts)
-                Noc_.append(concrete_class)
-        return Noc_, NOC_concrete_class_count
-
-
-    # def NumOfInterfaceClasses(self):
-    # def NumOfConcreteClasses(self):
     def BreachOfDIP(self, hierarchydata):
         dip_ = []
         Info = []
@@ -550,192 +455,6 @@ class ProjectDataVisualize:
             total_hierarchies.append(count)    
         return dip_sequence, total_hierarchies
 
-    #--------------------------Inheritance Instances--------------------------
-    def number_of_inheritances(self, project):    
-        concreteClassesNames = []
-        AbstractClassesNames = []
-        InterfaceClassesNAmes = []
-        number_of_children_per_interface_class = []
-        #NUmber_of_children_per_abstract_class
-        number_of_children_per_abstract_class = []
-        #Number_of_children_per_concrete_super_class
-        number_of_children_per_Concrete_SuperClass = []
-        Used_Abstract_Classes = []
-        Used_Interface_Classes = []
-        Used_Concrete_Classes = []
-        for hierarchy in self.HierarchiesData[project]["Hierarchies"]:
-            for index, depth in enumerate(self.HierarchiesData[project]["Hierarchies"][hierarchy]):
-                for inheritances in depth:
-                    for inheritance in  depth[inheritances]:
-                            
-                            #-----------------Implementation inheritance information-------------------#
-                           if inheritance["typeofinheritance"] == "Implementation inheritance":
-                               eachdepthcombination = []
-                               #The number of implementation inheritance
-                               self.implementationinheritance += 1
-                               
-                               if inheritance["TypeOfClass"] == "Concrete Class":
-                                   self.DerivedConcreteClassesNovelMethods.append(inheritance["Added Methods"])
-                                   self.DerivedConcreteClassesOverridenMethods.append(inheritance["Overriden Methods"])
-                                   if inheritance["ClassName"] not in concreteClassesNames:
-                                        concreteClassesNames.append(inheritance["ClassName"])
-                               #--------------------------Parent Classes Data-------------------------#
-                               for superclass in inheritance["SubClasses"]:
-                                  pure_virtual_functions = []
-                                  eachdepthcombination.append(superclass["TypeOfClass"])
-                                  if index >= 1 :
-                                    if superclass["TypeOfClass"] == "Abstract Class":
-                                        if "SuperClassName" in superclass.keys():  
-                                          number_of_children_per_abstract_class.append(superclass["SuperClassName"])
-                                          if superclass["SuperClassName"] not in AbstractClassesNames:
-                                            pure_virtual_functions += superclass["public interface"]["Addedpurevirtualfunctions"]
-                                            pure_virtual_functions += superclass["public interface"]["inherited_pure_virtual"]
-                                            self.DerivedAbstractClassesInterface.append(len(pure_virtual_functions)) 
-                                            AbstractClassesNames.append(superclass["SuperClassName"])
-                                    elif superclass["TypeOfClass"] == "Concrete Class":
-                                        if "SuperClassName" in superclass.keys():
-                                            number_of_children_per_Concrete_SuperClass.append(superclass["SuperClassName"])
-                                            if superclass["SuperClassName"] not in concreteClassesNames:
-                                                self.DerivedConcreteClassesNovelMethods.append(inheritance["Added Methods"])
-                                                self.DerivedConcreteClassesOverridenMethods.append(inheritance["Overriden Methods"])
-                                                self.ConcreteClassesInterface.append(len(publicInterface))
-                                                concreteClassesNames.append(superclass["SuperClassName"])
-                                    elif superclass["TypeOfClass"] == "Interface Class":
-                                        if "SuperClassName" in superclass.keys():
-                                            number_of_children_per_interface_class.append(superclass["SuperClassName"])
-                                            if superclass["SuperClassName"] not in InterfaceClassesNAmes:
-                                                pure_virtual_functions += superclass["public interface"]["Addedpurevirtualfunctions"]
-                                                pure_virtual_functions += superclass["public interface"]["inherited_pure_virtual"]
-                                                self.InterfaceClassesInterface.append(len(pure_virtual_functions))
-                                                InterfaceClassesNAmes.append(superclass["SuperClassName"])
-                                    #Public interface for concrete Classes  
-                                  else:
-                                    if superclass["TypeOfClass"] == "Abstract Class":
-                                      if "rootname" in superclass.keys(): 
-                                       number_of_children_per_abstract_class.append(superclass["rootname"])
-                                       if superclass["rootname"] not in AbstractClassesNames:
-                                          pure_virtual_functions = superclass["PublicInterface"]["purevirtualfunctions"]
-                                          self.AbstractClassesInterface.append(len(pure_virtual_functions))
-                                          AbstractClassesNames.append(superclass["rootname"])
-                                    elif superclass["TypeOfClass"] == "Concrete Class":
-                                       if "rootname" in superclass.keys(): 
-                                        number_of_children_per_Concrete_SuperClass.append(superclass["rootname"])
-                                        if superclass["rootname"] not in concreteClassesNames:
-                                            publicInterface = superclass["PublicInterface"]["normalfunctions"]
-                                            self.ConcreteClassesInterface.append(len(publicInterface))
-                                            concreteClassesNames.append(superclass["rootname"])
-                                    elif superclass["TypeOfClass"] == "Interface Class":
-                                       if "rootname" in superclass.keys(): 
-                                        number_of_children_per_interface_class.append(superclass["rootname"])
-                                        if superclass["rootname"] not in InterfaceClassesNAmes:
-                                            self.InterfaceClassesInterface.append(len(superclass["PublicInterface"]["purevirtualfunctions"]))
-                                            InterfaceClassesNAmes.append(superclass["rootname"])
-                               self.implementationinheritanceCombinations.append(eachdepthcombination)
-                           #----------------------------------Interface inheritance Information----------------#
-                           elif inheritance["typeofinheritance"] == "Interface inheritance":
-                               if inheritance["TypeOfClass"] == "Concrete Class":
-                                    # print("Concrete/Interface Base")
-                                    self.DerivedConcreteClassesNovelMethods.append(inheritance["Added Methods"])
-                                    self.DerivedConcreteClassesOverridenMethods.append(inheritance["Overriden Methods"])
-                                    if inheritance["ClassName"] not in concreteClassesNames:
-                                        concreteClassesNames.append(inheritance["ClassName"])
-                               #number of interface inheritance
-                               self.interfaceinheritance += 1
-                               for superclass in inheritance["SubClasses"]:
-                                  pure_virtual_functions = []
-                                  self.interfacecombination.append(superclass["TypeOfClass"])
-                                  if index >= 1 :
-                                   if "SuperClassName" in superclass.keys(): 
-                                    number_of_children_per_interface_class.append(superclass["SuperClassName"])
-                                    if superclass["SuperClassName"] not in InterfaceClassesNAmes:
-                                       pure_virtual_functions += superclass["public interface"]["Addedpurevirtualfunctions"]
-                                       pure_virtual_functions += superclass["public interface"]["inherited_pure_virtual"]
-                                       self.InterfaceClassesInterface.append(len(pure_virtual_functions))
-                                       InterfaceClassesNAmes.append(superclass["SuperClassName"])
-                                  else:
-                                   if "rootname" in superclass.keys():
-                                    number_of_children_per_interface_class.append(superclass["rootname"])
-                                    if superclass["rootname"] not in InterfaceClassesNAmes:
-                                       self.InterfaceClassesInterface.append(len(superclass["PublicInterface"]["purevirtualfunctions"]))
-                                       InterfaceClassesNAmes.append(superclass["rootname"])
-
-        for _classUsed in self.HierarchiesData[project]["ClassesUsed"]:
-            for abstractclass in AbstractClassesNames:
-                splittedabstractclass = abstractclass.split("::")
-                name = splittedabstractclass[-1]
-                if _classUsed in name:
-                    Used_Abstract_Classes.append(_classUsed)
-            for interfaceclass in InterfaceClassesNAmes:
-                    splittedinterfaceclass = interfaceclass.split("::")
-                    name = splittedinterfaceclass[-1]
-                    if _classUsed in name:
-                        Used_Interface_Classes.append(_classUsed)
-            for concreteclass in concreteClassesNames:
-                splittedconcreteclass = concreteclass.split("::")
-                name = splittedconcreteclass[-1]
-                if _classUsed in name:
-                    Used_Concrete_Classes.append(_classUsed)
-        for interface_class in InterfaceClassesNAmes:
-            counts = Counter(number_of_children_per_interface_class)
-            self.number_of_children_per_interface_class.append(counts[interface_class])
-
-        for abstract_class in AbstractClassesNames:
-            counts = Counter(number_of_children_per_abstract_class)
-            self.number_of_children_per_abstract_class.append(counts[abstract_class])
-        
-        for concrete_class in concreteClassesNames:
-            #print(concrete_class)
-            counts = Counter(number_of_children_per_Concrete_SuperClass)
-            self.number_of_children_per_Concrete_SuperClass.append(counts[concrete_class])
-        #Number of each classes Used
-        self.abstract_classes += len(AbstractClassesNames)
-        self.concrete_classes += len(concreteClassesNames)
-        self.interface_classes += len(InterfaceClassesNAmes)
-        #Used Abstract Classes & Interface
-        self.Used_Abstract_Classes += len(Used_Abstract_Classes)
-        self.Used_Interface_Classes += len(Used_Interface_Classes)
-        self.Used_Concrete_Classes += len(Used_Concrete_Classes)
-         
-    def implementation_instances(self):
-        for instance in self.implementationinheritanceCombinations:
-            instanceSet = set(instance)
-            # print(instance)
-            if set(["Abstract Class","Interface Class","Concrete Class"]).issubset(instanceSet):
-                self.concrete_Abstract_interface.append(instance)
-                # print(self.concrete_Abstract_interface)
-            elif set(["Abstract Class","Interface Class"]).issubset(instanceSet):
-                self.abstract_Interface.append(instance)
-            elif set(["Abstract Class", "Concrete Class"]).issubset(instanceSet):
-                self.concrete_Abstract.append(instance)
-            elif set(["Concrete Class", "Interface Class"]).issubset(instanceSet):
-                self.concrete_Interface.append(instance)
-            elif set(["Concrete Class"]).issubset(instanceSet):
-                self.concreteOnly.append(instance)
-            elif set(["Abstract Class"]).issubset(instanceSet):
-                #print(instance)
-                self.abstractOnly.append(instance)
-        # print(self.concreteOnly)
-
-    def interface_instances(self):
-        for instance in self.interfaceinheritanceCombinations:
-            instanceSet = set(instance)
-            # print(instance)
-            if set(["Abstract Class","Interface Class","Concrete Class"]).issubset(instanceSet):
-                self.interf_inh_concrete_Abstract_interface.append(instance)
-                # print(self.concrete_Abstract_interface)
-            elif set(["Abstract Class","Interface Class"]).issubset(instanceSet):
-                self.interf_inh_abstract_Interface.append(instance)
-            elif set(["Abstract Class", "Concrete Class"]).issubset(instanceSet):
-                self.interf_inh_concrete_Abstract.append(instance)
-            elif set(["Concrete Class", "Interface Class"]).issubset(instanceSet):
-                self.interf_inh_concrete_Interface.append(instance)
-            elif set(["Concrete Class"]).issubset(instanceSet):
-                self.interf_inh_concreteOnly.append(instance)
-            elif set(["Abstract Class"]).issubset(instanceSet):
-                #print(instance)
-                self.interf_inh_abstractOnly.append(instance)
-        # print(self.concreteOnly)
-
     def PrintingHierarchyData(self):
         # Read hierarchy data for all repos
         self.read_json() 
@@ -772,7 +491,6 @@ class ProjectDataVisualize:
             count +=1
             classes_used_in_code = self.HierarchiesData[project]['ClassesUsed']
 
-            self.number_of_inheritances(project)
             for hierarchy in self.HierarchiesData[project]['Hierarchies']:
                 # depth
                 depths_per_hierarchy = len(self.HierarchiesData[project]['Hierarchies'][hierarchy])
@@ -781,42 +499,43 @@ class ProjectDataVisualize:
 
                 for index, depths in enumerate(self.HierarchiesData[project]['Hierarchies'][hierarchy]):
                     for depth in depths:
+                        if len(depths[depth])>0: 
                         
-                        # widths
-                        widths = self.WidthMetrics(depths[depth])
-                        BIT_Max.append(max(widths))
-                        # public interface
-                        total_public_interfaces = self.PublicInterfaceMetrics(depths[depth])
-                        max_public_interfaces_per_class += total_public_interfaces
-                        # novel methods
-                        additional_methods_occurrence,  depth_per_method = self.AdditionalMethodsMetrics(depths[depth])
-                        novel_methods_class_occurrence_per_class += additional_methods_occurrence
-                        max_additional_methods_occurrence_per_hierarchy.append(max(additional_methods_occurrence))
-                        # overriden methods
-                        overriden_methods_occurrence,  depth_per_method = self.OverridenMethodsMetrics(depths[depth])
-                        overriden_methods_class_occurrence_per_class += overriden_methods_occurrence
-                        max_overriden_methods_occurrence_per_hierarchy.append(max(overriden_methods_occurrence))
+                            # widths
+                            widths = self.WidthMetrics(depths[depth])
+                            BIT_Max.append(max(widths))
+                            # public interface
+                            total_public_interfaces = self.PublicInterfaceMetrics(depths[depth])
+                            max_public_interfaces_per_class += total_public_interfaces
+                            # novel methods
+                            additional_methods_occurrence,  depth_per_method = self.AdditionalMethodsMetrics(depths[depth])
+                            novel_methods_class_occurrence_per_class += additional_methods_occurrence
+                            max_additional_methods_occurrence_per_hierarchy.append(max(additional_methods_occurrence))
+                            # overriden methods
+                            overriden_methods_occurrence,  depth_per_method = self.OverridenMethodsMetrics(depths[depth])
+                            overriden_methods_class_occurrence_per_class += overriden_methods_occurrence
+                            max_overriden_methods_occurrence_per_hierarchy.append(max(overriden_methods_occurrence))
 
-                        depth_per_method_data += depth_per_method
+                            depth_per_method_data += depth_per_method
 
-                        public_pure_virtual_method = self.PureVirtualMetrics(depths[depth])
-                        public_pure_virtual_methods += public_pure_virtual_method
-                        # class types
-                        class_type, abstract_class_count, all_class_types, abstract_class, concrete_class, interface_class = self.ClassTypeMetrics(depths[depth])
-                        class_types += class_type # for all hierarchies - types include abstract, concrete, and interface
-                        all_class_types_ += all_class_types
-                        max_abstract_classes_per_hierarchy.append(max(abstract_class_count)) #for all hierarchies -only abstract classes
-                        
-                        abstract_classes += abstract_class
-                        concrete_classes += concrete_class
-                        interface_classes += interface_class
+                            public_pure_virtual_method = self.PureVirtualMetrics(depths[depth])
+                            public_pure_virtual_methods += public_pure_virtual_method
+                            # class types
+                            class_type, abstract_class_count, all_class_types, abstract_class, concrete_class, interface_class = self.ClassTypeMetrics(depths[depth])
+                            class_types += class_type # for all hierarchies - types include abstract, concrete, and interface
+                            all_class_types_ += all_class_types
+                            max_abstract_classes_per_hierarchy.append(max(abstract_class_count)) #for all hierarchies -only abstract classes
+                            
+                            abstract_classes += abstract_class
+                            concrete_classes += concrete_class
+                            interface_classes += interface_class
 
-                        # print(abstract_class, concrete_class, interface_class, '\n')
-                        # store out of order occurrence
-                        dip_, Info = self.BreachOfDIP(depths[depth])
-                        # Info_ += Info
-                        # dipS += dip_
-                        DIP_occurence_per_hierarchy.append(max(dip_))
+                            # print(abstract_class, concrete_class, interface_class, '\n')
+                            # store out of order occurrence
+                            dip_, Info = self.BreachOfDIP(depths[depth])
+                            # Info_ += Info
+                            # dipS += dip_
+                            DIP_occurence_per_hierarchy.append(max(dip_))
 
                 self.MethodsPerDepthLargeHierarchies(hierarchy, hierarchy_information)
             self.CheckRoleModellingUse(abstract_classes, concrete_classes, interface_classes, classes_used_in_code)
@@ -908,98 +627,6 @@ class ProjectDataVisualize:
         plt.savefig('../Relationship between public functions in all classes.svg', format='svg', dpi=1200)
         plt.show()
 
-        # NOC for abstract class
-        Noc_Abstract, NOC_abstract_class_count = self.NOCOccurenceForAbstractClasses()
-        plt.figure(17)
-        self.plotData(Noc_Abstract, NOC_abstract_class_count, 'Number of Children', 'Number of classes', 'Number of abstract classes per NOC occurence')
-        # use of abstract classes
-        Label = ["Unused Abstract classes", "Used abstract classes"]
-        data = [self.abstract_classes-self.Used_Abstract_Classes, self.Used_Abstract_Classes]
-        print(self.abstract_classes-self.Used_Abstract_Classes, self.Used_Abstract_Classes)
-        fig, plot18 = plt.subplots()
-        plt.title('How Abstract Class types are used')
-        plot18.pie(data, labels = Label, autopct='%1.1f%%')
-
-        # NOC for interface class
-        Noc_Interface, NOC_interface_class_count = self.NOCOccurenceForInterfaceClasses()
-        plt.figure(19)
-        self.plotData(Noc_Interface, NOC_interface_class_count, 'Number of Children', 'Number of classes', 'Number of interface classes per NOC occurence')
-        # use of interface classes
-        Label = ["Unused Interface classes", "Used Interface classes"]
-        data = [self.interface_classes-self.Used_Interface_Classes, self.Used_Interface_Classes]
-        print(self.interface_classes-self.Used_Interface_Classes, self.Used_Interface_Classes)
-        fig, plot20 = plt.subplots()
-        plt.title('How Interface class types are used')
-        plot20.pie(data, labels = Label, autopct='%1.1f%%')
-
-        # NOC for concrete classes
-        Noc_Concrete, NOC_Concrete_class_count = self.NOCOccurenceForConcreteClasses()
-        plt.figure(21)
-        self.plotData(Noc_Concrete, NOC_Concrete_class_count, 'Number of Children', 'Number of classes', 'Number of concrete classes per NOC occurence')
-        # use of concrete classes
-        Label = ["Unused Concrete classes", "Used Concrete classes"]
-        data = [self.concrete_classes-self.Used_Concrete_Classes, self.Used_Concrete_Classes]
-        print(self.concrete_classes-self.Used_Concrete_Classes, self.Used_Concrete_Classes)
-        fig, plot21 = plt.subplots()
-        plt.title('How Concrete class types are used')
-        plot21.pie(data, labels = Label, autopct='%1.1f%%')
-
-        # Inheritance Instances:
-        Label = ["Implementation inheritance", "Interface inheritance"]
-        data = [self.implementationinheritance, self.interfaceinheritance]
-        fig, plot22 = plt.subplots()
-        plt.title('Implementation Inheritance vs Interface Inheritance')
-        plot22.pie(data, labels = Label, autopct='%1.1f%%')
-
-        # Implementation Inheritance breakdown
-        self.implementation_instances()
-        Label = ["Abstract only", "Abstract And Interface", "Concrete Only", "Concrete And Abstract", "Concrete And Interface"]
-        data = [len(self.abstractOnly), len(self.abstract_Interface), len(self.concreteOnly), len(self.concrete_Abstract), len(self.concrete_Interface)]
-        print(data)
-        np.seterr(divide='ignore', invalid='ignore')
-        fig, plot23 = plt.subplots()
-        plt.title('Implementation Inheritance breakdown')
-        plot23.pie(data, labels = Label, autopct='%1.1f%%')
-
-        # Interface Inheritance breakdown
-        self.interface_instances()
-        Label = ["Abstract only", "Abstract And Interface", "Concrete Only", "Concrete And Abstract", "Concrete And Interface"]
-        data = [len(self.interf_inh_abstractOnly), len(self.interf_inh_abstract_Interface), len(self.interf_inh_concreteOnly), len(self.interf_inh_concrete_Abstract), len(self.interf_inh_concrete_Interface)]
-        print(data)
-        # returns an error if no instances of inheritance are found
-        fig, plot24 = plt.subplots()
-        plt.title('Interface Inheritance breakdown')
-        plot24.pie(data, labels = Label, autopct='%1.1f%%')
-
-        y = self.DerivedConcreteClassesNovelMethods
-        x = []
-        for iterator in range(0, len(y), 1):
-            x.append(str(iterator + 1))
-        plt.figure(25)
-        self.plotData(x, y, 'Classes', 'Number Of Novel Methods', 'Novel Methods Per Derived Classes')
-
-        y = self.InterfaceClassesInterface
-        x = []
-        for iterator in range(0, len(y), 1):
-            x.append(str(iterator + 1))
-        plt.figure(26)
-        self.plotData(x, y, 'Classes', 'Number of pure virtual methods', 'Interface classes interface')
-
-        y = self.AbstractClassesInterface
-        x = []
-        for iterator in range(0, len(y), 1):
-            x.append(str(iterator + 1))
-        plt.figure(27)
-        self.plotData(x, y, 'Classes', 'Number of pure virtual methods', 'Abstract classes interface')
-
-        y = self.DerivedAbstractClassesInterface
-        x = []
-        for iterator in range(0, len(y), 1):
-            x.append(str(iterator + 1))
-        plt.figure(28)
-        self.plotData(x, y, 'Classes', 'Number of pure virtual methods', 'Derived Abstract classes interface')
-        plt.show()
-
     def plotData(self, x_axis, y_axis, x_label, y_label, plot_title):
         '''This function plots y_axis vs x_axis'''
         x= x_axis
@@ -1009,4 +636,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
         plt.savefig(f'../{plot_title}.svg', format='svg', dpi=1200)
-#ProjectDataVisualize().PrintingHierarchyData()
+# ProjectDataVisualize().PrintingHierarchyData()

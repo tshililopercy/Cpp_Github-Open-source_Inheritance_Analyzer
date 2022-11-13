@@ -8,7 +8,6 @@ import pandas as pd
 class DataAnalysisVisualizer:
     def __init__(self):
         self.data_analysis = DataAnalysis()
-        self.data_analysis.startAnalysis()
     def _ConcreteSuperClassesPlot(self):
         #-----------------------------------This is For implementation inheritance (From Concrete SuperClasses)----------------------------------------#
         plt.figure(1)
@@ -328,6 +327,7 @@ class DataAnalysisVisualizer:
         plt.show()
           
     def perform_Analysis(self):
+        self.data_analysis.startAnalysis()
         self.generalized_Results()
         self._ConcreteSuperClassesPlot()
         self._ConcreteSuperClassStatisticAnalysis()

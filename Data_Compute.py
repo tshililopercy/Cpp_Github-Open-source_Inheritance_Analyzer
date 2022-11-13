@@ -293,7 +293,7 @@ class ProjectDataVisualize:
             plt.ylabel('Number of functions')
             plt.title(f'Number of functions in one hierarchy with depth = {len(hierarchy_information)}')
             plt.legend()
-            # plt.show()
+            plt.show()
 
     def PureVirtualMetrics(self, hierarchydata):
         '''Returns the number of added and inherited methods in all class of a project'''
@@ -636,4 +636,4 @@ class ProjectDataVisualize:
         plt.ylabel(y_label)
         plt.title(plot_title)
         plt.savefig(f'../{plot_title}.svg', format='svg', dpi=1200)
-ProjectDataVisualize().PrintingHierarchyData()
+# ProjectDataVisualize().PrintingHierarchyData()
